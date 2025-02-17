@@ -9,8 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
+import Header from "@/app/components/ui/header";
 
-// Define the type for ASIN data
 type AsinData = {
   SN: string;
   advertisedAsin: string;
@@ -70,7 +70,6 @@ async function fetchAsinData(adGroupId: string) {
   }
 }
 
-// Fetch keyword recommendations
 async function fetchKeywordData(campaignId: string, adGroupId: string) {
   try {
     const res = await fetch(`http://127.0.0.1:8000/keyword/recommendation/${campaignId}/${adGroupId}`, { cache: "no-store" });
@@ -151,34 +150,46 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
       <button onClick={() => router.back()} className="mb-4 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded">
         ← Back
       </button>
+      <Header />
+      <div className="w-full p-4 rounded-lg">
+        <div className="flex justify-between items-center">
+          <div className="text-white text-4xl">
+            <h2 className="text-2xl font-light">Agency name</h2>
+          </div>
+          <div className="text-white">
+            <h2 className="text-2xl font-light">Brand: brand 1</h2>
+            <h2 className="text-2xl font-light">Campaign: </h2>
+          </div>
+        </div>
+      </div>
       <h1 className="text-xl font-bold">Ad Group Details</h1>
 
       {/* ASIN Data Table */}
       <h2 className="text-lg font-bold mt-6">ASIN Performance</h2>
-      <Table>
-        <TableHeader>
+      <Table className="border border-default-300">
+        <TableHeader className="bg-black text-white sticky top-0 z-10">
           <TableRow>
-            <TableHead>SN</TableHead>
-            <TableHead>ASIN</TableHead>
-            <TableHead>SKU</TableHead>
-            <TableHead>Campaign Status</TableHead>
-            <TableHead>Impressions</TableHead>
-            <TableHead>Clicks</TableHead>
-            <TableHead>CTR</TableHead>
-            <TableHead>Cost</TableHead>
+            <TableHead className="border border-default-300">ASIN</TableHead>
+            <TableHead className="border border-default-300">SKU</TableHead>
+            <TableHead className="border border-default-300">Campaign Status</TableHead>
+            <TableHead className="border border-default-300">Revenue</TableHead>
+            <TableHead className="border border-default-300">Spend</TableHead>
+            <TableHead className="border border-default-300">ACOS</TableHead>
+            <TableHead className="border border-default-300">ROAS</TableHead>
+            <TableHead className="border border-default-300">Ad format</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {asinData.map((asin) => (
-            <TableRow key={asin.SN}>
-              <TableCell>{asin.SN}</TableCell>
-              <TableCell>{asin.advertisedAsin}</TableCell>
-              <TableCell>{asin.advertisedSku}</TableCell>
-              <TableCell>{asin.campaignStatus}</TableCell>
-              <TableCell>{asin.impressions}</TableCell>
-              <TableCell>{asin.clicks}</TableCell>
-              <TableCell>{asin.clickThroughRate}</TableCell>
-              <TableCell>{asin.cost}</TableCell>
+            <TableRow key={asin.SN} className="text-center">
+              <TableCell className="border border-default-300">{asin.advertisedAsin}</TableCell>
+              <TableCell className="border border-default-300">{asin.advertisedSku}</TableCell>
+              <TableCell className="border border-default-300">{asin.campaignStatus}</TableCell>
+              <TableCell className="border border-default-300">{asin.impressions}</TableCell>
+              <TableCell className="border border-default-300">{asin.clicks}</TableCell>
+              <TableCell className="border border-default-300">{asin.clickThroughRate}</TableCell>
+              <TableCell className="border border-default-300">{asin.cost}</TableCell>
+              <TableCell className="border border-default-300">SP</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -186,22 +197,25 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
 
       {/* Keyword Performance Table */}
       <h2 className="text-lg font-bold mt-6">Keyword Performance</h2>
-      <Table>
-        <TableHeader>
+      <Table className="border border-default-300">
+        <TableHeader className="bg-black text-white sticky top-0 z-10">
           <TableRow>
-            <TableHead>Keyword</TableHead>
-            <TableHead>Match Type</TableHead>
-            <TableHead>Clicks</TableHead>
-            <TableHead>Impressions</TableHead>
+            <TableHead className="border border-default-300">Keyword</TableHead>
+            <TableHead className="border border-default-300">Match Type</TableHead>
+            <TableHead className="border border-default-300">Revenue</TableHead>
+            <TableHead className="border border-default-300">Clicks</TableHead>
+            <TableHead className="border border-default-300">Impressions</TableHead>
+            <TableHead className="border border-default-300">Bid</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {keywordPerformanceData.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell>{item.keyword}</TableCell>
-              <TableCell>{item.matchType}</TableCell>
-              <TableCell>{item.clicks}</TableCell>
-              <TableCell>{item.impressions}</TableCell>
+            <TableRow key={item.id} className="text-center">
+              <TableCell className="border border-default-300">{item.keyword}</TableCell>
+              <TableCell className="border border-default-300">{item.matchType}</TableCell>
+              <TableCell className="border border-default-300">{item.clicks}</TableCell>
+              <TableCell className="border border-default-300">{item.impressions}</TableCell>
+              <TableCell className="border border-default-300">{item.impressions}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -209,24 +223,24 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
 
       {/* Keyword Recommendations Table */}
       <h2 className="text-lg font-bold mt-6">Keyword Recommendations</h2>
-      <Table>
-        <TableHeader>
+      <Table className="border border-default-300">
+        <TableHeader className="bg-black text-white sticky top-0 z-10">
           <TableRow>
-            <TableHead>Keyword</TableHead>
-            <TableHead>Match Types</TableHead>
-            <TableHead>Rank</TableHead>
-            <TableHead>Theme</TableHead>
-            <TableHead>Bids</TableHead>
+            <TableHead className="border border-default-300">Keyword</TableHead>
+            <TableHead className="border border-default-300">Match Types</TableHead>
+            <TableHead className="border border-default-300">Rank</TableHead>
+            <TableHead className="border border-default-300">Theme</TableHead>
+            <TableHead className="border border-default-300">Bids</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {keywordData.map((keyword, index) => (
-            <TableRow key={index}>
-              <TableCell>{keyword.keyword}</TableCell>
-              <TableCell>{keyword.matchTypes.join(", ")}</TableCell>
-              <TableCell>{keyword.rank}</TableCell>
-              <TableCell>{keyword.theme}</TableCell>
-              <TableCell>{keyword.bids.join(", ")}</TableCell>
+            <TableRow key={index} className="text-center">
+              <TableCell className="border border-default-300">{keyword.keyword}</TableCell>
+              <TableCell className="border border-default-300">{keyword.matchTypes.join(", ")}</TableCell>
+              <TableCell className="border border-default-300">{keyword.rank}</TableCell>
+              <TableCell className="border border-default-300">{keyword.theme}</TableCell>
+              <TableCell className="border border-default-300">{keyword.bids.join("  | ")}</TableCell>
             </TableRow>
           ))}
         </TableBody>

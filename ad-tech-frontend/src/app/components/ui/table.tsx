@@ -10,7 +10,10 @@ const Table = React.forwardRef<HTMLTableElement, TableProps>(
     <div className={cn("overflow-x-auto", wrapperClass)}>
       <table
         ref={ref}
-        className={cn("w-full caption-top text-sm", className)}
+        className={cn(
+          "w-full caption-top text-sm rounded-lg border border-default-300",
+          className
+        )}
         {...props}
       />
     </div>
@@ -56,7 +59,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
     <tr
       ref={ref}
       className={cn(
-        "border-b border-default-300 transition-colors data-[state=selected]:bg-muted",
+        "border-b border-default-300 transition-colors data-[state=selected]:bg-muted rounded-lg",
         className
       )}
       {...props}
@@ -72,7 +75,7 @@ const TableHead = React.forwardRef<HTMLTableHeaderCellElement, TableHeadProps>(
     <th
       ref={ref}
       className={cn(
-        "h-14 px-4 ltr:text-left rtl:text-right ltr:last:text-right rtl:last:text-left align-middle font-semibold text-sm text-default-800 capitalize ltr:[&:has([role=checkbox])]:pr-0 rtl:[&:has([role=checkbox])]:pl-0",
+        "h-14 px-4 text-center align-middle font-semibold text-sm text-default-800 capitalize rounded-t-lg", // Centered header text
         className
       )}
       {...props}
@@ -88,7 +91,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
     <td
       ref={ref}
       className={cn(
-        "p-4 align-middle text-sm text-default-600 last:text-right rtl:last:text-left font-normal ltr:[&:has([role=checkbox])]:pr-0 rtl:[&:has([role=checkbox])]:pl-0",
+        "p-4 align-middle text-sm text-default-600 last:text-right rtl:last:text-left font-normal rounded-lg",
         className
       )}
       {...props}
@@ -103,10 +106,7 @@ const TableCaption = React.forwardRef<HTMLTableCaptionElement, TableCaptionProps
   ({ className, ...props }, ref) => (
     <caption
       ref={ref}
-      className={cn(
-        "mb-4 text-sm font-medium text-default-700 text-start",
-        className
-      )}
+      className={cn("mb-4 text-sm font-medium text-default-700 text-start", className)}
       {...props}
     />
   )
