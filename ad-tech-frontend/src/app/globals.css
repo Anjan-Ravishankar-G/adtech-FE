@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body.light {
+  --background: #ffffff;
+  --foreground: #171717;
+  --text-color: #000000;
+}
+
+body.dark {
+  --background: #000000;
+  --foreground: #1c1c1c;
+  --text-color: #ffffff;
+}
+
+body {
+  transition: background-color 0.3s, color 0.3s;
+  background-color: var(--background);
+  color: var(--text-color);
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* General table styles */
+table {
+  border-radius: 12px; 
+  overflow: hidden;  
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--background);
+  color: var(--text-color);
+  /* Remove the default border and rely on the mode-specific border */
+  border: none; 
+}
+
+/* Light mode border */
+body.light table {
+  border: 2px solid black; /* Use a 2px black border for light mode */
+}
+
+/* Dark mode border */
+body.dark table {
+  border: 2px solid white; /* Use a 2px white border for dark mode */
+}
+
+/* Table header styles */
+table th {
+  background-color: var(--foreground);
+  color: var(--background);
+  padding: 12px;
+  border: 1px solid #ddd; /* Border for table header cells */
+}
+
+table td {
+  background-color: var(--background);
+  color: var(--text-color);
+  padding: 12px;
+  border: 1px solid #ddd; /* Border for table body cells */
+}
+
+/* Light mode header and cell background colors */
+body.light table th {
+  background-color: #171717;
+  color: #ffffff;
+}
+
+body.light table td {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* Dark mode header and cell background colors */
+body.dark table th {
+  background-color: #2c3841;
+  color: #ffffff;
+}
+
+body.dark table td {
+  background-color: #36454F;
+  color: #ffffff;
+}
+
+/* Hover effects for rows */
+table tr:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+table tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+table th,
+table td {
+  border-radius: 0;
+}
+
+table tr:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+table tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div {
+  color: var(--text-color);
+}
+
