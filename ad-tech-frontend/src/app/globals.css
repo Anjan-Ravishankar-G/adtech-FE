@@ -42,12 +42,12 @@ table {
 
 /* Light mode border */
 body.light table {
-  border: 2px solid black; /* Use a 2px black border for light mode */
+  border-collapse: collapse; /* Use a 2px black border for light mode */
 }
 
 /* Dark mode border */
 body.dark table {
-  border: 2px solid white; /* Use a 2px white border for dark mode */
+  border-collapse: collapse; /* Use a 2px white border for dark mode */
 }
 
 /* Table header styles */

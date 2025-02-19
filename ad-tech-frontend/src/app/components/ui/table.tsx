@@ -77,7 +77,7 @@ const TableHead = React.forwardRef<HTMLTableHeaderCellElement, TableHeadProps>( 
     <th
       ref={ref}
       className={cn(
-        "h-14 px-4 text-center align-middle font-semibold text-sm text-default-800 capitalize rounded-t-lg border-b border-gray-300", // Border applied
+        "h-14 px-4 text-center align-middle font-semibold text-sm text-default-800 capitalize  border-gray-300", // Border applied
         className
       )}
       {...props}
@@ -98,7 +98,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>( // Tab
       <td
         ref={ref}
         className={cn(
-          "p-4 align-middle text-sm text-default-600 last:text-right rtl:last:text-left font-normal border-b border-gray-300", // Border applied
+          "p-4 align-middle text-sm text-default-600 rtl:last:text-left font-normal border-b border-gray-300", // Border applied
           className
         )}
         {...props}
@@ -122,7 +122,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>( // Tab
         <td
           ref={ref}
           className={cn(
-            "p-4 align-middle text-sm text-default-600 last:text-right rtl:last:text-left font-normal cursor-pointer border-b border-gray-300", // Border applied
+            "p-4 align-middle text-sm text-default-600 last:text-center rtl:last:text-left font-normal cursor-pointer border-b border-gray-300", // Border applied
             className
           )}
           onClick={onClick}

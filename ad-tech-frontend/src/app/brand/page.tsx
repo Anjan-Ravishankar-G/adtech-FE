@@ -137,7 +137,9 @@ export default function BrandTargetTables() {
             <h2 className="text-4xl font-light">Agency name</h2>
           </div>
           <div className="text-white">
-            <h2 className="text-2xl font-light">Total Accounts: 28</h2>
+            <h2 className="text-2xl font-light">
+              Total Accounts: {uniqueBrandTargetData.length}
+            </h2>
             <h2 className="text-2xl font-light">Total Active: 25</h2>
             <h2 className="text-2xl font-light">
               Total revenue: INR {totalTargetAchieved.toLocaleString()}
@@ -148,6 +150,27 @@ export default function BrandTargetTables() {
 
       <div className="p-5">
         <h1 className="text-xl font-bold mb-7 text-center">Brands</h1>
+        <div className="flex justify-start  items-center space-x-4">
+          {/* Combined Radial Chart */}
+          <div className="flex-0.6 w-[500px] h-[350px]  text-center">
+            <BasicRadialBar
+              height={350}
+              series={[combinedProgress]} // Combined progress for all brands
+              combined={true}
+            />
+          </div>
+
+          {/* Individual Radial Chart with Multiple Brands */}
+          <div className="flex-0.6 w-[500px] h-[350px] text-center">
+            <h3>Brand Progress</h3>
+            <BasicRadialBar
+              height={350}
+              series={brandProgressData} // Multiple progress for individual brands
+              labels={brandNames} // Add brand names as labels
+            />
+          </div>   
+        </div>
+        
         <div className="mt-4 flex">
           <DateRangePicker
             startDate={startDate}
@@ -157,34 +180,15 @@ export default function BrandTargetTables() {
           />
         </div>
 
-        <div className="flex justify-center items-center space-x-4">
-          {/* Combined Radial Chart */}
-          <div className="flex-0.6 text-center">
-            <BasicRadialBar
-              height={350}
-              series={[combinedProgress]} // Combined progress for all brands
-              combined={true}
-            />
-          </div>
-
-          {/* Individual Radial Chart with Multiple Brands */}
-          <div className="flex-0.6 text-center">
-            <h3>Brand Progress</h3>
-            <BasicRadialBar
-              height={350}
-              series={brandProgressData} // Multiple progress for individual brands
-              labels={brandNames} // Add brand names as labels
-            />
-          </div>
-        </div>
+       
         
         {/* Layout for tables and pie chart */}
         <div className="flex space-x-10 p-6">
           {/* Brand Table */}
-          <div className="flex-1 overflow-x-auto">
-            <Table className="border border-default-300 text-center">
+          <div className="flex-1 overflow-x-auto ">
+          <Table className="min-w-full border border-purple-600 text-center">
               <TableHeader className="bg-black text-white  top-0 z-10">
-                <TableRow>
+                <TableRow className="cursor-pointer hover:bg-gray-100">
                   <TableHead>Brand</TableHead>
                   <TableHead>Goal</TableHead>
                   <TableHead>Sales Achieved</TableHead>

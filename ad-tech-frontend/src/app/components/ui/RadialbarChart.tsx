@@ -25,7 +25,7 @@ const BasicRadialBar: React.FC<BasicRadialBarProps> = ({ series, height, labels,
         startAngle: -90,
         endAngle: 90,
         hollow: {
-          size: "70%",
+          size: "46%",
         },
         track: {
           background: "#e7e7e7",

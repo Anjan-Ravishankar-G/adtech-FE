@@ -107,27 +107,30 @@ export default function PerformanceTable() {
               <TableHead className="border border-default-300 text-center rounded-tr-lg">Impressions</TableHead>
             </TableRow>
           </TableHeader>
+        
           <TableBody className="text-white">
             {campaignData.map((campaign) => (
               <TableRow key={campaign.SN} className="text-center">
-                <TableCell className="border border-default-300">
-                  <Link href={`/adGroupDetails/${campaign.campaignId}/${campaign.adGroupId}/`} className="text-blue-600 hover:text-blue-800 hover:underline">
-                    {campaign.adGroupName}
-                  </Link>
-                </TableCell>
-                <TableCell className="border border-default-300">SP</TableCell>
-                <TableCell className="border border-default-300">list sku for the ad group</TableCell>
-                <TableCell className="border border-default-300">{campaign.sales1d}</TableCell>
-                <TableCell className="border border-default-300">{campaign.cost}</TableCell>
-                <TableCell className="border border-default-300">{campaign.ROAS}</TableCell>
-                <TableCell className="border border-default-300">{campaign.ACoS}</TableCell>
-                <TableCell className="border border-default-300">{campaign.clickThroughRate}</TableCell>
-                <TableCell className="border border-default-300">{campaign.clicks}</TableCell>
-                <TableCell className="border border-default-300 rounded-r-lg">{campaign.impression}</TableCell>
-                <TableCell className="border border-default-300 rounded-r-lg">{campaign.costPerClick}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+              <TableCell className="border border-default-300 hover:bg-default-100 transition-colors cursor-pointer p-0">
+                <Link href={`/adGroupDetails/${campaign.campaignId}/${campaign.adGroupId}/`} className="text-blue-600 hover:text-blue-800 hover:underline block w-full h-full p-4">
+                {campaign.adGroupName}
+                </Link>
+              </TableCell>
+
+              <TableCell className="border border-default-300">SP</TableCell>
+              <TableCell className="border border-default-300">list sku for the ad group</TableCell>
+              <TableCell className="border border-default-300">{campaign.sales1d}</TableCell>
+              <TableCell className="border border-default-300">{campaign.cost}</TableCell>
+              <TableCell className="border border-default-300">{campaign.ROAS}</TableCell>
+              <TableCell className="border border-default-300">{campaign.ACoS}</TableCell>
+              <TableCell className="border border-default-300">{campaign.clickThroughRate}</TableCell>
+              <TableCell className="border border-default-300">{campaign.clicks}</TableCell>
+              <TableCell className="border border-default-300 rounded-r-lg">{campaign.impression}</TableCell>
+              <TableCell className="border border-default-300 rounded-r-lg">{campaign.costPerClick}</TableCell>
+            </TableRow>
+  ))}
+</TableBody>
+
         </Table>
       </div>
     </div>
