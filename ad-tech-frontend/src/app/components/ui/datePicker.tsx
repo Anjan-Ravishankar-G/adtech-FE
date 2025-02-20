@@ -21,7 +21,7 @@ const DateRangePicker = ({
   const [endOpen, setEndOpen] = useState(false);
 
   return (
-    <div className="flex flex-row items-center gap-6">
+    <div className="flex flex-row items-center gap-6 p-1">
       {/* Start Date Picker */}
       <div className="relative">
         <button

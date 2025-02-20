@@ -134,7 +134,7 @@ export default function BrandTargetTables() {
       <div className="w-full p-4 rounded-lg">
         <div className="flex justify-between items-center">
           <div className="text-white text-4xl font-serif tracking-wider">
-            <h2 className="text-4xl font-light">Agency name</h2>
+            <h2 className="text-4xl font-light p-2">IPG</h2>
           </div>
           <div className="text-white">
             <h2 className="text-2xl font-light">
@@ -150,9 +150,9 @@ export default function BrandTargetTables() {
 
       <div className="p-5">
         <h1 className="text-xl font-bold mb-7 text-center">Brands</h1>
-        <div className="flex justify-start  items-center space-x-4">
+        <div className="flex justify-start  items-center space-x-4 p-1">
           {/* Combined Radial Chart */}
-          <div className="flex-0.6 w-[500px] h-[350px]  text-center">
+          <div className="flex-0.6 w-[500px] h-[350px]  text-center bg-white shadow-lg rounded-lg p-4 border">
             <BasicRadialBar
               height={350}
               series={[combinedProgress]} // Combined progress for all brands
@@ -161,7 +161,7 @@ export default function BrandTargetTables() {
           </div>
 
           {/* Individual Radial Chart with Multiple Brands */}
-          <div className="flex-0.6 w-[500px] h-[350px] text-center">
+          <div className="flex-0.6 w-[500px] h-[350px] text-center bg-white shadow-lg rounded-lg p-4 border">
             <h3>Brand Progress</h3>
             <BasicRadialBar
               height={350}
@@ -183,7 +183,7 @@ export default function BrandTargetTables() {
        
         
         {/* Layout for tables and pie chart */}
-        <div className="flex space-x-10 p-6">
+        <div className="flex space-x-10 p-1">
           {/* Brand Table */}
           <div className="flex-1 overflow-x-auto ">
           <Table className="min-w-full border border-purple-600 text-center">

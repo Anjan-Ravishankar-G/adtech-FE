@@ -11,6 +11,7 @@ import {
 } from "@/app/components/ui/table";  // Importing Table components
 import DateRangePicker from "./datePicker";
 
+
 type CampaignData = {
   SN: string;
   campaignId: string;
@@ -73,7 +74,7 @@ export default function PerformanceTable() {
       <div className="w-full p-4 rounded-lg">
         <div className="flex justify-between items-center">
           <div className="text-white text-4xl">
-            <h2 className="text-4xl font-light">Agency name</h2>
+            <h2 className="text-4xl font-light">IPG</h2>
           </div>
           <div className="text-white">
             <h2 className="text-2xl font-light">Brand: brand 1</h2>
@@ -89,7 +90,7 @@ export default function PerformanceTable() {
         setEndDate={setEndDate} 
       />
 
-      <div className="overflow-x-auto max-h-96 p-5">
+      <div className="p-1">
         <Table className="">
           <TableHeader >
             <TableRow>
@@ -106,8 +107,8 @@ export default function PerformanceTable() {
             {campaignData.map((campaign) => (
               <TableRow key={campaign.SN} className="text-center">
                 <TableCell className="rounded-l-lg">{campaign.SN}</TableCell>
-                <TableCell>
-                  <Link href={`/ad_details/${campaign.campaignId}`}>
+                <TableCell className="border border-default-300 hover:bg-default-100 transition-colors cursor-pointer p-0">
+                  <Link href={`/ad_details/${campaign.campaignId}`} className="text-blue-600 hover:text-blue-800 hover:underline block w-full h-full p-4">
                     {campaign.campaignName}
                   </Link>
                 </TableCell>

@@ -77,10 +77,12 @@ export default function PerformanceTable() {
     <div className="p-5">
       
       <Header />
-      <div className="w-full p-4 rounded-lg">
-        <div className="flex justify-between items-center">
+      {/* <Sidebar campaignId="yourCampaignId" adGroupId="yourAdGroupId" /> */}
+
+      <div className="w-full p-3 rounded-lg">
+        <div className="flex justify-between items-center ">
           <div className="text-white text-4xl">
-            <h2 className="text-2xl font-light">Agency name</h2>
+            <h2 className="text-2xl font-light">IPG</h2>
           </div>
           <div className="text-white">
             <h2 className="text-2xl font-light">Brand: brand 1</h2>
@@ -88,9 +90,9 @@ export default function PerformanceTable() {
           </div>
         </div>
       </div>
-      <h1 className="text-2xl font-bold mb-4 text-center">Ad Groups</h1>
-      <DateRangePicker startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
-      <div className="overflow-x-auto max-h-96 p-5">
+      <h1 className="text-2xl font-bold mb-4 text-center ">Ad Groups</h1>
+      <DateRangePicker  startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
+      <div className="overflow-x-auto max-h-96 p-1">
         <Table className="border border-default-100 rounded-lg">
           <TableHeader className="bg-black text-white  top-0 z-10">
             <TableRow>
