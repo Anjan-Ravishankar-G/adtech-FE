@@ -170,12 +170,13 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                 <TableRow>
                   <TableHead className="border border-default-300">ASIN</TableHead>
                   <TableHead className="border border-default-300">SKU</TableHead>
+                  <TableHead className="border border-default-300">Ad format</TableHead>
                   <TableHead className="border border-default-300">Campaign Status</TableHead>
-                  <TableHead className="border border-default-300">Revenue</TableHead>
-                  <TableHead className="border border-default-300">Spend</TableHead>
+                  <TableHead className="border border-default-300">Daily sales</TableHead>
+                  <TableHead className="border border-default-300">Daily Spend</TableHead>
                   <TableHead className="border border-default-300">ACOS</TableHead>
                   <TableHead className="border border-default-300">ROAS</TableHead>
-                  <TableHead className="border border-default-300">Ad format</TableHead>
+                  
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -246,7 +247,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                     <TableCell className="border border-default-300">{keyword.matchTypes.join(", ")}</TableCell>
                     <TableCell className="border border-default-300">{keyword.rank}</TableCell>
                     <TableCell className="border border-default-300">{keyword.theme}</TableCell>
-                    <TableCell className="border border-default-300">{keyword.bids.join("  | ")}</TableCell>
+                    <TableCell className="border border-default-300">{keyword.bids.map(bid => Math.ceil(bid)).join(" | ")}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

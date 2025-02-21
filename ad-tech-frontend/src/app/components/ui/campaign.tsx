@@ -97,8 +97,8 @@ export default function PerformanceTable() {
               <TableHead className="text-center">SN</TableHead>
               <TableHead className="text-center">Campaign</TableHead>
               <TableHead className="text-center">Campaign Type</TableHead>
-              <TableHead className="text-center">Sales</TableHead>
               <TableHead className="text-center">Goal</TableHead>
+              <TableHead className="text-center">Sales</TableHead>
               <TableHead className="text-center">Spend</TableHead>
               <TableHead className="text-center">Progress</TableHead>
             </TableRow>

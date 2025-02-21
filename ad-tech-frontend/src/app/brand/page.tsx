@@ -132,11 +132,11 @@ export default function BrandTargetTables() {
     <div className="p-5 space-y-8">
       <Header />
       <div className="w-full p-4 rounded-lg">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col items-start">
           <div className="text-white text-4xl font-serif tracking-wider">
             <h2 className="text-4xl font-light p-2">IPG</h2>
           </div>
-          <div className="text-white">
+          <div className="text-white p-2">
             <h2 className="text-2xl font-light">
               Total Accounts: {uniqueBrandTargetData.length}
             </h2>
@@ -191,6 +191,7 @@ export default function BrandTargetTables() {
                 <TableRow className="cursor-pointer hover:bg-gray-100">
                   <TableHead>Brand</TableHead>
                   <TableHead>Goal</TableHead>
+                  <TableHead>Spends</TableHead>
                   <TableHead>Sales Achieved</TableHead>
                   <TableHead>Progress</TableHead>
                 </TableRow>
@@ -200,6 +201,7 @@ export default function BrandTargetTables() {
                   <TableRow key={`${brand.Brand}-${brand.DateTime}`}>
                     <TableCell>{brand.Brand}</TableCell>
                     <TableCell>{brand.Target?.toLocaleString() || '-'}</TableCell>
+                    <TableCell>1000</TableCell>
                     <TableCell>{brand.TargetAchieved?.toLocaleString() || '-'}</TableCell>
                     <TableCell>
                       {brand.Target > 0
