@@ -73,10 +73,15 @@ export default function PerformanceTable() {
   if (error) return <div className="text-red-500">{error}</div>;
   if (!campaignData.length) return <div className="text-red-500">No campaign data available</div>;
 
+  // Sort by sales and pick top 5
+  const topSales = [...campaignData]
+    .sort((a, b) => b.sales1d - a.sales1d)
+    .slice(0, 5);
+
   return (
     <div className="p-5">
       
-      <Header />
+      {/* <Header /> */}
       {/* <Sidebar campaignId="yourCampaignId" adGroupId="yourAdGroupId" /> */}
 
       <div className="w-full p-3 rounded-lg">
@@ -99,14 +104,14 @@ export default function PerformanceTable() {
               <TableHead className="border border-default-300 text-center">Ad Group</TableHead>
               <TableHead className="border border-default-300 text-center">Ad format</TableHead>
               <TableHead className="border border-default-300 text-center">SKU</TableHead>
+              <TableHead className="border border-default-300 text-center">Spends</TableHead>
               <TableHead className="border border-default-300 text-center">Sales</TableHead>
-              <TableHead className="border border-default-300 text-center">Spend</TableHead>
-              <TableHead className="border border-default-300 text-center">DRR</TableHead>
-              <TableHead className="border border-default-300 text-center">ROAS</TableHead>
               <TableHead className="border border-default-300 text-center">ACOS</TableHead>
+              <TableHead className="border border-default-300 text-center">ROAS</TableHead>
+              <TableHead className="border border-default-300 text-center">Impression</TableHead>
               <TableHead className="border border-default-300 text-center">CTR</TableHead>
               <TableHead className="border border-default-300 text-center">Clicks</TableHead>
-              <TableHead className="border border-default-300 text-center rounded-tr-lg">Impressions</TableHead>
+              <TableHead className="border border-default-300 text-center rounded-tr-lg">DRR</TableHead>
             </TableRow>
           </TableHeader>
         
@@ -121,18 +126,38 @@ export default function PerformanceTable() {
 
               <TableCell className="border border-default-300">SP</TableCell>
               <TableCell className="border border-default-300">list sku for the ad group</TableCell>
-              <TableCell className="border border-default-300">{campaign.sales1d}</TableCell>
               <TableCell className="border border-default-300">{campaign.cost}</TableCell>
-              <TableCell className="border border-default-300">{campaign.ROAS}</TableCell>
+              <TableCell className="border border-default-300">{campaign.sales1d}</TableCell>
               <TableCell className="border border-default-300">{campaign.ACoS}</TableCell>
+              <TableCell className="border border-default-300">{campaign.ROAS}</TableCell>
               <TableCell className="border border-default-300">{campaign.clickThroughRate}</TableCell>
               <TableCell className="border border-default-300">{campaign.clicks}</TableCell>
-              <TableCell className="border border-default-300 rounded-r-lg">{campaign.impression}</TableCell>
-              <TableCell className="border border-default-300 rounded-r-lg">{campaign.costPerClick}</TableCell>
+              <TableCell className="border border-default-300">{campaign.impression}</TableCell>
+              <TableCell className="border border-default-300">{campaign.costPerClick}</TableCell>
             </TableRow>
-  ))}
-</TableBody>
-
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+        {/* Second Table: Top 5 Ad Groups by Sales (Showing Only 2 Rows) */}
+      <h1 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Ad Groups by Sales</h1>
+      <div className="overflow-x-auto max-h-96 p-1">
+        <Table className="border border-default-100 rounded-lg">
+          <TableHeader className="bg-black text-white top-0 z-10">
+            <TableRow>
+              <TableHead>Ad Group</TableHead>
+              <TableHead>Sales</TableHead>
+            </TableRow>
+          </TableHeader>
+        
+          <TableBody className="text-white">
+            {topSales.slice(0, 2).map((campaign) => (
+              <TableRow key={campaign.SN} className="text-center">
+                <TableCell className="w-1/2">{campaign.adGroupName}</TableCell>
+                <TableCell className="w-1/2">{campaign.sales1d}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
         </Table>
       </div>
     </div>

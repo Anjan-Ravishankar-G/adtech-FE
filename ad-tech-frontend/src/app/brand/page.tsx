@@ -128,15 +128,20 @@ export default function BrandTargetTables() {
 
   const brandNames = uniqueBrandTargetData.map((brand) => brand.Brand);
 
+   // Sort brands by sales achieved in descending order and get top 5
+   const topBrandsBySales = [...uniqueBrandTargetData]
+   .sort((a, b) => b.TargetAchieved - a.TargetAchieved)
+   .slice(0, 5);
+
   return (
     <div className="p-5 space-y-8">
-      <Header />
+      {/* <Header /> */}
       <div className="w-full p-4 rounded-lg">
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col  items-start">
           <div className="text-white text-4xl font-serif tracking-wider">
             <h2 className="text-4xl font-light p-2">IPG</h2>
           </div>
-          <div className="text-white p-2">
+          <div className="text-white p-2 ml-5">
             <h2 className="text-2xl font-light">
               Total Accounts: {uniqueBrandTargetData.length}
             </h2>
@@ -150,7 +155,7 @@ export default function BrandTargetTables() {
 
       <div className="p-5">
         <h1 className="text-xl font-bold mb-7 text-center">Brands</h1>
-        <div className="flex justify-start  items-center space-x-4 p-1">
+        <div className="flex flex-row items-center justify-center p-6 bg-gray-100 rounded-lg shadow-lg border border-gray-300">
           {/* Combined Radial Chart */}
           <div className="flex-0.6 w-[500px] h-[350px]  text-center bg-white shadow-lg rounded-lg p-4 border">
             <BasicRadialBar
@@ -208,6 +213,33 @@ export default function BrandTargetTables() {
                         ? ((brand.TargetAchieved / brand.Target) * 100).toFixed(2)
                         : "0.00"}%
                     </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+
+        {/* <div className="mt-12"></div> */}
+
+        {/* tablee for top 5 brands according to sales achived */}
+        <h2 className="text-lg p-4 mt-12 ">Top 5 Brands Based on Sales Achieved</h2>
+        <div className="flex space-x-10 ">
+          <div className="flex-1 overflow-x-auto">
+            <Table className="min-w-full border border-blue-600 text-center">
+              <TableHeader className="bg-black text-white top-0 z-10">
+                <TableRow>
+                  <TableHead>Brand</TableHead>
+                  <TableHead>Spends</TableHead>
+                  <TableHead>Sales Achieved</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {topBrandsBySales.map((brand) => (
+                  <TableRow key={brand.Brand}>
+                    <TableCell className="w-1/3">{brand.Brand}</TableCell>
+                    <TableCell className="w-1/3">1000</TableCell>
+                    <TableCell className="w-1/3">{brand.TargetAchieved?.toLocaleString() || '-'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

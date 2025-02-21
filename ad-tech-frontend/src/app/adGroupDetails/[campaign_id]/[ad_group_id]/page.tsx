@@ -138,7 +138,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
   return (
     <div className="flex h-screen">
       <div className="w-64 bg-gray-800 text-white p-5 flex flex-col h-full">
-        <Header />
+        {/* <Header /> */}
         <div className="flex flex-col gap-4">
           <button
             onClick={() => setSelectedTab('asin')}
@@ -172,8 +172,8 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                   <TableHead className="border border-default-300">SKU</TableHead>
                   <TableHead className="border border-default-300">Ad format</TableHead>
                   <TableHead className="border border-default-300">Campaign Status</TableHead>
-                  <TableHead className="border border-default-300">Daily sales</TableHead>
                   <TableHead className="border border-default-300">Daily Spend</TableHead>
+                  <TableHead className="border border-default-300">Daily sales</TableHead>
                   <TableHead className="border border-default-300">ACOS</TableHead>
                   <TableHead className="border border-default-300">ROAS</TableHead>
                   
@@ -186,8 +186,8 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                     <TableCell className="border border-default-300">{asin.advertisedSku}</TableCell>
                     <TableCell className="border border-default-300">{asin.campaignStatus}</TableCell>
                     <TableCell className="border border-default-300">{asin.impressions}</TableCell>
-                    <TableCell className="border border-default-300">{asin.clicks}</TableCell>
                     <TableCell className="border border-default-300">{asin.clickThroughRate}</TableCell>
+                    <TableCell className="border border-default-300">{asin.clicks}</TableCell>
                     <TableCell className="border border-default-300">{asin.cost}</TableCell>
                     <TableCell className="border border-default-300">SP</TableCell>
                   </TableRow>
@@ -236,7 +236,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                   <TableHead className="border border-default-300">Keyword</TableHead>
                   <TableHead className="border border-default-300">Match Types</TableHead>
                   <TableHead className="border border-default-300">Rank</TableHead>
-                  <TableHead className="border border-default-300">Theme</TableHead>
+                  <TableHead className="border border-default-300">Fro</TableHead>
                   <TableHead className="border border-default-300">Bids</TableHead>
                 </TableRow>
               </TableHeader>

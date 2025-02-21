@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@/app/components/ui/table";  // Importing Table components
 import DateRangePicker from "./datePicker";
+import SplineArea from "./SplineArea";
 
 
 type CampaignData = {
@@ -29,6 +30,12 @@ type CampaignData = {
   impression: number;
 };
 
+type ChartData = {
+  Date: string;
+  DailySales: number;
+  Spend: number;
+};
+
 // Function to fetch campaign data
 async function fetchCampaignData() {
   try {
@@ -43,10 +50,24 @@ async function fetchCampaignData() {
   }
 }
 
+async function fetchCampaignDataChart() {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/get_report/campaign_data", { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to fetch chart data");
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching chart data:", error);
+    return [];
+  }
+}
+
 export default function PerformanceTable() {
   const [campaignData, setCampaignData] = useState<CampaignData[]>([]);
+  const [chartData, setChartData] = useState<ChartData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [chartLoading, setChartLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [chartError, setChartError] = useState<string | null>(null);
 
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -63,6 +84,21 @@ export default function PerformanceTable() {
       }
     }
     loadData();
+  }, []);
+
+// this is for chartdata
+  useEffect(() => {
+    async function loadChartData() {
+      try {
+        const results = await fetchCampaignDataChart();
+        setChartData(results);
+      } catch (err) {
+        setChartError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setChartLoading(false);
+      }
+    }
+    loadChartData();
   }, []);
 
   if (isLoading) return <div>Loading...</div>;
@@ -83,6 +119,15 @@ export default function PerformanceTable() {
       </div>
       <h1 className="text-3xl font-bold mb-4 text-center">List of Campaigns</h1>
 
+       {/* AREA CHART SECTION */}
+       {chartLoading ? (
+        <div>Loading chart...</div>
+      ) : chartError ? (
+        <div className="text-red-500">{chartError}</div>
+      ) : (
+        <SplineArea data={chartData} height={350} />
+      )}
+
       <DateRangePicker 
         startDate={startDate} 
         endDate={endDate} 
@@ -91,15 +136,15 @@ export default function PerformanceTable() {
       />
 
       <div className="p-1">
-        <Table className="">
+        <Table className="w-full">
           <TableHeader >
             <TableRow>
               <TableHead className="text-center">SN</TableHead>
               <TableHead className="text-center">Campaign</TableHead>
               <TableHead className="text-center">Campaign Type</TableHead>
-              <TableHead className="text-center">Goal</TableHead>
               <TableHead className="text-center">Sales</TableHead>
               <TableHead className="text-center">Spend</TableHead>
+              <TableHead className="text-center">Goal</TableHead>
               <TableHead className="text-center">Progress</TableHead>
             </TableRow>
           </TableHeader>
@@ -113,9 +158,9 @@ export default function PerformanceTable() {
                   </Link>
                 </TableCell>
                 <TableCell>SP</TableCell>
-                <TableCell>{campaign.sales1d}</TableCell>
                 <TableCell>10000</TableCell>
                 <TableCell>200</TableCell>
+                <TableCell>{campaign.sales1d}</TableCell>
                 <TableCell>32%</TableCell>
               </TableRow>
             ))}

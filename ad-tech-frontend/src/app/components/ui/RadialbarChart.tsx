@@ -4,6 +4,7 @@ const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 // Import types from 'react-apexcharts' for type safety
 import { ApexOptions } from 'apexcharts';
+import { useState } from "react";
 
 type BasicRadialBarProps = {
   series: number[]; // Array of progress values for each brand
@@ -13,10 +14,9 @@ type BasicRadialBarProps = {
 };
 
 const BasicRadialBar: React.FC<BasicRadialBarProps> = ({ series, height, labels, combined }) => {
-  // Define chartOptions with explicit type
   const chartOptions: ApexOptions = {
     chart: {
-      type: "radialBar", // Explicitly defining the type as 'radialBar'
+      type: "radialBar",
       height: height,
     },
     plotOptions: {
@@ -47,12 +47,12 @@ const BasicRadialBar: React.FC<BasicRadialBarProps> = ({ series, height, labels,
       },
     },
     colors: combined
-      ? ["#F44336"] // For the combined chart, use a single color
-      : ["#F44336", "#2196F3", "#4CAF50", "#FFC107", "#9C27B0"], // Multiple colors for individual brands
+      ? ["#F44336"]
+      : ["#F44336", "#2196F3", "#4CAF50", "#FFC107", "#9C27B0", "#2a40f1", "#2af1c7", "#cb060f"],
     series: combined
-      ? [Math.round(series.reduce((acc, val) => acc + val, 0) / series.length)] // Combined chart will average the progress
-      : series, // Individual brand progress values
-    labels: combined ? ["Overall Progress"] : labels, // If it's combined, show "Overall Progress" as the label
+      ? [Math.round(series.reduce((acc, val) => acc + val, 0) / series.length)]
+      : series,
+    labels: combined ? ["Overall Progress"] : labels,
     responsive: [
       {
         breakpoint: 480,
@@ -65,7 +65,37 @@ const BasicRadialBar: React.FC<BasicRadialBarProps> = ({ series, height, labels,
     ],
   };
 
-  return <ApexCharts options={chartOptions} series={series} type="radialBar" height={height} />;
+  const colors = chartOptions.colors || [];
+
+  return (
+    <div>
+      <ApexCharts options={chartOptions} series={chartOptions.series} type="radialBar" height={height} />
+      
+      {!combined &&
+        labels?.map((label, index) => (
+          <div
+            key={index}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              margin: "0 10px",
+            }}
+          >
+            <span
+              style={{
+                display: "inline-block",
+                width: "12px",
+                height: "12px",
+                borderRadius: "50%",
+                backgroundColor: colors[index],
+                marginRight: "5px",
+              }}
+            ></span>
+            <span style={{ fontSize: "16px", color: "black" }}>{label}</span>
+          </div>
+        ))}
+    </div>
+  );
 };
 
 export default BasicRadialBar;
