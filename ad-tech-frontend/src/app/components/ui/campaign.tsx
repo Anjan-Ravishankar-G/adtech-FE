@@ -108,6 +108,15 @@ export default function PerformanceTable() {
   if (error) return <div className="text-red-500">{error}</div>;
   if (!campaignData.length) return <div className="text-red-500">No campaign data available</div>;
 
+  // Sort brands by sales achieved in descending order and get top 5
+  // const topBrandsBySales = [...uniqueBrandTargetData]
+  // .sort((a, b) => b.TargetAchieved - a.TargetAchieved)
+  // .slice(0, 5);
+
+  const topCampaignBySales1d = [...campaignData]
+  .sort((a, b) => b.sales1d - a.sales1d)  // Use sales1d for sorting
+  .slice(0, 5);  // Get top 5 campaigns
+
   const handleButtonClick = () => {
     setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
   };
@@ -180,7 +189,29 @@ export default function PerformanceTable() {
             ))}
           </TableBody>
         </Table>
+
+        <h2 className="text-lg p-3 mt-7 ">Top 5 Compaign Based on Sales</h2>
+        <div className="flex space-x-10 ">
+          <div className="flex-1 overflow-x-auto">
+            <Table className="min-w-full border border-blue-600 text-center">
+              <TableHeader className="bg-black text-white top-0 z-10">
+                <TableRow>
+                  <TableHead>Campaign</TableHead>
+                    <TableHead>Sales</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                <TableBody>
+                  {topCampaignBySales1d.slice(0, 5).map((campaign) => (
+                    <TableRow key={campaign.SN}>
+                      <TableCell className="w-1/2">{campaign.campaignName}</TableCell>
+                      <TableCell className="w-1/2">{campaign.sales1d}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
       </div>
-    </div>
+    </div>       
   );
 }

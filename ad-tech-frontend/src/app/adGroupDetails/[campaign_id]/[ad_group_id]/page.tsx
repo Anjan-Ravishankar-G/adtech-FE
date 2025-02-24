@@ -97,7 +97,6 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
       try {
         const unwrappedParams = await params;
         const { ad_group_id } = unwrappedParams;
-
         if (!ad_group_id) {
           setError("Ad Group ID is missing");
           setIsLoading(false);
@@ -135,6 +134,23 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
   if (error) return <div className="p-5 text-red-500">Error: {error}</div>;
   if (!asinData.length) return <div className="p-5 text-red-500">No ASIN data available for this ad group</div>;
 
+  // Sort by sales1d to get top ASINs by sales
+const topAsinBySales = [...asinData]
+.sort((a, b) => b.sales1d - a.sales1d)  // Sort in descending order by sales
+.slice(0, 5);  // Get top 5
+
+// Sort by cost to get top ASINs by spend
+// const topAsinBySpend = [...asinData]
+// .sort((a, b) => b.cost - a.cost)  // Sort in descending order by cost
+// .slice(0, 5);  // Get top 5
+
+// // Combine results without duplicates
+// const combinedTopAsins = Array.from(
+// new Map(
+//   [...topAsinBySales, ...topAsinBySpend].map((item) => [item.campaignId, item])
+// ).values()
+// );
+
   return (
     <div className="flex h-screen">
       <div className="w-64 bg-gray-800 text-white p-5 flex flex-col h-full">
@@ -160,7 +176,6 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
           </button>
         </div>
       </div>
-
       <div className="flex-1 p-5 overflow-auto">
         {selectedTab === 'asin' && (
           <div>
@@ -176,11 +191,10 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                   <TableHead className="border border-default-300">Daily sales</TableHead>
                   <TableHead className="border border-default-300">ACOS</TableHead>
                   <TableHead className="border border-default-300">ROAS</TableHead>
-                  
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {asinData.map((asin) => (
+              {asinData.map((asin) => (
                   <TableRow key={asin.SN} className="text-center">
                     <TableCell className="border border-default-300">{asin.advertisedAsin}</TableCell>
                     <TableCell className="border border-default-300">{asin.advertisedSku}</TableCell>
@@ -194,9 +208,31 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                 ))}
               </TableBody>
             </Table>
+            <h2 className="text-lg p-4 mt-12 ">Top 5 Asin Based on Spends and Sales</h2>
+            <div className="flex space-x-10 ">
+              <div className="flex-1 overflow-x-auto">
+                <Table className="min-w-full border border-blue-600 text-center">
+                  <TableHeader className="bg-black text-white top-0 z-10">
+                    <TableRow>
+                      <TableHead>ASIN</TableHead>
+                      <TableHead>Daily Spends</TableHead>
+                      <TableHead>Daily Sales</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                  {topAsinBySales.map((asin) => (
+                      <TableRow key={asin.advertisedAsin}>
+                        <TableCell className="w-1/3">{asin.advertisedAsin}</TableCell>
+                        <TableCell className="w-1/3">{asin.clickThroughRate}</TableCell>
+                        <TableCell className="w-1/3">{asin.clicks}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
           </div>
         )}
-
         {selectedTab === 'keywordPerformance' && (
           <div>
             <h2 className="text-lg font-bold mt-6">Keyword Performance</h2>
@@ -212,21 +248,20 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {keywordPerformanceData.map((item) => (
-                  <TableRow key={item.id} className="text-center">
-                    <TableCell className="border border-default-300">{item.keyword}</TableCell>
-                    <TableCell className="border border-default-300">{item.matchType}</TableCell>
-                    <TableCell className="border border-default-300">{item.clicks}</TableCell>
-                    <TableCell className="border border-default-300">{item.impressions}</TableCell>
-                    <TableCell className="border border-default-300">{item.impressions}</TableCell>
-                    <TableCell className="border border-default-300">{item.impressions}</TableCell>
-                  </TableRow>
-                ))}
+              {keywordPerformanceData.map((item) => (
+                      <TableRow key={item.id} className="text-center">
+                        <TableCell className="border border-default-300">{item.keyword}</TableCell>
+                        <TableCell className="border border-default-300">{item.matchType}</TableCell>
+                        <TableCell className="border border-default-300">{item.clicks}</TableCell>
+                        <TableCell className="border border-default-300">{item.impressions}</TableCell>
+                        <TableCell className="border border-default-300">{item.impressions}</TableCell>
+                        <TableCell className="border border-default-300">{item.impressions}</TableCell>
+                      </TableRow>
+                    ))}
               </TableBody>
             </Table>
           </div>
         )}
-
         {selectedTab === 'keywordRecommendation' && (
           <div>
             <h2 className="text-lg font-bold mt-6">Keyword Recommendations</h2>
