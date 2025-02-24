@@ -51,6 +51,9 @@ export default function PerformanceTable() {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
+  // State to manage date range picker visibility
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -78,6 +81,10 @@ export default function PerformanceTable() {
     .sort((a, b) => b.sales1d - a.sales1d)
     .slice(0, 5);
 
+    const handleButtonClick = () => {
+      setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
+    };
+
   return (
     <div className="p-5">
       
@@ -96,7 +103,21 @@ export default function PerformanceTable() {
         </div>
       </div>
       <h1 className="text-2xl font-bold mb-4 text-center ">Ad Groups</h1>
-      <DateRangePicker  startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
+
+      {/* Button to open the Date Range Picker */}
+      <button 
+        onClick={handleButtonClick}
+        className="text-white bg-gray-800 hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-lg text-sm p-5 py-2 m-2 dark:hover:bg-gray-700 "
+      >
+        {isDatePickerOpen ? "Close Date Picker" : "Select Date Range"}
+      </button>
+
+      {isDatePickerOpen && (
+        <DateRangePicker onDateRangeChange={(startDate, endDate) => {
+          console.log("Selected range:", startDate, endDate);
+        }} />
+      )}
+      
       <div className="overflow-x-auto max-h-96 p-1">
         <Table className="border border-default-100 rounded-lg">
           <TableHeader className="bg-black text-white  top-0 z-10">

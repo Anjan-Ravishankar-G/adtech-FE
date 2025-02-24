@@ -72,6 +72,9 @@ export default function PerformanceTable() {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
+  // State to manage date range picker visibility
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -105,6 +108,10 @@ export default function PerformanceTable() {
   if (error) return <div className="text-red-500">{error}</div>;
   if (!campaignData.length) return <div className="text-red-500">No campaign data available</div>;
 
+  const handleButtonClick = () => {
+    setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
+  };
+
   return (
     <div className="p-5">
       <div className="w-full p-4 rounded-lg">
@@ -128,12 +135,19 @@ export default function PerformanceTable() {
         <SplineArea data={chartData} height={350} />
       )}
 
-      <DateRangePicker 
-        startDate={startDate} 
-        endDate={endDate} 
-        setStartDate={setStartDate} 
-        setEndDate={setEndDate} 
-      />
+      {/* Button to open the Date Range Picker */}
+      <button 
+        onClick={handleButtonClick}
+        className="text-white bg-gray-800 hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-lg text-sm p-5 py-2 m-2 dark:hover:bg-gray-700 "
+      >
+        {isDatePickerOpen ? "Close Date Picker" : "Select Date Range"}
+      </button>
+
+      {isDatePickerOpen && (
+        <DateRangePicker onDateRangeChange={(startDate, endDate) => {
+          console.log("Selected range:", startDate, endDate);
+        }} />
+      )}
 
       <div className="p-1">
         <Table className="w-full">

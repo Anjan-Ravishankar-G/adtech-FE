@@ -11,9 +11,10 @@ type BasicRadialBarProps = {
   height: number;
   labels?: string[]; // Brand names or identifiers (optional for combined chart)
   combined?: boolean; // Flag to determine whether to show the combined chart or individual charts
+  hollowSize?: string; // Allow custom hollow size
 };
 
-const BasicRadialBar: React.FC<BasicRadialBarProps> = ({ series, height, labels, combined }) => {
+const BasicRadialBar: React.FC<BasicRadialBarProps> = ({ series, height, labels, combined, hollowSize }) => {
   const chartOptions: ApexOptions = {
     chart: {
       type: "radialBar",
@@ -25,7 +26,7 @@ const BasicRadialBar: React.FC<BasicRadialBarProps> = ({ series, height, labels,
         startAngle: -90,
         endAngle: 90,
         hollow: {
-          size: "46%",
+          size: hollowSize ,
         },
         track: {
           background: "#e7e7e7",
@@ -79,6 +80,7 @@ const BasicRadialBar: React.FC<BasicRadialBarProps> = ({ series, height, labels,
               display: "inline-flex",
               alignItems: "center",
               margin: "0 10px",
+             
             }}
           >
             <span

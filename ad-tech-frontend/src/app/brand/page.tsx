@@ -28,7 +28,7 @@ type BrandTargetData = {
 async function fetchFilteredBrandTargetData(startDate: string, endDate: string) {
   try {
     const res = await fetch(
-      `http://127.0.0.1:8000/get_filtered_brands?start_date=${startDate}&end_date=${endDate}`,
+      "http://127.0.0.1:8000/get_filtered_brands?start_date=${startDate}&end_date=${endDate}",
       { cache: "no-store" }
     );
     if (!res.ok) throw new Error("Failed to fetch filtered brand target data");
@@ -61,6 +61,9 @@ export default function BrandTargetTables() {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [isDataAvailable, setIsDataAvailable] = useState<boolean>(true);
+
+   // State to manage date range picker visibility
+    const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -133,6 +136,10 @@ export default function BrandTargetTables() {
    .sort((a, b) => b.TargetAchieved - a.TargetAchieved)
    .slice(0, 5);
 
+   const handleButtonClick = () => {
+    setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
+    };
+
   return (
     <div className="p-5 space-y-8">
       {/* <Header /> */}
@@ -158,32 +165,40 @@ export default function BrandTargetTables() {
         <div className="flex flex-row items-center justify-center p-6 bg-gray-100 rounded-lg shadow-lg border border-gray-300">
           {/* Combined Radial Chart */}
           <div className="flex-0.6 w-[500px] h-[350px]  text-center bg-white shadow-lg rounded-lg p-4 border">
+            <h3>Overall Progress</h3>
             <BasicRadialBar
               height={350}
               series={[combinedProgress]} // Combined progress for all brands
               combined={true}
+              hollowSize="51%"
             />
           </div>
 
           {/* Individual Radial Chart with Multiple Brands */}
           <div className="flex-0.6 w-[500px] h-[350px] text-center bg-white shadow-lg rounded-lg p-4 border">
             <h3>Brand Progress</h3>
-            <BasicRadialBar
+            <BasicRadialBar 
               height={350}
               series={brandProgressData} // Multiple progress for individual brands
               labels={brandNames} // Add brand names as labels
+              hollowSize="30%"
             />
           </div>   
         </div>
         
-        <div className="mt-4 flex">
-          <DateRangePicker
-            startDate={startDate}
-            endDate={endDate}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-          />
-        </div>
+        {/* Button to open the Date Range Picker */}
+      <button 
+        onClick={handleButtonClick}
+        className="text-white bg-[#171717] hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 mt-4 ml-1 dark:hover:bg-gray-700 "
+      >
+        {isDatePickerOpen ? "Close Date Picker" : "Select Date Range"}
+      </button>
+
+      {isDatePickerOpen && (
+        <DateRangePicker onDateRangeChange={(startDate, endDate) => {
+          console.log("Selected range:", startDate, endDate);
+        }} />
+      )}
 
        
         
