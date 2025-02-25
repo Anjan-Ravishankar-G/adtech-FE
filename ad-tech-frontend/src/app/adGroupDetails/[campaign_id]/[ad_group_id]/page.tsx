@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 import Header from "@/app/components/ui/header";
-
+import Sidebar from "@/app/components/ui/sidebar"; // Import the Sidebar component
 
 type AsinData = {
   SN: string;
@@ -135,47 +135,16 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
   if (!asinData.length) return <div className="p-5 text-red-500">No ASIN data available for this ad group</div>;
 
   // Sort by sales1d to get top ASINs by sales
-const topAsinBySales = [...asinData]
-.sort((a, b) => b.sales1d - a.sales1d)  // Sort in descending order by sales
-.slice(0, 5);  // Get top 5
+  const topAsinBySales = [...asinData]
+    .sort((a, b) => b.sales1d - a.sales1d)  // Sort in descending order by sales
+    .slice(0, 5);  // Get top 5
 
-// Sort by cost to get top ASINs by spend
-// const topAsinBySpend = [...asinData]
-// .sort((a, b) => b.cost - a.cost)  // Sort in descending order by cost
-// .slice(0, 5);  // Get top 5
-
-// // Combine results without duplicates
-// const combinedTopAsins = Array.from(
-// new Map(
-//   [...topAsinBySales, ...topAsinBySpend].map((item) => [item.campaignId, item])
-// ).values()
-// );
 
   return (
     <div className="flex h-screen">
-      <div className="w-64 bg-gray-800 text-white p-5 flex flex-col h-full">
-        {/* <Header /> */}
-        <div className="flex flex-col gap-4">
-          <button
-            onClick={() => setSelectedTab('asin')}
-            className={`px-4 py-2 rounded ${selectedTab === 'asin' ? 'bg-gray-600' : ''}`}
-          >
-            <span>Products</span>
-          </button>
-          <button
-            onClick={() => setSelectedTab('keywordPerformance')}
-            className={`px-4 py-2 rounded ${selectedTab === 'keywordPerformance' ? 'bg-gray-600' : ''}`}
-          >
-            <span>Targeting</span>
-          </button>
-          <button
-            onClick={() => setSelectedTab('keywordRecommendation')}
-            className={`px-4 py-2 rounded ${selectedTab === 'keywordRecommendation' ? 'bg-gray-600' : ''}`}
-          >
-            <span>Keyword Recommendations</span>
-          </button>
-        </div>
-      </div>
+      {/* Use the Sidebar component */}
+      <Sidebar selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+
       <div className="flex-1 p-5 overflow-auto">
         {selectedTab === 'asin' && (
           <div>
@@ -185,7 +154,17 @@ const topAsinBySales = [...asinData]
                 <TableRow>
                   <TableHead className="border border-default-300">ASIN</TableHead>
                   <TableHead className="border border-default-300">SKU</TableHead>
-                  <TableHead className="border border-default-300">Ad format</TableHead>
+                  <TableHead className="border border-default-300 relative ">
+
+                      Ad format
+                      <select 
+                      className="ml-3 bg-black text-white  rounded">
+                        <option className="py-3" value="SP">SP</option>
+                        <option value="SB">SB</option>
+                        <option value="SD">SD</option>
+                      </select>
+                    
+                  </TableHead>
                   <TableHead className="border border-default-300">Campaign Status</TableHead>
                   <TableHead className="border border-default-300">Daily Spend</TableHead>
                   <TableHead className="border border-default-300">Daily sales</TableHead>
@@ -194,42 +173,69 @@ const topAsinBySales = [...asinData]
                 </TableRow>
               </TableHeader>
               <TableBody>
-              {asinData.map((asin) => (
+                {asinData.map((asin) => (
                   <TableRow key={asin.SN} className="text-center">
                     <TableCell className="border border-default-300">{asin.advertisedAsin}</TableCell>
                     <TableCell className="border border-default-300">{asin.advertisedSku}</TableCell>
+                    <TableCell className="border border-default-300">Sp</TableCell>
                     <TableCell className="border border-default-300">{asin.campaignStatus}</TableCell>
-                    <TableCell className="border border-default-300">{asin.impressions}</TableCell>
                     <TableCell className="border border-default-300">{asin.clickThroughRate}</TableCell>
                     <TableCell className="border border-default-300">{asin.clicks}</TableCell>
                     <TableCell className="border border-default-300">{asin.cost}</TableCell>
-                    <TableCell className="border border-default-300">SP</TableCell>
+                    <TableCell className="border border-default-300">{asin.ROAS}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-            <h2 className="text-lg p-4 mt-12 ">Top 5 Asin Based on Spends and Sales</h2>
-            <div className="flex space-x-10 ">
-              <div className="flex-1 overflow-x-auto">
-                <Table className="min-w-full border border-blue-600 text-center">
-                  <TableHeader className="bg-black text-white top-0 z-10">
-                    <TableRow>
-                      <TableHead>ASIN</TableHead>
-                      <TableHead>Daily Spends</TableHead>
-                      <TableHead>Daily Sales</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                  {topAsinBySales.map((asin) => (
-                      <TableRow key={asin.advertisedAsin}>
-                        <TableCell className="w-1/3">{asin.advertisedAsin}</TableCell>
-                        <TableCell className="w-1/3">{asin.clickThroughRate}</TableCell>
-                        <TableCell className="w-1/3">{asin.clicks}</TableCell>
+            <div className="flex gap-4">
+              <div className="w-1/2">
+              <h2 className="text-lg p-4 mt-8 ">Top 5 Asin Based on Spends</h2>
+              <div className="flex space-x-10 ">
+                <div className="flex-1 overflow-x-auto">
+                  <Table className="min-w-full border border-blue-600 text-center">
+                    <TableHeader className="bg-black text-white top-0 z-10">
+                      <TableRow>
+                        <TableHead>ASIN</TableHead>
+                        <TableHead>Daily Spends</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {topAsinBySales.map((asin) => (
+                        <TableRow key={asin.advertisedAsin}>
+                          <TableCell className="w-1/3">{asin.advertisedAsin}</TableCell>
+                          <TableCell className="w-1/3">{asin.clickThroughRate}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               </div>
+              </div>
+
+              <div className="w-1/2">
+              <h2 className="text-lg p-4 mt-8 ">Top 5 Asin Based on Sales</h2>
+              <div className="flex space-x-10 ">
+                <div className="flex-1 overflow-x-auto">
+                  <Table className="min-w-full border border-blue-600 text-center">
+                    <TableHeader className="bg-black text-white top-0 z-10">
+                      <TableRow>
+                        <TableHead>ASIN</TableHead>
+                        <TableHead>Daily Sales</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {topAsinBySales.map((asin) => (
+                        <TableRow key={asin.advertisedAsin}>
+                          <TableCell className="w-1/3">{asin.advertisedAsin}</TableCell>
+                          <TableCell className="w-1/3">{asin.clicks}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+              </div>
+
             </div>
           </div>
         )}
@@ -242,22 +248,28 @@ const topAsinBySales = [...asinData]
                   <TableHead className="border border-default-300">Keyword</TableHead>
                   <TableHead className="border border-default-300">Match Type</TableHead>
                   <TableHead className="border border-default-300">Revenue</TableHead>
+                  <TableHead className="border border-default-300">Spend</TableHead>
+                  <TableHead className="border border-default-300">ACOS</TableHead>
+                  <TableHead className="border border-default-300">ROAS</TableHead>
                   <TableHead className="border border-default-300">Clicks</TableHead>
                   <TableHead className="border border-default-300">Impressions</TableHead>
                   <TableHead className="border border-default-300">Bid</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-              {keywordPerformanceData.map((item) => (
-                      <TableRow key={item.id} className="text-center">
-                        <TableCell className="border border-default-300">{item.keyword}</TableCell>
-                        <TableCell className="border border-default-300">{item.matchType}</TableCell>
-                        <TableCell className="border border-default-300">{item.clicks}</TableCell>
-                        <TableCell className="border border-default-300">{item.impressions}</TableCell>
-                        <TableCell className="border border-default-300">{item.impressions}</TableCell>
-                        <TableCell className="border border-default-300">{item.impressions}</TableCell>
-                      </TableRow>
-                    ))}
+                {keywordPerformanceData.map((item) => (
+                  <TableRow key={item.id} className="text-center">
+                    <TableCell className="border border-default-300">{item.keyword}</TableCell>
+                    <TableCell className="border border-default-300">{item.matchType}</TableCell>
+                    <TableCell className="border border-default-300">{item.clicks}</TableCell>
+                    <TableCell className="border border-default-300">100</TableCell>
+                    <TableCell className="border border-default-300">--</TableCell>
+                    <TableCell className="border border-default-300">--</TableCell>
+                    <TableCell className="border border-default-300">{item.impressions}</TableCell>
+                    <TableCell className="border border-default-300">{item.impressions}</TableCell>
+                    <TableCell className="border border-default-300">{item.impressions}</TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </div>

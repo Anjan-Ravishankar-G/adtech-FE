@@ -14,6 +14,7 @@ import {
 import DateRangePicker from "../components/ui/datePicker";
 import Header from "../components/ui/header";
 import BasicRadialBar from "../components/ui/RadialbarChart"; // Updated RadialBar
+import BasicPieChat from "../components/ui/bargraph";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -140,6 +141,8 @@ export default function BrandTargetTables() {
     setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
     };
 
+    
+
   return (
     <div className="p-5 space-y-8">
       {/* <Header /> */}
@@ -183,8 +186,20 @@ export default function BrandTargetTables() {
               labels={brandNames} // Add brand names as labels
               hollowSize="30%"
             />
-          </div>   
+            
+          </div>
+           {/* Individual Radial Chart with Multiple Brands */}
+           <div className="flex-0.6 w-[500px] h-[350px] text-center bg-white shadow-lg rounded-lg p-4 border">
+            <h3>Brand Progress</h3>
+            <BasicPieChat 
+            series={brandProgressData} 
+            labels={brandNames} 
+            height={400} 
+            />
+          </div> 
         </div>
+
+        
         
         {/* Button to open the Date Range Picker */}
       <button 
@@ -238,14 +253,13 @@ export default function BrandTargetTables() {
         {/* <div className="mt-12"></div> */}
 
         {/* tablee for top 5 brands according to sales achived */}
-        <h2 className="text-lg p-4 mt-12 ">Top 5 Brands Based on Sales Achieved</h2>
+        <h2 className="text-lg p-4 mt-3 ">Top 5 Brands Based on Sales Achieved</h2>
         <div className="flex space-x-10 ">
           <div className="flex-1 overflow-x-auto">
             <Table className="min-w-full border border-blue-600 text-center">
               <TableHeader className="bg-black text-white top-0 z-10">
                 <TableRow>
                   <TableHead>Brand</TableHead>
-                  <TableHead>Spends</TableHead>
                   <TableHead>Sales Achieved</TableHead>
                 </TableRow>
               </TableHeader>
@@ -253,8 +267,28 @@ export default function BrandTargetTables() {
                 {topBrandsBySales.map((brand) => (
                   <TableRow key={brand.Brand}>
                     <TableCell className="w-1/3">{brand.Brand}</TableCell>
-                    <TableCell className="w-1/3">1000</TableCell>
                     <TableCell className="w-1/3">{brand.TargetAchieved?.toLocaleString() || '-'}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+        <h2 className="text-lg p-4 mt-3 ">Top 5 Brands Based on Spends</h2>
+        <div className="flex space-x-10 ">
+          <div className="flex-1 overflow-x-auto">
+            <Table className="min-w-full border border-blue-600 text-center">
+              <TableHeader className="bg-black text-white top-0 z-10">
+                <TableRow>
+                  <TableHead>Brand</TableHead>
+                  <TableHead>Spends</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {topBrandsBySales.map((brand) => (
+                  <TableRow key={brand.Brand}>
+                    <TableCell className="w-1/3">{brand.Brand}</TableCell>
+                    <TableCell className="w-1/3">1000</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
