@@ -14,7 +14,7 @@ import {
 import DateRangePicker from "../components/ui/datePicker";
 import Header from "../components/ui/header";
 import BasicRadialBar from "../components/ui/RadialbarChart"; // Updated RadialBar
-import BasicPieChat from "../components/ui/bargraph";
+import BasicPieChart from "../components/ui/bargraph";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -141,6 +141,12 @@ export default function BrandTargetTables() {
     setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
     };
 
+    // const PieChartPage: React.FC = () => {
+    //   const data = [44, 55, 13, 43, 22];
+    //   const labels = ["Team A", "Team B", "Team C", "Team D", "Team E"]
+    // };
+    
+
     
 
   return (
@@ -191,15 +197,12 @@ export default function BrandTargetTables() {
            {/* Individual Radial Chart with Multiple Brands */}
            <div className="flex-0.6 w-[500px] h-[350px] text-center bg-white shadow-lg rounded-lg p-4 border">
             <h3>Brand Progress</h3>
-            <BasicPieChat 
+            <BasicPieChart 
             series={brandProgressData} 
-            labels={brandNames} 
-            height={400} 
-            />
+            height={350}
+            labels={brandNames}/>
           </div> 
         </div>
-
-        
         
         {/* Button to open the Date Range Picker */}
       <button 
@@ -250,8 +253,8 @@ export default function BrandTargetTables() {
           </div>
         </div>
 
-        {/* <div className="mt-12"></div> */}
-
+      <div className="mt-12 flex gap-4">
+        <div className="w-1/2">
         {/* tablee for top 5 brands according to sales achived */}
         <h2 className="text-lg p-4 mt-3 ">Top 5 Brands Based on Sales Achieved</h2>
         <div className="flex space-x-10 ">
@@ -274,6 +277,8 @@ export default function BrandTargetTables() {
             </Table>
           </div>
         </div>
+        </div>
+      <div className="w-1/2">
         <h2 className="text-lg p-4 mt-3 ">Top 5 Brands Based on Spends</h2>
         <div className="flex space-x-10 ">
           <div className="flex-1 overflow-x-auto">
@@ -295,6 +300,8 @@ export default function BrandTargetTables() {
             </Table>
           </div>
         </div>
+      </div>
+      </div>
       </div>
     </div>
   );

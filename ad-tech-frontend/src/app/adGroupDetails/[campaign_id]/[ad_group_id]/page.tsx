@@ -91,6 +91,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<string>('asin'); // 'asin', 'keywordPerformance', 'keywordRecommendation'
+  const [negativeKeywords, setNegativeKeywords] = useState<any[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -239,6 +240,8 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
             </div>
           </div>
         )}
+
+        
         {selectedTab === 'keywordPerformance' && (
           <div>
             <h2 className="text-lg font-bold mt-6">Keyword Performance</h2>
@@ -268,6 +271,29 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                     <TableCell className="border border-default-300">{item.impressions}</TableCell>
                     <TableCell className="border border-default-300">{item.impressions}</TableCell>
                     <TableCell className="border border-default-300">{item.impressions}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+        {selectedTab === 'NegativeKeyword' && (
+          <div>
+            <h2 className="text-lg font-bold mt-6">Negative Keywords</h2>
+            <Table className="border border-default-300">
+              <TableHeader className="bg-black text-white sticky top-0 z-10">
+                <TableRow>
+                  <TableHead className="border border-default-300">Keyword ID</TableHead>
+                  <TableHead className="border border-default-300">Keyword</TableHead>
+                  <TableHead className="border border-default-300">Match Type</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {negativeKeywords.map((keyword) => (
+                  <TableRow key={keyword.keywordId} className="text-center">
+                    <TableCell className="border border-default-300">{keyword.keywordId}</TableCell>
+                    <TableCell className="border border-default-300">{keyword.keywordText}</TableCell>
+                    <TableCell className="border border-default-300">{keyword.matchType}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

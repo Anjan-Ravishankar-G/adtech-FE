@@ -190,27 +190,54 @@ export default function PerformanceTable() {
           </TableBody>
         </Table>
 
-        <h2 className="text-lg p-3 mt-7 ">Top 5 Compaign Based on Sales</h2>
-        <div className="flex space-x-10 ">
-          <div className="flex-1 overflow-x-auto">
-            <Table className="min-w-full border border-blue-600 text-center">
-              <TableHeader className="bg-black text-white top-0 z-10">
-                <TableRow>
-                  <TableHead>Campaign</TableHead>
-                    <TableHead>Sales</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                <TableBody>
-                  {topCampaignBySales1d.slice(0, 5).map((campaign) => (
-                    <TableRow key={campaign.SN}>
-                      <TableCell className="w-1/2">{campaign.campaignName}</TableCell>
-                      <TableCell className="w-1/2">{campaign.sales1d}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+        <div className="flex gap-4">
+          <div className="w-1/2">
+            <h2 className="text-lg p-3 mt-7 ">Top 5 Compaign Based on Sales</h2>
+            <div className="flex space-x-10 ">
+              <div className="flex-1 overflow-x-auto">
+                <Table className="min-w-full border border-blue-600 text-center">
+                  <TableHeader className="bg-black text-white top-0 z-10">
+                    <TableRow>
+                      <TableHead>Campaign</TableHead>
+                        <TableHead>Sales</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                    <TableBody>
+                      {topCampaignBySales1d.slice(0, 5).map((campaign) => (
+                        <TableRow key={campaign.SN}>
+                          <TableCell className="w-1/2">{campaign.campaignName}</TableCell>
+                          <TableCell className="w-1/2">10000</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
             </div>
-          </div>
+              <div className="w-1/2">
+                <div className="flex space-x-10 ">
+                  <div className="flex-1 overflow-x-auto">
+                    <h2 className="text-lg p-3 mt-7 ">Top 5 Compaign Based on Spends</h2>
+                    <Table className="min-w-full border border-blue-600 text-center">
+                      <TableHeader className="bg-black text-white top-0 z-10">
+                       <TableRow>
+                          <TableHead>Campaign</TableHead>
+                          <TableHead>Spends</TableHead>
+                        </TableRow>
+                       </TableHeader>
+                    <TableBody>
+                      {topCampaignBySales1d.slice(0, 5).map((campaign) => (
+                        <TableRow key={campaign.SN}>
+                          <TableCell className="w-1/2">{campaign.campaignName}</TableCell>
+                          <TableCell className="w-1/2">200</TableCell>
+                        </TableRow>
+                      ))} 
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            </div>
+        </div>    
       </div>
     </div>       
   );

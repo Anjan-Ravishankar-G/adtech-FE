@@ -52,10 +52,10 @@ export default function Sidebar({ selectedTab, setSelectedTab }: SidebarProps) {
               </li>
               <li>
                 <button
-                  // onClick={() => setSelectedTab("keywordRecommendation")}
-                  // className={`w-full text-left py-2 px-4 rounded text-white ${
-                  //   selectedTab === "keywordRecommendation" ? "bg-gray-600" : "hover:bg-[#1B3A57]"
-                  // }`}
+                  onClick={() => setSelectedTab("NegativeKeyword")}
+                  className={`w-full text-left py-2 px-4 rounded text-white ${
+                    selectedTab === "NegativeKeyword" ? "bg-gray-600" : "hover:bg-[#1B3A57]"
+                  }`}
                 >
                   Negative Keyword
                 </button>

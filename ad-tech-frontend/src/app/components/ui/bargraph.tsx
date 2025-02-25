@@ -2,85 +2,55 @@
 import dynamic from "next/dynamic";
 const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-import { ApexOptions } from 'apexcharts';
+// Import types from 'react-apexcharts' for type safety
+import { ApexOptions } from "apexcharts";
+import { useState } from "react";
 
 type BasicPieChartProps = {
-  series: number[]; // Array of progress values for each brand
-  height: number;
-  labels?: string[]; // Brand names or identifiers (optional for combined chart)
-  combined?: boolean; // Flag to determine whether to show the combined chart or individual charts
-  hollowSize?: string; // Allow custom hollow size (not used in pie chart)
+  series: number[]; // Array of data values for each slice
+  height: number; // Height of the chart
+  labels?: string[]; // Labels for each slice (optional)
+  width?: number; // Width of the chart (optional)
+  responsiveBreakpoint?: number; // Breakpoint for responsive design (optional)
 };
 
-const BasicPieChart: React.FC<BasicPieChartProps> = ({ series, height, labels, combined, hollowSize }) => {
+const BasicPieChart: React.FC<BasicPieChartProps> = ({
+  series,
+  height,
+  labels = [], // Default labels
+  width = 380, // Default width
+  responsiveBreakpoint = 480, // Default breakpoint
+}) => {
   const chartOptions: ApexOptions = {
+    series: series,
     chart: {
-      type: "pie", // Chart type is pie
-      height: height,
+      width: width,
+      type: "pie",
     },
-    plotOptions: {
-      pie: {
-        donut: {
-          size: hollowSize, // Use hollowSize for donut hole size (optional)
-        },
-      },
-    },
-    dataLabels: {
-      enabled: false, // Disable data labels on the pie chart
-    },
-    colors: combined
-      ? ["#F44336"]
-      : ["#F44336", "#2196F3", "#4CAF50", "#FFC107", "#9C27B0", "#2a40f1", "#2af1c7", ],
-    series: combined
-      ? [Math.round(series.reduce((acc, val) => acc + val, 0) / series.length)]
-      : series,
-    labels: combined ? ["Overall Progress"] : labels,
+    labels: labels,
     responsive: [
       {
-        breakpoint: 480,
+        breakpoint: responsiveBreakpoint,
         options: {
           chart: {
-            height: 300,
+            width: 200, // Adjust width for smaller screens
+          },
+          legend: {
+            position: "bottom", // Move legend to the bottom for smaller screens
           },
         },
       },
     ],
   };
 
-  const colors = chartOptions.colors || [];
-
   return (
     <div>
-      {/* Pie Chart */}
-      <ApexCharts options={chartOptions} series={chartOptions.series} type="pie" height={height} />
-
-      {/* Custom Legend */}
-      {!combined && labels && (
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", marginTop: "20px" }}>
-          {labels.map((label, index) => (
-            <div
-              key={index}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                margin: "0 10px",
-              }}
-            >
-              <span
-                style={{
-                  display: "inline-block",
-                  width: "12px",
-                  height: "12px",
-                  borderRadius: "50%",
-                  backgroundColor: colors[index],
-                  marginRight: "5px",
-                }}
-              ></span>
-              <span style={{ fontSize: "16px", color: "black" }}>{label}</span>
-            </div>
-          ))}
-        </div>
-      )}
+      <ApexCharts
+        options={chartOptions}
+        series={chartOptions.series}
+        type="pie"
+        height={height}
+      />
     </div>
   );
 };
