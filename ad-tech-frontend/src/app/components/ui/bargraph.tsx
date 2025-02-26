@@ -22,6 +22,9 @@ const BasicPieChart: React.FC<BasicPieChartProps> = ({
   responsiveBreakpoint = 480, // Default breakpoint
 }) => {
   const chartOptions: ApexOptions = {
+    dataLabels: {
+      enabled: false, // This will remove the percentage labels
+    },
     series: series,
     chart: {
       width: width,
@@ -37,7 +40,7 @@ const BasicPieChart: React.FC<BasicPieChartProps> = ({
           },
           legend: {
             position: "bottom", // Move legend to the bottom for smaller screens
-          },
+          }, 
         },
       },
     ],

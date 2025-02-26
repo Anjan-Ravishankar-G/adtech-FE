@@ -25,7 +25,7 @@ const SplineArea: React.FC<SplineAreaProps> = ({ data, height = 300 }) => {
   const chartOptions: ApexOptions = {
     chart: { type: "area", toolbar: { show: false } },
     stroke: { curve: "smooth", width: 4 },
-    colors: ["#F44336", "#2196F3"],
+    colors: ["#4CAF50", "#2196F3"],
     tooltip: { theme: "dark" },
     xaxis: { categories },
   };

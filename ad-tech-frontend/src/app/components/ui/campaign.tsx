@@ -11,6 +11,7 @@ import {
 } from "@/app/components/ui/table";  // Importing Table components
 import DateRangePicker from "./datePicker";
 import SplineArea from "./SplineArea";
+import BasicPieChart from "./bargraph";
 
 
 type CampaignData = {
@@ -117,6 +118,11 @@ export default function PerformanceTable() {
   .sort((a, b) => b.sales1d - a.sales1d)  // Use sales1d for sorting
   .slice(0, 5);  // Get top 5 campaigns
 
+
+// Extract campaign names and sales figures for the pie chart
+const brandNames = topCampaignBySales1d.map(campaign => campaign.campaignName);
+const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
+
   const handleButtonClick = () => {
     setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
   };
@@ -135,6 +141,7 @@ export default function PerformanceTable() {
       </div>
       <h1 className="text-3xl font-bold mb-4 text-center">List of Campaigns</h1>
 
+      <div className="shadow-2xl p-4 bg-white rounded-2xl">
        {/* AREA CHART SECTION */}
        {chartLoading ? (
         <div>Loading chart...</div>
@@ -143,11 +150,12 @@ export default function PerformanceTable() {
       ) : (
         <SplineArea data={chartData} height={350} />
       )}
+      </div>
 
       {/* Button to open the Date Range Picker */}
       <button 
         onClick={handleButtonClick}
-        className="text-white bg-gray-800 hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-lg text-sm p-5 py-2 m-2 dark:hover:bg-gray-700 "
+        className="text-Black bg-white shadow-2xl hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-2xl text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700"
       >
         {isDatePickerOpen ? "Close Date Picker" : "Select Date Range"}
       </button>
@@ -158,7 +166,8 @@ export default function PerformanceTable() {
         }} />
       )}
 
-      <div className="p-1">
+      
+      <div className="shadow-2xl p-4 ml-1 bg-white rounded-2xl">
         <Table className="w-full">
           <TableHeader >
             <TableRow>
@@ -189,9 +198,9 @@ export default function PerformanceTable() {
             ))}
           </TableBody>
         </Table>
-
-        <div className="flex gap-4">
-          <div className="w-1/2">
+      </div>
+        <div className="flex gap-4 p-1 mt-3">
+           <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl">
             <h2 className="text-lg p-3 mt-7 ">Top 5 Compaign Based on Sales</h2>
             <div className="flex space-x-10 ">
               <div className="flex-1 overflow-x-auto">
@@ -212,12 +221,19 @@ export default function PerformanceTable() {
                     </TableBody>
                   </Table>
                 </div>
-              </div>
+              </div> 
+                 {/* for pie chart */}
+              <div>
+                  <BasicPieChart 
+                  series={brandSalesData} 
+                  height={350}
+                  labels={brandNames}/>
+               </div>
             </div>
-              <div className="w-1/2">
+             <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl">
+             <h2 className="text-lg p-3 mt-7 ">Top 5 Compaign Based on Spends</h2>
                 <div className="flex space-x-10 ">
                   <div className="flex-1 overflow-x-auto">
-                    <h2 className="text-lg p-3 mt-7 ">Top 5 Compaign Based on Spends</h2>
                     <Table className="min-w-full border border-blue-600 text-center">
                       <TableHeader className="bg-black text-white top-0 z-10">
                        <TableRow>
@@ -238,7 +254,6 @@ export default function PerformanceTable() {
               </div>
             </div>
         </div>    
-      </div>
-    </div>       
+      </div>      
   );
 }
