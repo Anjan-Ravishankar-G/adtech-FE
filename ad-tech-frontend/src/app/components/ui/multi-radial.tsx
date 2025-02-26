@@ -57,7 +57,7 @@ const BasicRadialBar: React.FC<BasicRadialBarProps> = ({ series, height, labels 
     ],
   };
 
-  return <ApexCharts options={chartOptions} series={series} type="radialBar" height={height} />;
+  return <ApexCharts option={chartOptions} series={series} type="radialBar" height={height} />;
 };
 
 export default BasicRadialBar;

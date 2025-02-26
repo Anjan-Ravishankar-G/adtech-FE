@@ -51,7 +51,7 @@ export default function AsinPage() {
     <div className="flex">
       <Sidebar campaignId={''} adGroupId={''} />
       <div className="flex-1 p-5">
-        <Header />
+        {/* <Header /> */}
         <h1 className="text-2xl font-bold">ASIN Performance</h1>
         <Table className="border border-default-300">
           <TableHeader className="bg-black text-white sticky top-0 z-10">

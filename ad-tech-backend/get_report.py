@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 import keyword_recommendation
-
+import negative_keyword
 load_dotenv()  # Load .env variables
 
 app = FastAPI()
@@ -121,10 +121,18 @@ def fetch_filtered_brands(start_date: str, end_date: str):
 def get_keyword_recommendation(campaign_id: str, ad_group_id: str):
     # Fetch the recommended keywords using the helper function
     keywords = keyword_recommendation.get_recommended_keywords(campaign_id, ad_group_id)
-    
+    print(keywords)
     # If no keywords found, raise a 404 error
     if not keywords:
         raise HTTPException(status_code=404, detail="No keywords found")
     
     # Return the filtered list directly to the frontend
     return keywords
+
+@app.get("/negative_keywords", response_model=List[Dict])
+def get_negative_keywords():
+    list_of_keyowrd = negative_keyword.get_negative_keywords()
+
+    if not list_of_keyowrd:
+        raise HTTPException(status_code=404, detail="No keywords found")
+    return list_of_keyowrd

@@ -14,6 +14,7 @@ import {
 import DateRangePicker from "../components/ui/datePicker";
 import Header from "../components/ui/header";
 import BasicRadialBar from "../components/ui/RadialbarChart"; // Updated RadialBar
+import BasicPieChat from "../components/ui/bargraph";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -28,7 +29,7 @@ type BrandTargetData = {
 async function fetchFilteredBrandTargetData(startDate: string, endDate: string) {
   try {
     const res = await fetch(
-      `http://127.0.0.1:8000/get_filtered_brands?start_date=${startDate}&end_date=${endDate}`,
+      "http://127.0.0.1:8000/get_filtered_brands?start_date=${startDate}&end_date=${endDate}",
       { cache: "no-store" }
     );
     if (!res.ok) throw new Error("Failed to fetch filtered brand target data");
@@ -61,6 +62,9 @@ export default function BrandTargetTables() {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [isDataAvailable, setIsDataAvailable] = useState<boolean>(true);
+
+   // State to manage date range picker visibility
+    const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -128,15 +132,26 @@ export default function BrandTargetTables() {
 
   const brandNames = uniqueBrandTargetData.map((brand) => brand.Brand);
 
+   // Sort brands by sales achieved in descending order and get top 5
+   const topBrandsBySales = [...uniqueBrandTargetData]
+   .sort((a, b) => b.TargetAchieved - a.TargetAchieved)
+   .slice(0, 5);
+
+   const handleButtonClick = () => {
+    setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
+    };
+
+    
+
   return (
     <div className="p-5 space-y-8">
-      <Header />
+      {/* <Header /> */}
       <div className="w-full p-4 rounded-lg">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col  items-start">
           <div className="text-white text-4xl font-serif tracking-wider">
             <h2 className="text-4xl font-light p-2">IPG</h2>
           </div>
-          <div className="text-white">
+          <div className="text-white p-2 ml-5">
             <h2 className="text-2xl font-light">
               Total Accounts: {uniqueBrandTargetData.length}
             </h2>
@@ -150,35 +165,55 @@ export default function BrandTargetTables() {
 
       <div className="p-5">
         <h1 className="text-xl font-bold mb-7 text-center">Brands</h1>
-        <div className="flex justify-start  items-center space-x-4 p-1">
+        <div className="flex flex-row items-center justify-center p-6 bg-gray-100 rounded-lg shadow-lg border border-gray-300">
           {/* Combined Radial Chart */}
           <div className="flex-0.6 w-[500px] h-[350px]  text-center bg-white shadow-lg rounded-lg p-4 border">
+            <h3>Overall Progress</h3>
             <BasicRadialBar
               height={350}
               series={[combinedProgress]} // Combined progress for all brands
               combined={true}
+              hollowSize="51%"
             />
           </div>
 
           {/* Individual Radial Chart with Multiple Brands */}
           <div className="flex-0.6 w-[500px] h-[350px] text-center bg-white shadow-lg rounded-lg p-4 border">
             <h3>Brand Progress</h3>
-            <BasicRadialBar
+            <BasicRadialBar 
               height={350}
               series={brandProgressData} // Multiple progress for individual brands
               labels={brandNames} // Add brand names as labels
+              hollowSize="30%"
             />
-          </div>   
+            
+          </div>
+           {/* Individual Radial Chart with Multiple Brands */}
+           <div className="flex-0.6 w-[500px] h-[350px] text-center bg-white shadow-lg rounded-lg p-4 border">
+            <h3>Brand Progress</h3>
+            <BasicPieChat 
+            series={brandProgressData} 
+            labels={brandNames} 
+            height={400} 
+            />
+          </div> 
         </div>
+
         
-        <div className="mt-4 flex">
-          <DateRangePicker
-            startDate={startDate}
-            endDate={endDate}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-          />
-        </div>
+        
+        {/* Button to open the Date Range Picker */}
+      <button 
+        onClick={handleButtonClick}
+        className="text-white bg-[#171717] hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 mt-4 ml-1 dark:hover:bg-gray-700 "
+      >
+        {isDatePickerOpen ? "Close Date Picker" : "Select Date Range"}
+      </button>
+
+      {isDatePickerOpen && (
+        <DateRangePicker onDateRangeChange={(startDate, endDate) => {
+          console.log("Selected range:", startDate, endDate);
+        }} />
+      )}
 
        
         
@@ -191,6 +226,7 @@ export default function BrandTargetTables() {
                 <TableRow className="cursor-pointer hover:bg-gray-100">
                   <TableHead>Brand</TableHead>
                   <TableHead>Goal</TableHead>
+                  <TableHead>Spends</TableHead>
                   <TableHead>Sales Achieved</TableHead>
                   <TableHead>Progress</TableHead>
                 </TableRow>
@@ -200,6 +236,7 @@ export default function BrandTargetTables() {
                   <TableRow key={`${brand.Brand}-${brand.DateTime}`}>
                     <TableCell>{brand.Brand}</TableCell>
                     <TableCell>{brand.Target?.toLocaleString() || '-'}</TableCell>
+                    <TableCell>1000</TableCell>
                     <TableCell>{brand.TargetAchieved?.toLocaleString() || '-'}</TableCell>
                     <TableCell>
                       {brand.Target > 0
@@ -212,6 +249,81 @@ export default function BrandTargetTables() {
             </Table>
           </div>
         </div>
+
+        {/* <div className="mt-12"></div> */}
+
+        {/* tablee for top 5 brands according to sales achived */}
+        <h2 className="text-lg p-4 mt-3 ">Top 5 Brands Based on Sales Achieved</h2>
+        <div className="flex space-x-10 ">
+          <div className="flex-1 overflow-x-auto">
+            <Table className="min-w-full border border-blue-600 text-center">
+              <TableHeader className="bg-black text-white top-0 z-10">
+                <TableRow>
+                  <TableHead>Brand</TableHead>
+                  <TableHead>Sales Achieved</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {topBrandsBySales.map((brand) => (
+                  <TableRow key={brand.Brand}>
+                    <TableCell className="w-1/3">{brand.Brand}</TableCell>
+                    <TableCell className="w-1/3">{brand.TargetAchieved?.toLocaleString() || '-'}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+        <h2 className="text-lg p-4 mt-3 ">Top 5 Brands Based on Spends</h2>
+        <div className="mt-12 flex gap-4">
+        <div className="w-1/2">
+        {/* tablee for top 5 brands according to sales achived */}
+        <h2 className="text-lg p-4 mt-3 ">Top 5 Brands Based on Sales Achieved</h2>
+        <div className="flex space-x-10 ">
+          <div className="flex-1 overflow-x-auto">
+            <Table className="min-w-full border border-blue-600 text-center">
+              <TableHeader className="bg-black text-white top-0 z-10">
+                <TableRow>
+                  <TableHead>Brand</TableHead>
+                  <TableHead>Sales Achieved</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {topBrandsBySales.map((brand) => (
+                  <TableRow key={brand.Brand}>
+                    <TableCell className="w-1/3">{brand.Brand}</TableCell>
+                    <TableCell className="w-1/3">{brand.TargetAchieved?.toLocaleString() || '-'}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+        </div>
+      <div className="w-1/2">
+        <h2 className="text-lg p-4 mt-3 ">Top 5 Brands Based on Spends</h2>
+        <div className="flex space-x-10 ">
+          <div className="flex-1 overflow-x-auto">
+            <Table className="min-w-full border border-blue-600 text-center">
+              <TableHeader className="bg-black text-white top-0 z-10">
+                <TableRow>
+                  <TableHead>Brand</TableHead>
+                  <TableHead>Spends</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {topBrandsBySales.map((brand) => (
+                  <TableRow key={brand.Brand}>
+                    <TableCell className="w-1/3">{brand.Brand}</TableCell>
+                    <TableCell className="w-1/3">1000</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+      </div>
+      </div>
       </div>
     </div>
   );

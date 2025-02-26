@@ -9,8 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
-import Header from "@/app/components/ui/header";
-
+import Sidebar from "@/app/components/ui/sidebar"; // Import the Sidebar component
 
 type AsinData = {
   SN: string;
@@ -30,8 +29,8 @@ type AsinData = {
 
 type KeywordData = {
   keyword: string;
-  matchTypes: string[];
-  bids: number[];
+  match_type: string;
+  bid: number[];
   rank: number;
   theme: string;
 };
@@ -48,6 +47,13 @@ type KeywordPerformanceData = {
   purchases30d: number;
   topOfSearchImpressionShare: string;
   Source: string;
+  adGroupId: string;
+};
+
+type NegativeKeyword = {
+  keywordId: string;
+  keywordText: string;
+  matchType: string;
   adGroupId: string;
 };
 
@@ -83,30 +89,45 @@ async function fetchKeywordPerformance() {
   return res.json();
 }
 
+async function fetchNegativeKeywords(adGroupId: string) {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/negative_keywords", { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to fetch negative keywords");
+    const data = await res.json();
+    return data.filter((keyword: NegativeKeyword) =>
+      String(keyword.adGroupId).trim().toLowerCase() === String(adGroupId).trim().toLowerCase()
+    );
+  } catch (error) {
+    console.error("Error fetching negative keywords:", error);
+    throw error;
+  }
+}
+
 export default function AdGroupPage({ params }: { params: Promise<{ campaign_id: string, ad_group_id: string }> }) {
   const router = useRouter();
   const [asinData, setAsinData] = useState<AsinData[]>([]);
   const [keywordData, setKeywordData] = useState<KeywordData[]>([]);
   const [keywordPerformanceData, setKeywordPerformanceData] = useState<KeywordPerformanceData[]>([]);
+  const [negativeKeywords, setNegativeKeywords] = useState<NegativeKeyword[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedTab, setSelectedTab] = useState<string>('asin'); // 'asin', 'keywordPerformance', 'keywordRecommendation'
+  const [selectedTab, setSelectedTab] = useState<string>('asin'); // 'asin', 'keywordPerformance', 'keywordRecommendation', 'NegativeKeyword'
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const unwrappedParams = await params;
         const { ad_group_id } = unwrappedParams;
-
         if (!ad_group_id) {
           setError("Ad Group ID is missing");
           setIsLoading(false);
           return;
         }
 
-        const [asinResults, keywordPerformance] = await Promise.all([
+        const [asinResults, keywordPerformance, negativeKeywordResults] = await Promise.all([
           fetchAsinData(ad_group_id),
-          fetchKeywordPerformance()
+          fetchKeywordPerformance(),
+          fetchNegativeKeywords(ad_group_id),
         ]);
 
         setAsinData(asinResults);
@@ -115,6 +136,8 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
           ? keywordPerformance.filter(item => item.Source === "spKeyword")
           : [];
         setKeywordPerformanceData(filteredKeywordPerformance);
+
+        setNegativeKeywords(negativeKeywordResults);
 
         if (asinResults.length > 0) {
           const campaignId = asinResults[0].campaignId;
@@ -135,31 +158,16 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
   if (error) return <div className="p-5 text-red-500">Error: {error}</div>;
   if (!asinData.length) return <div className="p-5 text-red-500">No ASIN data available for this ad group</div>;
 
+  // Sort by sales1d to get top ASINs by sales
+  const topAsinBySales = [...asinData]
+    .sort((a, b) => b.sales1d - a.sales1d)  // Sort in descending order by sales
+    .slice(0, 5);  // Get top 5
+
+
   return (
     <div className="flex h-screen">
-      <div className="w-64 bg-gray-800 text-white p-5 flex flex-col h-full">
-        <Header />
-        <div className="flex flex-col gap-4">
-          <button
-            onClick={() => setSelectedTab('asin')}
-            className={`px-4 py-2 rounded ${selectedTab === 'asin' ? 'bg-gray-600' : ''}`}
-          >
-            <span>Products</span>
-          </button>
-          <button
-            onClick={() => setSelectedTab('keywordPerformance')}
-            className={`px-4 py-2 rounded ${selectedTab === 'keywordPerformance' ? 'bg-gray-600' : ''}`}
-          >
-            <span>Targeting</span>
-          </button>
-          <button
-            onClick={() => setSelectedTab('keywordRecommendation')}
-            className={`px-4 py-2 rounded ${selectedTab === 'keywordRecommendation' ? 'bg-gray-600' : ''}`}
-          >
-            <span>Keyword Recommendations</span>
-          </button>
-        </div>
-      </div>
+      {/* Use the Sidebar component */}
+      <Sidebar selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
 
       <div className="flex-1 p-5 overflow-auto">
         {selectedTab === 'asin' && (
@@ -170,12 +178,22 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                 <TableRow>
                   <TableHead className="border border-default-300">ASIN</TableHead>
                   <TableHead className="border border-default-300">SKU</TableHead>
+                  <TableHead className="border border-default-300 relative ">
+
+                      Ad format
+                      <select 
+                      className="ml-3 bg-black text-white  rounded">
+                        <option className="py-3" value="SP">SP</option>
+                        <option value="SB">SB</option>
+                        <option value="SD">SD</option>
+                      </select>
+                    
+                  </TableHead>
                   <TableHead className="border border-default-300">Campaign Status</TableHead>
-                  <TableHead className="border border-default-300">Revenue</TableHead>
-                  <TableHead className="border border-default-300">Spend</TableHead>
+                  <TableHead className="border border-default-300">Daily Spend</TableHead>
+                  <TableHead className="border border-default-300">Daily sales</TableHead>
                   <TableHead className="border border-default-300">ACOS</TableHead>
                   <TableHead className="border border-default-300">ROAS</TableHead>
-                  <TableHead className="border border-default-300">Ad format</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -183,19 +201,68 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                   <TableRow key={asin.SN} className="text-center">
                     <TableCell className="border border-default-300">{asin.advertisedAsin}</TableCell>
                     <TableCell className="border border-default-300">{asin.advertisedSku}</TableCell>
+                    <TableCell className="border border-default-300">Sp</TableCell>
                     <TableCell className="border border-default-300">{asin.campaignStatus}</TableCell>
-                    <TableCell className="border border-default-300">{asin.impressions}</TableCell>
-                    <TableCell className="border border-default-300">{asin.clicks}</TableCell>
                     <TableCell className="border border-default-300">{asin.clickThroughRate}</TableCell>
+                    <TableCell className="border border-default-300">{asin.clicks}</TableCell>
                     <TableCell className="border border-default-300">{asin.cost}</TableCell>
-                    <TableCell className="border border-default-300">SP</TableCell>
+                    <TableCell className="border border-default-300">{asin.ROAS}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+            <div className="flex gap-4">
+              <div className="w-1/2">
+              <h2 className="text-lg p-4 mt-8 ">Top 5 Asin Based on Spends</h2>
+              <div className="flex space-x-10 ">
+                <div className="flex-1 overflow-x-auto">
+                  <Table className="min-w-full border border-blue-600 text-center">
+                    <TableHeader className="bg-black text-white top-0 z-10">
+                      <TableRow>
+                        <TableHead>ASIN</TableHead>
+                        <TableHead>Daily Spends</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {topAsinBySales.map((asin) => (
+                        <TableRow key={asin.advertisedAsin}>
+                          <TableCell className="w-1/3">{asin.advertisedAsin}</TableCell>
+                          <TableCell className="w-1/3">{asin.clickThroughRate}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+              </div>
+
+              <div className="w-1/2">
+              <h2 className="text-lg p-4 mt-8 ">Top 5 Asin Based on Sales</h2>
+              <div className="flex space-x-10 ">
+                <div className="flex-1 overflow-x-auto">
+                  <Table className="min-w-full border border-blue-600 text-center">
+                    <TableHeader className="bg-black text-white top-0 z-10">
+                      <TableRow>
+                        <TableHead>ASIN</TableHead>
+                        <TableHead>Daily Sales</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {topAsinBySales.map((asin) => (
+                        <TableRow key={asin.advertisedAsin}>
+                          <TableCell className="w-1/3">{asin.advertisedAsin}</TableCell>
+                          <TableCell className="w-1/3">{asin.clicks}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+              </div>
+
+            </div>
           </div>
         )}
-
         {selectedTab === 'keywordPerformance' && (
           <div>
             <h2 className="text-lg font-bold mt-6">Keyword Performance</h2>
@@ -205,6 +272,9 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                   <TableHead className="border border-default-300">Keyword</TableHead>
                   <TableHead className="border border-default-300">Match Type</TableHead>
                   <TableHead className="border border-default-300">Revenue</TableHead>
+                  <TableHead className="border border-default-300">Spend</TableHead>
+                  <TableHead className="border border-default-300">ACOS</TableHead>
+                  <TableHead className="border border-default-300">ROAS</TableHead>
                   <TableHead className="border border-default-300">Clicks</TableHead>
                   <TableHead className="border border-default-300">Impressions</TableHead>
                   <TableHead className="border border-default-300">Bid</TableHead>
@@ -216,6 +286,9 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                     <TableCell className="border border-default-300">{item.keyword}</TableCell>
                     <TableCell className="border border-default-300">{item.matchType}</TableCell>
                     <TableCell className="border border-default-300">{item.clicks}</TableCell>
+                    <TableCell className="border border-default-300">100</TableCell>
+                    <TableCell className="border border-default-300">--</TableCell>
+                    <TableCell className="border border-default-300">--</TableCell>
                     <TableCell className="border border-default-300">{item.impressions}</TableCell>
                     <TableCell className="border border-default-300">{item.impressions}</TableCell>
                     <TableCell className="border border-default-300">{item.impressions}</TableCell>
@@ -225,28 +298,61 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
             </Table>
           </div>
         )}
-
         {selectedTab === 'keywordRecommendation' && (
+  <div>
+    <h2 className="text-lg font-bold mt-6">Keyword Recommendations</h2>
+
+    {['BROAD', 'EXACT', 'PHRASE'].map((matchType) => {
+      const filteredKeywords = keywordData.filter((keyword) => keyword.match_type === matchType);
+
+          return (
+            filteredKeywords.length > 0 && (
+              <div key={matchType} className="mt-4">
+                <h3 className="text-md font-semibold">{matchType} Match</h3>
+                <Table className="border border-default-300">
+                  <TableHeader className="bg-black text-white sticky top-0 z-10">
+                    <TableRow>
+                      <TableHead className="border border-default-300">Keyword</TableHead>
+                      <TableHead className="border border-default-300">Rank</TableHead>
+                      <TableHead className="border border-default-300">For</TableHead>
+                      <TableHead className="border border-default-300">Bids</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredKeywords.map((keyword, index) => (
+                      <TableRow key={index} className="text-center">
+                        <TableCell className="border border-default-300">{keyword.keyword}</TableCell>
+                        <TableCell className="border border-default-300">{keyword.rank}</TableCell>
+                        <TableCell className="border border-default-300">{keyword.theme}</TableCell>
+                        <TableCell className="border border-default-300">{keyword.bid}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )
+          );
+        })}
+      </div>
+    )}
+
+        {selectedTab === 'NegativeKeyword' && (
           <div>
-            <h2 className="text-lg font-bold mt-6">Keyword Recommendations</h2>
+            <h2 className="text-lg font-bold mt-6">Negative Keywords</h2>
             <Table className="border border-default-300">
               <TableHeader className="bg-black text-white sticky top-0 z-10">
                 <TableRow>
+                  <TableHead className="border border-default-300">Keyword ID</TableHead>
                   <TableHead className="border border-default-300">Keyword</TableHead>
-                  <TableHead className="border border-default-300">Match Types</TableHead>
-                  <TableHead className="border border-default-300">Rank</TableHead>
-                  <TableHead className="border border-default-300">Theme</TableHead>
-                  <TableHead className="border border-default-300">Bids</TableHead>
+                  <TableHead className="border border-default-300">Match Type</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {keywordData.map((keyword, index) => (
-                  <TableRow key={index} className="text-center">
-                    <TableCell className="border border-default-300">{keyword.keyword}</TableCell>
-                    <TableCell className="border border-default-300">{keyword.matchTypes.join(", ")}</TableCell>
-                    <TableCell className="border border-default-300">{keyword.rank}</TableCell>
-                    <TableCell className="border border-default-300">{keyword.theme}</TableCell>
-                    <TableCell className="border border-default-300">{keyword.bids.join("  | ")}</TableCell>
+                {negativeKeywords.map((keyword) => (
+                  <TableRow key={keyword.keywordId} className="text-center">
+                    <TableCell className="border border-default-300">{keyword.keywordId}</TableCell>
+                    <TableCell className="border border-default-300">{keyword.keywordText}</TableCell>
+                    <TableCell className="border border-default-300">{keyword.matchType}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

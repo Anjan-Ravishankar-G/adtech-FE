@@ -51,6 +51,9 @@ export default function PerformanceTable() {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
+  // State to manage date range picker visibility
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -73,10 +76,19 @@ export default function PerformanceTable() {
   if (error) return <div className="text-red-500">{error}</div>;
   if (!campaignData.length) return <div className="text-red-500">No campaign data available</div>;
 
+  // Sort by sales and pick top 5
+  const topSales = [...campaignData]
+    .sort((a, b) => b.sales1d - a.sales1d)
+    .slice(0, 5);
+
+    const handleButtonClick = () => {
+      setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
+    };
+
   return (
     <div className="p-5">
       
-      <Header />
+      {/* <Header /> */}
       {/* <Sidebar campaignId="yourCampaignId" adGroupId="yourAdGroupId" /> */}
 
       <div className="w-full p-3 rounded-lg">
@@ -91,7 +103,21 @@ export default function PerformanceTable() {
         </div>
       </div>
       <h1 className="text-2xl font-bold mb-4 text-center ">Ad Groups</h1>
-      <DateRangePicker  startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
+
+      {/* Button to open the Date Range Picker */}
+      <button 
+        onClick={handleButtonClick}
+        className="text-white bg-gray-800 hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-lg text-sm p-5 py-2 m-2 dark:hover:bg-gray-700 "
+      >
+        {isDatePickerOpen ? "Close Date Picker" : "Select Date Range"}
+      </button>
+
+      {isDatePickerOpen && (
+        <DateRangePicker onDateRangeChange={(startDate, endDate) => {
+          console.log("Selected range:", startDate, endDate);
+        }} />
+      )}
+      
       <div className="overflow-x-auto max-h-96 p-1">
         <Table className="border border-default-100 rounded-lg">
           <TableHeader className="bg-black text-white  top-0 z-10">
@@ -99,14 +125,14 @@ export default function PerformanceTable() {
               <TableHead className="border border-default-300 text-center">Ad Group</TableHead>
               <TableHead className="border border-default-300 text-center">Ad format</TableHead>
               <TableHead className="border border-default-300 text-center">SKU</TableHead>
+              <TableHead className="border border-default-300 text-center">Spends</TableHead>
               <TableHead className="border border-default-300 text-center">Sales</TableHead>
-              <TableHead className="border border-default-300 text-center">Spend</TableHead>
-              <TableHead className="border border-default-300 text-center">DRR</TableHead>
-              <TableHead className="border border-default-300 text-center">ROAS</TableHead>
               <TableHead className="border border-default-300 text-center">ACOS</TableHead>
+              <TableHead className="border border-default-300 text-center">ROAS</TableHead>
+              <TableHead className="border border-default-300 text-center">Impression</TableHead>
               <TableHead className="border border-default-300 text-center">CTR</TableHead>
               <TableHead className="border border-default-300 text-center">Clicks</TableHead>
-              <TableHead className="border border-default-300 text-center rounded-tr-lg">Impressions</TableHead>
+              <TableHead className="border border-default-300 text-center rounded-tr-lg">DRR</TableHead>
             </TableRow>
           </TableHeader>
         
@@ -121,18 +147,38 @@ export default function PerformanceTable() {
 
               <TableCell className="border border-default-300">SP</TableCell>
               <TableCell className="border border-default-300">list sku for the ad group</TableCell>
-              <TableCell className="border border-default-300">{campaign.sales1d}</TableCell>
               <TableCell className="border border-default-300">{campaign.cost}</TableCell>
-              <TableCell className="border border-default-300">{campaign.ROAS}</TableCell>
+              <TableCell className="border border-default-300">{campaign.sales1d}</TableCell>
               <TableCell className="border border-default-300">{campaign.ACoS}</TableCell>
+              <TableCell className="border border-default-300">{campaign.ROAS}</TableCell>
               <TableCell className="border border-default-300">{campaign.clickThroughRate}</TableCell>
               <TableCell className="border border-default-300">{campaign.clicks}</TableCell>
-              <TableCell className="border border-default-300 rounded-r-lg">{campaign.impression}</TableCell>
-              <TableCell className="border border-default-300 rounded-r-lg">{campaign.costPerClick}</TableCell>
+              <TableCell className="border border-default-300">{campaign.impression}</TableCell>
+              <TableCell className="border border-default-300">{campaign.costPerClick}</TableCell>
             </TableRow>
-  ))}
-</TableBody>
-
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+        {/* Second Table: Top 5 Ad Groups by Sales (Showing Only 2 Rows) */}
+      <h1 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Ad Groups by Sales</h1>
+      <div className="overflow-x-auto max-h-96 p-1">
+        <Table className="border border-default-100 rounded-lg">
+          <TableHeader className="bg-black text-white top-0 z-10">
+            <TableRow>
+              <TableHead>Ad Group</TableHead>
+              <TableHead>Sales</TableHead>
+            </TableRow>
+          </TableHeader>
+        
+          <TableBody className="text-white">
+            {topSales.slice(0, 2).map((campaign) => (
+              <TableRow key={campaign.SN} className="text-center">
+                <TableCell className="w-1/2">{campaign.adGroupName}</TableCell>
+                <TableCell className="w-1/2">{campaign.sales1d}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
         </Table>
       </div>
     </div>
