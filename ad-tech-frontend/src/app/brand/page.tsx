@@ -182,7 +182,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
 
       <div className="p-5">
         <h1 className="text-xl font-bold mb-7 text-center">Brands</h1>
-        <div className="flex flex-row items-center justify-center p-6 bg-gray-100  gap-5">
+        <div className="flex flex-row items-center justify-center bg-gray-100  gap-5">
           {/* Combined Radial Chart */}
           <div className="flex-0.6 w-[500px] h-[350px]  text-center bg-white shadow-lg rounded-2xl p-4 border">
             <h3>Overall Progress</h3>
@@ -228,7 +228,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         }} />
       )}
 
-        <div className="shadow-2xl p-4 bg-white rounded-lg">
+        <div className="shadow-2xl p-4 bg-white rounded-2xl">
         
           {/* Brand Table */}
           <div className="flex-1 overflow-x-auto ">
