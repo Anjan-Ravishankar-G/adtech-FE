@@ -12,6 +12,7 @@ import {
 import Header from "@/app/components/ui/header";
 import DateRangePicker from "@/app/components/ui/datePicker";
 import BasicPieChart from "@/app/components/ui/bargraph";
+import Footer from "@/app/components/ui/footer";
 
 type CampaignData = {
   SN: string;
@@ -231,6 +232,9 @@ export default function PerformanceTable() {
         </div>
           
       </div>
+      <div className="mt-8">
+        <Footer />
+       </div>
     </div>
   );
 }
