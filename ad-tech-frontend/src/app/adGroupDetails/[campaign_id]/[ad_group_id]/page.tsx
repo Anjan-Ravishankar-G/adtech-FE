@@ -11,6 +11,7 @@ import {
 } from "@/app/components/ui/table";
 import Header from "@/app/components/ui/header";
 import Sidebar from "@/app/components/ui/sidebar"; // Import the Sidebar component
+import Footer from "@/app/components/ui/footer";
 
 type AsinData = {
   SN: string;
@@ -246,6 +247,9 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
               </div>
 
             </div>
+            <div className="mt-8">
+              <Footer />
+            </div>   
           </div>
         )}
         {selectedTab === 'keywordPerformance' && (
@@ -282,6 +286,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
               </TableBody>
             </Table>
           </div>
+          
         )}
         {selectedTab === 'NegativeKeyword' && (
           <div className="shadow-2xl p-4 bg-white rounded-lg">
@@ -313,7 +318,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
       const filteredKeywords = keywordData.filter((keyword) => keyword.match_type === matchType);
           return (
             filteredKeywords.length > 0 && (
-              <div key={matchType} className="mt-4">
+              <div key={matchType} className="shadow-2xl p-4 bg-white rounded-2xl mt-4">
                 <h3 className="text-md font-semibold">{matchType} Match</h3>
                 <Table className="border border-default-300">
                   <TableHeader className="bg-black text-white sticky top-0 z-10">
