@@ -30,8 +30,8 @@ type AsinData = {
 
 type KeywordData = {
   keyword: string;
-  matchTypes: string[];
-  bids: number[];
+  match_type: string;
+  bid: number[];
   rank: number;
   theme: string;
 };
@@ -109,11 +109,10 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
   const [asinData, setAsinData] = useState<AsinData[]>([]);
   const [keywordData, setKeywordData] = useState<KeywordData[]>([]);
   const [keywordPerformanceData, setKeywordPerformanceData] = useState<KeywordPerformanceData[]>([]);
+  const [negativeKeywords, setNegativeKeywords] = useState<NegativeKeyword[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedTab, setSelectedTab] = useState<string>('asin'); // 'asin', 'keywordPerformance', 'keywordRecommendation'
-  const [negativeKeywords, setNegativeKeywords] = useState<any[]>([]);
-
+  const [selectedTab, setSelectedTab] = useState<string>('asin');
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -124,19 +123,17 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
           setIsLoading(false);
           return;
         }
-
-        const [asinResults, keywordPerformance] = await Promise.all([
+        const [asinResults, keywordPerformance, negativeKeywordResults] = await Promise.all([
           fetchAsinData(ad_group_id),
-          fetchKeywordPerformance()
+          fetchKeywordPerformance(),
+          fetchNegativeKeywords(ad_group_id),
         ]);
-
         setAsinData(asinResults);
-
         const filteredKeywordPerformance = Array.isArray(keywordPerformance)
           ? keywordPerformance.filter(item => item.Source === "spKeyword")
           : [];
         setKeywordPerformanceData(filteredKeywordPerformance);
-
+        setNegativeKeywords(negativeKeywordResults);
         if (asinResults.length > 0) {
           const campaignId = asinResults[0].campaignId;
           const keywordResults = await fetchKeywordData(campaignId, ad_group_id);
@@ -148,10 +145,8 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
         setIsLoading(false);
       }
     };
-
     loadData();
   }, [params]);
-
   if (isLoading) return <div className="p-5">Loading...</div>;
   if (error) return <div className="p-5 text-red-500">Error: {error}</div>;
   if (!asinData.length) return <div className="p-5 text-red-500">No ASIN data available for this ad group</div>;
@@ -253,8 +248,6 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
             </div>
           </div>
         )}
-
-        
         {selectedTab === 'keywordPerformance' && (
           <div className="shadow-2xl p-4 bg-white rounded-2xl">
             <h2 className="text-lg font-bold mt-6">Keyword Performance</h2>
@@ -314,32 +307,40 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
           </div>
         )}
         {selectedTab === 'keywordRecommendation' && (
-          <div className="shadow-2xl p-4 bg-white rounded-lg mt-5">
-            <h2 className="text-lg font-bold">Keyword Recommendations</h2>
-            <Table className="border border-default-300">
-              <TableHeader className="bg-black text-white sticky top-0 z-10">
-                <TableRow>
-                  <TableHead className="border border-default-300">Keyword</TableHead>
-                  <TableHead className="border border-default-300">Match Types</TableHead>
-                  <TableHead className="border border-default-300">Rank</TableHead>
-                  <TableHead className="border border-default-300">Fro</TableHead>
-                  <TableHead className="border border-default-300">Bids</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {keywordData.map((keyword, index) => (
-                  <TableRow key={index} className="text-center">
-                    <TableCell className="border border-default-300">{keyword.keyword}</TableCell>
-                    <TableCell className="border border-default-300">{keyword.matchTypes.join(", ")}</TableCell>
-                    <TableCell className="border border-default-300">{keyword.rank}</TableCell>
-                    <TableCell className="border border-default-300">{keyword.theme}</TableCell>
-                    <TableCell className="border border-default-300">{keyword.bids.map(bid => Math.ceil(bid)).join(" | ")}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        )}
+  <div>
+    <h2 className="text-lg font-bold mt-6">Keyword Recommendations</h2>
+    {['BROAD', 'EXACT', 'PHRASE'].map((matchType) => {
+      const filteredKeywords = keywordData.filter((keyword) => keyword.match_type === matchType);
+          return (
+            filteredKeywords.length > 0 && (
+              <div key={matchType} className="mt-4">
+                <h3 className="text-md font-semibold">{matchType} Match</h3>
+                <Table className="border border-default-300">
+                  <TableHeader className="bg-black text-white sticky top-0 z-10">
+                    <TableRow>
+                      <TableHead className="border border-default-300">Keyword</TableHead>
+                      <TableHead className="border border-default-300">Rank</TableHead>
+                      <TableHead className="border border-default-300">For</TableHead>
+                      <TableHead className="border border-default-300">Bids</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredKeywords.map((keyword, index) => (
+                      <TableRow key={index} className="text-center">
+                        <TableCell className="border border-default-300">{keyword.keyword}</TableCell>
+                        <TableCell className="border border-default-300">{keyword.rank}</TableCell>
+                        <TableCell className="border border-default-300">{keyword.theme}</TableCell>
+                        <TableCell className="border border-default-300">{keyword.bid}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )
+          );
+        })}
+      </div>
+    )}   
       </div>
     </div>
   );

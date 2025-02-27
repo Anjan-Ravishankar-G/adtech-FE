@@ -28,64 +28,27 @@ def get_recommended_keywords(campaign_id, ad_group_id):
         "recommendationType": "KEYWORDS_FOR_ADGROUP",
         "adGroupId": ad_group_id
     }
-    
     try:
         response = requests.post(api_url, json=body, headers=header)
-        response.raise_for_status()  # Raises HTTPError for bad responses
-        
+        response.raise_for_status()
         data = response.json()
-
-        if "keywordTargetList" in data:
-            keyword_dict = {}
-
-            for item in data["keywordTargetList"]:
-                keyword = item.get("keyword")
-                bid_info_list = item.get("bidInfo", [])
-
-                if keyword not in keyword_dict:
-                    keyword_dict[keyword] = {
-                        "matchTypes": [],
-                        "bids": [],
-                        "rank": None,
-                        "theme": None
-                    }
-
-                for bid_info in bid_info_list:
-                    match_type = bid_info.get("matchType")
-                    bid = bid_info.get("bid", 0) / 100  # Convert bid to proper value
-                    rank = bid_info.get("rank")
-                    theme = bid_info.get("theme")
-
-                    if match_type not in keyword_dict[keyword]["matchTypes"]:
-                        keyword_dict[keyword]["matchTypes"].append(match_type)
-
-                    keyword_dict[keyword]["bids"].append(bid)
-
-                    
-                    if keyword_dict[keyword]["rank"] is None:
-                        keyword_dict[keyword]["rank"] = rank
-                    if keyword_dict[keyword]["theme"] is None:
-                        keyword_dict[keyword]["theme"] = theme
-
-            result = [
-                {
-                    "keyword": k,
-                    "matchTypes": v["matchTypes"],
-                    "bids": v["bids"],
-                    "rank": v["rank"],
-                    "theme": v["theme"]
-                } 
-                for k, v in keyword_dict.items()
-            ]
-
-          
-            return result
-        
-        else:
-            print("Error: 'keywordTargetList' not found in the response data.")
-            return []
-
+        # Extract required fields
+        keyword_data = []
+        for item in data.get("keywordTargetList", []):
+            keyword = item.get("keyword", "")
+            for bid_info in item.get("bidInfo", []):
+                theme = "Conversion" if bid_info.get("theme") == "CONVERSION_OPPORTUNITIES" else bid_info.get("theme")
+                match_type = bid_info.get("matchType", "")
+                rank = bid_info.get("rank", 0)
+                bid = round(bid_info.get("bid", 0))
+                keyword_data.append({
+                    "keyword": keyword,
+                    "theme": theme,
+                    "match_type": match_type,
+                    "rank": rank,
+                    "bid": bid
+                })
+        return keyword_data
     except requests.exceptions.RequestException as e:
         print(f"Error fetching recommended keywords: {e}")
         return []
-

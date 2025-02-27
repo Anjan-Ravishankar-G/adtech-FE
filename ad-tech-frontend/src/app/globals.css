@@ -16,7 +16,7 @@ body.light {
 }
 
 body.dark {
-  --background: #000000;
+  --background: #1e1e1e;
   --foreground: #1c1c1c;
   --text-color: #ffffff;
 }

@@ -163,7 +163,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
 
   return (
     <div className="p-5 space-y-8 ">
-      {/* <Header /> */}
+      <Header />
       <div className="w-full p-4 rounded-lg bg-color:[#f1f4f5]">
         <div className="flex flex-col  items-start">
           <div className="text-white text-4xl font-serif tracking-wider">
@@ -183,7 +183,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
 
       <div className="p-5">
         <h1 className="text-xl font-bold mb-7 text-center">Brands</h1>
-        <div className="flex flex-row items-center justify-center bg-gray-100  gap-5">
+        <div className="flex flex-row items-center justify-center bg-[#f1f4f5] gap-5">
           {/* Combined Radial Chart */}
           <div className="flex-0.6 w-[500px] h-[350px]  text-center bg-white shadow-lg rounded-2xl p-4 border">
             <BasicRadialBar
