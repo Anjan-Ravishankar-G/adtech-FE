@@ -177,17 +177,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                 <TableRow>
                   <TableHead className="border border-default-300">ASIN</TableHead>
                   <TableHead className="border border-default-300">SKU</TableHead>
-                  <TableHead className="border border-default-300 relative ">
-
-                      Ad format
-                      <select 
-                      className="ml-3 bg-black text-white  rounded">
-                        <option className="py-3" value="SP">SP</option>
-                        <option value="SB">SB</option>
-                        <option value="SD">SD</option>
-                      </select>
-                    
-                  </TableHead>
+                  <TableHead className="border border-default-300 relative ">Ad format</TableHead>
                   <TableHead className="border border-default-300">Campaign Status</TableHead>
                   <TableHead className="border border-default-300">Daily Spend</TableHead>
                   <TableHead className="border border-default-300">Daily sales</TableHead>

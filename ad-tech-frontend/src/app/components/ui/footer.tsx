@@ -7,22 +7,22 @@ interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ imageAlt = "Company Logo" }) => {
   return (
     <footer className="w-full py-6 bg-gray-100 border-t">
-      <div className="container mx-auto px-4 flex-col items-center justify-center">
-        <div className="flex flex-col items-center space-x-2">
-          <span className="text-gray-700">Powered by artha</span>
-          {/* Image placeholder - replace src with your actual image path */}
-          <div className="h-60">
-            {/* This is where you'll add your image */}
-            <img 
-              src="/artha-manta-logo-black.png"
-              alt={imageAlt}
-              className="h-full w-auto object-contain"
-            />
-          </div>
+        <div className="container mx-auto px-4 flex flex-col items-center justify-center">
+            <div className="flex items-center space-x-2">
+            {/* Image placed first */}
+            <div className="h-32 w-auto">
+                <img 
+                src="/artha-manta-logo-black.png"
+                alt={imageAlt}
+                className="h-full w-auto object-contain"
+                />
+            </div>
+            {/* Text placed after the image */}
+            <span className="text-gray-700">Powered by artha</span>
+            </div>
         </div>
-      </div>
     </footer>
-  );
+  )
 };
 
 export default Footer;

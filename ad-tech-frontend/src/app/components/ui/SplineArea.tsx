@@ -32,5 +32,4 @@ const SplineArea: React.FC<SplineAreaProps> = ({ data, height = 300 }) => {
 
   return <ApexCharts options={chartOptions} series={series} type="area" height={height} width="100%" />;
 };
-
 export default SplineArea;

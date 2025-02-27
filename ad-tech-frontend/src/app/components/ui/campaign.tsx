@@ -186,6 +186,7 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
                        <option className="py-3" value="SP">SP</option>
                        <option value="SB">SB</option>
                        <option value="SD">SD</option>
+                       <option value="SD">SBV</option>
                  </select>
                 </TableHead>
               <TableHead className="text-center">Sales</TableHead>
