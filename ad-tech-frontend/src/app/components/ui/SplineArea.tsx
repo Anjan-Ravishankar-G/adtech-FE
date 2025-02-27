@@ -19,7 +19,7 @@ const SplineArea: React.FC<SplineAreaProps> = ({ data, height = 300 }) => {
   const categories = data.map((item) => item.Date);
   const series = [
     { name: "Daily Sales", data: data.map((item) => item.DailySales) },
-    { name: "Spend", data: data.map((item) => item.Spend) },
+    { name: "Daily Spend", data: data.map((item) => item.Spend) },
   ];
 
   const chartOptions: ApexOptions = {

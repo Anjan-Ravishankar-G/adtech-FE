@@ -213,7 +213,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
             </div>
             <div className="flex gap-4">
               <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl mt-5">
-              <h2 className="text-lg p-4">Top 5 Asin Based on Spends</h2>
+              <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Asin Based on Spends</h2>
               <div className="flex space-x-10 ">
                 <div className="flex-1 overflow-x-auto">
                   <Table className="min-w-full border border-blue-600 text-center">
@@ -237,7 +237,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
               </div>
 
               <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl mt-5">
-              <h2 className="text-lg p-4 ">Top 5 Asin Based on Sales</h2>
+              <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Asin Based on Sales</h2>
               <div className="flex space-x-10 ">
                 <div className="flex-1 overflow-x-auto">
                   <Table className="min-w-full border border-blue-600 text-center">

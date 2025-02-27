@@ -12,6 +12,7 @@ import {
 import DateRangePicker from "./datePicker";
 import SplineArea from "./SplineArea";
 import BasicPieChart from "./bargraph";
+import Footer from "./footer";
 
 
 type CampaignData = {
@@ -134,9 +135,6 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
           <div className="text-white text-4xl">
             <h2 className="text-4xl font-light">IPG</h2>
           </div>
-          <div className="text-white">
-            <h2 className="text-2xl font-light">Brand: brand 1</h2>
-          </div>
         </div>
       </div>
       <h1 className="text-3xl font-bold mb-4 text-center">List of Campaigns</h1>
@@ -152,6 +150,8 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
       )}
       </div>
 
+      <div className="flex -1 gap-4">
+
       {/* Button to open the Date Range Picker */}
       <button 
         onClick={handleButtonClick}
@@ -165,6 +165,12 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
           console.log("Selected range:", startDate, endDate);
         }} />
       )}
+
+         <div className="text-Black bg-white shadow-2xl hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-2xl text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700">
+            <h2>Brand: brand 1</h2>
+          </div>
+
+        </div>
 
       
       <div className="shadow-2xl p-4 ml-1 bg-white rounded-2xl">
@@ -209,7 +215,7 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
       </div>
         <div className="flex gap-4 p-1 mt-3">
            <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl">
-            <h2 className="text-lg p-3 mt-7 ">Top 5 Compaign Based on Sales</h2>
+            <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Campaign Based on Sales</h2>
             <div className="flex space-x-10 ">
               <div className="flex-1 overflow-x-auto">
                 <Table className="min-w-full border border-blue-600 text-center">
@@ -239,7 +245,7 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
                </div>
             </div>
              <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl">
-             <h2 className="text-lg p-3 mt-7 ">Top 5 Compaign Based on Spends</h2>
+             <h2 className="text-2xl font-bold mb-4 mt-8 text-center ">Top 5 Campaign Based on Spends</h2>
                 <div className="flex space-x-10 ">
                   <div className="flex-1 overflow-x-auto">
                     <Table className="min-w-full border border-blue-600 text-center">
@@ -261,7 +267,10 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
                 </div>
               </div>
             </div>
-        </div>    
+        </div> 
+        <div className="mt-8">
+        <Footer />
+       </div>   
       </div>      
   );
 }

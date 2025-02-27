@@ -3,6 +3,7 @@ import "@/css/brand.css";
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
+import Footer from "../components/ui/footer";
 import {
   Table,
   TableBody,
@@ -185,7 +186,6 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         <div className="flex flex-row items-center justify-center bg-gray-100  gap-5">
           {/* Combined Radial Chart */}
           <div className="flex-0.6 w-[500px] h-[350px]  text-center bg-white shadow-lg rounded-2xl p-4 border">
-            <h3>Overall Progress</h3>
             <BasicRadialBar
               height={350}
               series={[combinedProgress]} // Combined progress for all brands
@@ -196,7 +196,6 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
 
           {/* Individual Radial Chart with Multiple Brands */}
           <div className="flex-0.6 w-[500px] h-[350px] text-center bg-white shadow-2xl rounded-lg p-4 border">
-            <h3>Brand Progress</h3>
             <BasicRadialBar 
               height={350}
               series={brandProgressData} // Multiple progress for individual brands
@@ -206,11 +205,12 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
           </div>
             {/* Individual Radial Chart with Multiple Brands */}
               <div className="flex-0.6 w-[500px] h-[350px] text-center bg-white shadow-2xl rounded-lg p-4 border">
-                <h3>Brand Progress</h3>
                 <BasicPieChart 
                 series={brandSalesData} 
                 height={350}
-                labels={brandNames}/>
+                labels={brandNames}
+                colors={["#F44336", "#2196F3", "#4CAF50", "#FFC107", "#9C27B0", "#2a40f1", "#2af1c7", "#79f728"]}/>
+                
               </div> 
         </div>
         
@@ -264,7 +264,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
       <div className="mt-12 flex gap-4">
         <div className="w-1/2 shadow-2xl p-4 bg-white rounded-lg">
         {/* tablee for top 5 brands according to sales achived */}
-        <h2 className="text-lg p-4 mt-3 ">Top 5 Brands Based on Sales Achieved</h2>
+        <h2 className="text-2xl font-bold mb-4 mt-8 text-center ">Top 5 Brands Based on Sales Achieved</h2>
         <div className="flex space-x-10 ">
           <div className="flex-1 overflow-x-auto">
             <Table className="min-w-full border border-blue-600 text-center">
@@ -294,7 +294,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
                </div>
         </div>
       <div className="w-1/2 shadow-2xl p-4 bg-white rounded-lg">
-        <h2 className="text-lg p-4 mt-3 ">Top 5 Brands Based on Spends</h2>
+        <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Brands Based on Spends</h2>
         <div className="flex space-x-10 ">
           <div className="flex-1 overflow-x-auto">
             <Table className="min-w-full border border-blue-600 text-center">
@@ -325,6 +325,9 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
       </div>
       </div>
       </div>
+       <div>
+        <Footer />
+       </div>
     </div>
   );
 }

@@ -12,6 +12,7 @@ type BasicPieChartProps = {
   labels?: string[]; // Labels for each slice (optional)
   width?: number; // Width of the chart (optional)
   responsiveBreakpoint?: number; // Breakpoint for responsive design (optional)
+  colors?: string[]; // Custom colors for each slice (optional)
 };
 
 const BasicPieChart: React.FC<BasicPieChartProps> = ({
@@ -20,6 +21,7 @@ const BasicPieChart: React.FC<BasicPieChartProps> = ({
   labels = [], // Default labels
   width = 380, // Default width
   responsiveBreakpoint = 480, // Default breakpoint
+  colors = [], // Default empty array for colors
 }) => {
   const chartOptions: ApexOptions = {
     dataLabels: {
@@ -31,6 +33,7 @@ const BasicPieChart: React.FC<BasicPieChartProps> = ({
       type: "pie",
     },
     labels: labels,
+    colors: colors.length > 0 ? colors : undefined , // Use custom colors if provided
     responsive: [
       {
         breakpoint: responsiveBreakpoint,
