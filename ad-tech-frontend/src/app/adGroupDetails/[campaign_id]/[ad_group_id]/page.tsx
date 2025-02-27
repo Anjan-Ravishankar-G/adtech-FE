@@ -51,6 +51,27 @@ type KeywordPerformanceData = {
   adGroupId: string;
 };
 
+type NegativeKeyword = {
+  keywordId: string;
+  keywordText: string;
+  matchType: string;
+  adGroupId: string;
+};
+
+async function fetchNegativeKeywords(adGroupId: string) {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/negative_keywords", { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to fetch negative keywords");
+    const data = await res.json();
+    return data.filter((keyword: NegativeKeyword) =>
+      String(keyword.adGroupId).trim().toLowerCase() === String(adGroupId).trim().toLowerCase()
+    );
+  } catch (error) {
+    console.error("Error fetching negative keywords:", error);
+    throw error;
+  }
+}
+
 async function fetchAsinData(adGroupId: string) {
   try {
     const res = await fetch("http://127.0.0.1:8000/get_report/asin_level_table", { cache: "no-store" });

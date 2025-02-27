@@ -173,7 +173,15 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
             <TableRow>
               <TableHead className="text-center">SN</TableHead>
               <TableHead className="text-center">Campaign</TableHead>
-              <TableHead className="text-center">Campaign Type</TableHead>
+              <TableHead className="text-center">
+                Campaign Type
+                 <select 
+                     className="ml-3 bg-black text-white  rounded">
+                       <option className="py-3" value="SP">SP</option>
+                       <option value="SB">SB</option>
+                       <option value="SD">SD</option>
+                 </select>
+                </TableHead>
               <TableHead className="text-center">Sales</TableHead>
               <TableHead className="text-center">Spend</TableHead>
               <TableHead className="text-center">Goal</TableHead>
