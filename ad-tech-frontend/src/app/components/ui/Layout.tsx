@@ -9,7 +9,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="flex h-screen  overflow-x-hidden ">
+    <div className="flex ">
       {/* Sidebar */}
       <Sidebar collapsed={collapsed} toggleSidebar={() => setCollapsed(!collapsed)} />
 

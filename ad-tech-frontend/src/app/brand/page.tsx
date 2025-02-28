@@ -16,7 +16,6 @@ import DateRangePicker from "../components/ui/datePicker";
 import Header from "../components/ui/header";
 import BasicRadialBar from "../components/ui/RadialbarChart"; // Updated RadialBar
 import BasicPieChart from "../components/ui/bargraph";
-import CollapsibleSidebar from "../components/ui/mainsidebar";
 import Layout from "../components/ui/Layout";
 
 
@@ -60,6 +59,7 @@ async function fetchUniqueBrandTargetData() {
 }
 
 export default function BrandTargetTables() {
+  
   const [brandTargetData, setBrandTargetData] = useState<BrandTargetData[] | null>(null);
   const [uniqueBrandTargetData, setUniqueBrandTargetData] = useState<BrandTargetData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -159,14 +159,10 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
 // const brandSpendsDataTop5 = topBrandsBySpends.map((brand) => brand.Spends);
 // const brandNamesTop5Spends = topBrandsBySpends.map((brand) => brand.Brand);
 
- 
- 
-
-
   return (
     // <Layout>
-    <div className="p-5 space-y-8 ">
-      {/* <Header /> */}
+    <div className="p-5 ">
+       <Header />
       <div className="w-full p-4 rounded-lg bg-color:[#f1f4f5]">
         <div className="flex flex-col  items-start">
           <div className="text-white text-4xl font-serif tracking-wider">
@@ -188,7 +184,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         <h1 className="text-xl font-bold mb-7 text-center">Brands</h1>
         <div className="flex flex-row items-center justify-center bg-[#f1f4f5] gap-5">
           {/* Combined Radial Chart */}
-          <div className="flex-0.6 w-[500px] h-[350px]  text-center bg-white shadow-lg rounded-2xl p-4 border">
+          <div className="flex-0.6 w-[500px] h-[350px]  text-center bg-white shadow-lg rounded-2xl p-4 border dark:black">
             <BasicRadialBar
               height={350}
               series={[combinedProgress]} // Combined progress for all brands
@@ -332,6 +328,6 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         <Footer />
        </div>
        </div>
-    // </Layout>
+  //  </Layout> 
   );
 }

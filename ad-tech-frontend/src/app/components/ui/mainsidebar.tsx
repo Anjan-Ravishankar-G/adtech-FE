@@ -35,11 +35,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar }) => {
               <Bell  size={20} />
               {!collapsed && <span>Teams</span>}
             </a>
-            <ul>
-              <li>Member1</li>
-              <li>Member2</li>
-              <li>Member3</li>
-            </ul>
+           
           </li>
           <li>
             <a href="/help" className={`flex items-center gap-3 text-gray-700 hover:text-black ${collapsed ? "justify-center" : ""}`}>
