@@ -13,6 +13,7 @@ import DateRangePicker from "./datePicker";
 import SplineArea from "./SplineArea";
 import BasicPieChart from "./bargraph";
 import Footer from "./footer";
+import Header from "./header";
 
 
 type CampaignData = {
@@ -130,6 +131,7 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
 
   return (
     <div className="p-5">
+      <Header/>
       <div className="w-full p-4 rounded-lg">
         <div className="flex justify-between items-center">
           <div className="text-white text-4xl">
@@ -139,7 +141,7 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
       </div>
       <h1 className="text-3xl font-bold mb-4 text-center">List of Campaigns</h1>
 
-      <div className="shadow-2xl p-4 bg-white rounded-2xl">
+      <div className="shadow-2xl p-4 bg-white rounded-2xl dark:bg-black">
        {/* AREA CHART SECTION */}
        {chartLoading ? (
         <div>Loading chart...</div>
@@ -155,7 +157,7 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
       {/* Button to open the Date Range Picker */}
       <button 
         onClick={handleButtonClick}
-        className="text-Black bg-white shadow-2xl hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-2xl text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700"
+        className="text-Black bg-white shadow-2xl hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-2xl text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700 dark:bg-black "
       >
         {isDatePickerOpen ? "Close Date Picker" : "Select Date Range"}
       </button>
@@ -166,14 +168,14 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
         }} />
       )}
 
-         <div className="text-Black bg-white shadow-2xl hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-2xl text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700">
+         <div className="text-Black bg-white shadow-2xl hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-2xl text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700 dark:text-white dark:bg-black">
             <h2>Brand: brand 1</h2>
           </div>
 
         </div>
 
       
-      <div className="shadow-2xl p-4 ml-1 bg-white rounded-2xl">
+      <div className="shadow-2xl p-4 ml-1 bg-white rounded-2xl dark:bg-black ">
         <Table className="w-full">
           <TableHeader >
             <TableRow>
@@ -215,7 +217,7 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
         </Table>
       </div>
         <div className="flex gap-4 p-1 mt-3">
-           <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl">
+           <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl dark:bg-black ">
             <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Campaign Based on Sales</h2>
             <div className="flex space-x-10 ">
               <div className="flex-1 overflow-x-auto">
@@ -245,7 +247,7 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
                   labels={brandNames}/>
                </div>
             </div>
-             <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl">
+             <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl dark:bg-black">
              <h2 className="text-2xl font-bold mb-4 mt-8 text-center ">Top 5 Campaign Based on Spends</h2>
                 <div className="flex space-x-10 ">
                   <div className="flex-1 overflow-x-auto">

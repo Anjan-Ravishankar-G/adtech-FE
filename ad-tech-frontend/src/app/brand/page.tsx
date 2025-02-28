@@ -182,9 +182,9 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
 
       <div className="p-5">
         <h1 className="text-xl font-bold mb-7 text-center">Brands</h1>
-        <div className="flex flex-row items-center justify-center bg-[#f1f4f5] gap-5">
+        <div className="flex flex-row items-center justify-center bg-[#f1f4f5] gap-5 dark:bg-[#1e1e1e] ">
           {/* Combined Radial Chart */}
-          <div className="flex-0.6 w-[500px] h-[350px]  text-center bg-white shadow-lg rounded-2xl p-4 border dark:black">
+          <div className="flex-0.6 w-[500px] h-[350px]  text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
             <BasicRadialBar
               height={350}
               series={[combinedProgress]} // Combined progress for all brands
@@ -194,7 +194,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
           </div>
 
           {/* Individual Radial Chart with Multiple Brands */}
-          <div className="flex-0.6 w-[500px] h-[350px] text-center bg-white shadow-2xl rounded-lg p-4 border">
+          <div className="flex-0.6 w-[500px] h-[350px] text-center bg-white shadow-2xl rounded-lg p-4 border dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
             <BasicRadialBar 
               height={350}
               series={brandProgressData} // Multiple progress for individual brands
@@ -203,7 +203,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
             /> 
           </div>
             {/* Individual Radial Chart with Multiple Brands */}
-              <div className="flex-0.6 w-[500px] h-[350px] text-center bg-white shadow-2xl rounded-lg p-4 border">
+              <div className="flex-0.6 w-[500px] h-[350px] text-center bg-white shadow-2xl rounded-lg p-4 border dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
                 <BasicPieChart 
                 series={brandSalesData} 
                 height={350}
@@ -216,7 +216,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         {/* Button to open the Date Range Picker */}
       <button 
         onClick={handleButtonClick}
-        className="text-Black bg-white shadow-2xl hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700 "
+        className="text-Black bg-white shadow-2xl hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700 dark:bg-black  dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]"
       >
         {isDatePickerOpen ? "Close Date Picker" : "Select Date Range"}
       </button>
@@ -227,7 +227,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         }} />
       )}
 
-        <div className="shadow-2xl p-4 bg-white rounded-2xl">
+        <div className="shadow-2xl p-4 bg-white rounded-2xl dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
         
           {/* Brand Table */}
           <div className="flex-1 overflow-x-auto ">
@@ -260,8 +260,8 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
           </div>
         </div>
 
-      <div className="mt-12 flex gap-4">
-        <div className="w-1/2 shadow-2xl p-4 bg-white rounded-lg">
+      <div className="mt-12 flex gap-4 rounded-2xl">
+        <div className="w-1/2 shadow-2xl p-4 bg-white rounded-lg dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
         {/* tablee for top 5 brands according to sales achived */}
         <h2 className="text-2xl font-bold mb-4 mt-8 text-center ">Top 5 Brands Based on Sales Achieved</h2>
         <div className="flex space-x-10 ">
@@ -282,17 +282,14 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
                 ))}
               </TableBody>
             </Table>
-          </div>
-        </div>
-        {/* for pie chart */}
-              <div>
-                  <BasicPieChart 
+            <BasicPieChart 
                   series={brandProgressDataTop5} 
                   height={350}
                   labels={brandNamesTop5}/>
-               </div>
+          </div>
+        </div>     
         </div>
-      <div className="w-1/2 shadow-2xl p-4 bg-white rounded-lg">
+      <div className="w-1/2 shadow-2xl p-4 bg-white rounded-lg dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
         <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Brands Based on Spends</h2>
         <div className="flex space-x-10 ">
           <div className="flex-1 overflow-x-auto">
@@ -312,20 +309,21 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
                 ))}
               </TableBody>
             </Table>
-          </div>
-        </div>
-            {/* for pie chart */}
-            <div>
+             {/* for pie chart */}
+           
                   <BasicPieChart 
                   series={brandProgressDataTop5} 
                   height={350}
                   labels={brandNamesTop5}/>
-               </div>
+              
+          </div>
+        </div>
+           
       </div>
       </div>
       </div>
-       <div>
-        <Footer />
+       <div >
+        <Footer/>
        </div>
        </div>
   //  </Layout> 

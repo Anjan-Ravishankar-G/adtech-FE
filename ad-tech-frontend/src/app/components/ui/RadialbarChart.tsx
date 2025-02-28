@@ -93,7 +93,7 @@ const BasicRadialBar: React.FC<BasicRadialBarProps> = ({ series, height, labels,
                 marginRight: "5px",
               }}
             ></span>
-            <span style={{ fontSize: "16px", color: "black" }}>{label}</span>
+             <span className="text-black dark:text-white" style={{ fontSize: "16px" }}>{label}</span>
           </div>
         ))}
     </div>

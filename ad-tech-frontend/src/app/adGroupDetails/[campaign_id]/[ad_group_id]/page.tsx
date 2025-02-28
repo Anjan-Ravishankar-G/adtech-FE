@@ -166,7 +166,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
       <div className="flex-1 p-5 overflow-auto">
         {selectedTab === 'asin' && (
           <div>
-          <div className="shadow-2xl p-4 bg-white rounded-2xl">
+          <div className="shadow-2xl p-4 bg-white rounded-2xl  dark:bg-black">
             <h2 className="text-lg font-bold mt-6">ASIN Performance</h2>
             <Table className="border border-default-300">
               <TableHeader className="bg-black text-white sticky top-0 z-10">
@@ -198,7 +198,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
             </Table>
             </div>
             <div className="flex gap-4">
-              <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl mt-5">
+              <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl mt-5 dark:bg-black">
               <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Asin Based on Spends</h2>
               <div className="flex space-x-10 ">
                 <div className="flex-1 overflow-x-auto">
@@ -222,7 +222,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
               </div>
               </div>
 
-              <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl mt-5">
+              <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl mt-5 dark:bg-black">
               <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Asin Based on Sales</h2>
               <div className="flex space-x-10 ">
                 <div className="flex-1 overflow-x-auto">
@@ -253,7 +253,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
           </div>
         )}
         {selectedTab === 'keywordPerformance' && (
-          <div className="shadow-2xl p-4 bg-white rounded-2xl">
+          <div className="shadow-2xl p-4 bg-white rounded-2xl dark:bg-black">
             <h2 className="text-lg font-bold mt-6">Keyword Performance</h2>
             <Table className="border border-default-300">
               <TableHeader className="bg-black text-white sticky top-0 z-10">
@@ -289,7 +289,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
           
         )}
         {selectedTab === 'NegativeKeyword' && (
-          <div className="shadow-2xl p-4 bg-white rounded-lg">
+          <div className="shadow-2xl p-4 bg-white rounded-lg dark:bg-black">
             <h2 className="text-lg font-bold">Negative Keywords</h2>
             <Table className="border border-default-300">
               <TableHeader className="bg-black text-white sticky top-0 z-10">
@@ -318,7 +318,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
       const filteredKeywords = keywordData.filter((keyword) => keyword.match_type === matchType);
           return (
             filteredKeywords.length > 0 && (
-              <div key={matchType} className="shadow-2xl p-4 bg-white rounded-2xl mt-4">
+              <div key={matchType} className="shadow-2xl p-4 bg-white rounded-2xl mt-4 dark:bg-black">
                 <h3 className="text-md font-semibold">{matchType} Match</h3>
                 <Table className="border border-default-300">
                   <TableHeader className="bg-black text-white sticky top-0 z-10">

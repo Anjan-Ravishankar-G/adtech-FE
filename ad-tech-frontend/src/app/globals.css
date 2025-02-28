@@ -56,22 +56,22 @@ table td {
 /* Light mode styles */
 body.light table th {
   background-color: #f1f4f5;
-  color:#000000;
+  color: #1e1e1e;
 }
 
 body.light table td {
   background-color: #ffffff;
-  color: #000000;
+  color:#1e1e1e;
 }
 
 /* Dark mode styles */
 body.dark table th {
-  background-color: #2c3841;
+  background-color:#1e1e1e;
   color: #ffffff;
 }
 
 body.dark table td {
-  background-color: #36454F;
+  background-color: #1e1e1e;
   color: #ffffff;
 }
 

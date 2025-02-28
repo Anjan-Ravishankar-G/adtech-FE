@@ -100,7 +100,7 @@ export default function PerformanceTable() {
   return (
     <div className="p-5">
       
-      {/* <Header /> */}
+      <Header />
       {/* <Sidebar campaignId="yourCampaignId" adGroupId="yourAdGroupId" /> */}
 
       <div className="w-full p-3 rounded-lg">
@@ -119,7 +119,7 @@ export default function PerformanceTable() {
       {/* Button to open the Date Range Picker */}
       <button 
         onClick={handleButtonClick}
-        className="text-Black bg-white shadow-2xl hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700"
+        className="text-Black bg-white shadow-2xl hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700  dark:bg-black dark:text-white"
       >
         {isDatePickerOpen ? "Close Date Picker" : "Select Date Range"}
       </button>
@@ -130,7 +130,7 @@ export default function PerformanceTable() {
         }} />
       )}
       
-      <div className="shadow-2xl p-4 bg-white rounded-2xl overflow-x-auto max-h-96">
+      <div className="shadow-2xl p-4 bg-white rounded-2xl overflow-x-auto max-h-96  dark:bg-black">
         <Table className="border border-default-100 rounded-lg">
           <TableHeader className="bg-black text-white  top-0 z-10">
             <TableRow>
@@ -173,7 +173,7 @@ export default function PerformanceTable() {
         </Table>
       </div>
       <div className=" p-1 mt-5 flex gap-4">
-        <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl">
+        <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl  dark:bg-black">
         {/* Second Table: Top 5 Ad Groups by Sales (Showing Only 2 Rows) */}
           <h1 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Ad Groups by Spend</h1>
           <div className="overflow-x-auto max-h-96 p-1">
@@ -202,7 +202,7 @@ export default function PerformanceTable() {
                   labels={spendLabels}/>
                </div>
         </div>
-        <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl">
+        <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl  dark:bg-black">
           <h1 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Ad Groups by Sales</h1>
           <div className="overflow-x-auto max-h-96 p-1">
             <Table className="border border-default-100 rounded-lg">

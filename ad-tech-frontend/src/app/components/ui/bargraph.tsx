@@ -50,8 +50,8 @@ const BasicPieChart: React.FC<BasicPieChartProps> = ({
   };
 
   return (
-    <div>
-      <ApexCharts
+    <div className="text-black dark:text-white">
+      <ApexCharts 
         options={chartOptions}
         series={chartOptions.series}
         type="pie"
