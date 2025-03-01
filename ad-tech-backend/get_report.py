@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 import keyword_recommendation
 import negative_keyword
+import amazonScraping
 load_dotenv()  # Load .env variables
 
 app = FastAPI()
@@ -121,7 +122,7 @@ def fetch_filtered_brands(start_date: str, end_date: str):
 def get_keyword_recommendation(campaign_id: str, ad_group_id: str):
     # Fetch the recommended keywords using the helper function
     keywords = keyword_recommendation.get_recommended_keywords(campaign_id, ad_group_id)
-    
+    print(keywords)
     # If no keywords found, raise a 404 error
     if not keywords:
         raise HTTPException(status_code=404, detail="No keywords found")
@@ -135,5 +136,17 @@ def get_negative_keywords():
 
     if not list_of_keyowrd:
         raise HTTPException(status_code=404, detail="No keywords found")
-    
     return list_of_keyowrd
+
+
+
+#for the research part 
+#amazon scraping 
+
+@app.get("/scrap/{asin}")
+def get_amazon_scrap(asin: str):
+    data = amazonScraping.scrape_amazon_product(asin)
+    if not data:
+        raise HTTPException(status_code=404, detail="No details found")
+    print(data)
+    return data
