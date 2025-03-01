@@ -61,12 +61,12 @@ body.light table th {
 
 body.light table td {
   background-color: #ffffff;
-  color:#1e1e1e;
+  color:#100c0c;
 }
 
 /* Dark mode styles */
 body.dark table th {
-  background-color:#1e1e1e;
+  background-color:#010101f7;
   color: #ffffff;
 }
 
