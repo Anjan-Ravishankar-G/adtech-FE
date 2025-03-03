@@ -242,7 +242,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
               <TableBody>
                 {uniqueBrandTargetData.map((brand) => (
                   <TableRow key={`${brand.Brand}-${brand.DateTime}`}>
-                    <TableCell>{brand.Brand}</TableCell>
+                    <TableCell className="hover:bg-gray-400 cursor-pointer ">{brand.Brand}</TableCell>
                     <TableCell>{brand.Target?.toLocaleString() || '-'}</TableCell>
                     <TableCell>1000</TableCell>
                     <TableCell>{brand.TargetAchieved?.toLocaleString() || '-'}</TableCell>

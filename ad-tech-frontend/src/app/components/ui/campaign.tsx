@@ -218,7 +218,7 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
         </Table>
       </div>
         <div className="flex gap-4 p-1 mt-3">
-           <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl dark:bg-black ">
+           <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl dark:bg-black dark:shadow-[-20px_-10px_30px_6px_rgba(0,0,0,0.1),_15px_10px_30px_6px_rgba(45,78,255,0.15)]">
             <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Campaign Based on Sales</h2>
             <div className="flex space-x-10 ">
               <div className="flex-1 overflow-x-auto">
@@ -248,7 +248,7 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
                   labels={brandNames}/>
                </div>
             </div>
-             <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl dark:bg-black">
+             <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl dark:bg-black dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
              <h2 className="text-2xl font-bold mb-4 mt-8 text-center ">Top 5 Campaign Based on Spends</h2>
                 <div className="flex space-x-10 ">
                   <div className="flex-1 overflow-x-auto">

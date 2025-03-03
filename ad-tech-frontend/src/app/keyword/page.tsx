@@ -19,7 +19,7 @@ export default async function KeywordsPage() {
   }
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+    <div style={{ padding: "20px", fontFamily: "lato" }}>
       <h1>Keyword Performance Report </h1>
       <table border={1} cellPadding={8} style={{ borderCollapse: "collapse", width: "100%" }}>
         <thead>

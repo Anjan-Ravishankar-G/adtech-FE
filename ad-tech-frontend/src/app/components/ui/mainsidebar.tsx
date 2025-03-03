@@ -39,7 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar }) => {
             <li>
               <a href="/search" className={`flex items-center gap-3 text-gray-700 hover:text-black ${collapsed ? "justify-center" : ""}`}>
                 <Search size={20} className="text-gray-700 dark:text-white" />
-                {!collapsed && <span>Search</span>}
+                {!collapsed && <span>Research</span>}
               </a>
             </li>
           </ul>

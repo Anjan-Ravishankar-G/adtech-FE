@@ -10,7 +10,7 @@ const Footer: React.FC<FooterProps> = ({ imageAlt = "Company Logo" }) => {
         <div className="container mx-auto px-4 flex flex-col items-center justify-center">
             <div className="flex items-center "> 
             {/* Text placed after the image */}
-            <span className="text-black dark:text-white  mr-[-32px]">Powered by</span>
+            <span className="text-black dark:text-white  mr-[-48px]">Powered by</span>
               <div className="h-32 w-auto">
                 {/* Image placed first */}
                 <img 
