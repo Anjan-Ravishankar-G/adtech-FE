@@ -26,6 +26,9 @@ const BasicPieChart: React.FC<BasicPieChartProps> = ({
   const chartOptions: ApexOptions = {
     dataLabels: {
       enabled: false, // This will remove the percentage labels
+      style: {
+        colors: ['#FFFFFF'], // Set data label colors to white
+      },
     },
     series: series,
     chart: {
@@ -34,6 +37,13 @@ const BasicPieChart: React.FC<BasicPieChartProps> = ({
     },
     labels: labels,
     colors: colors.length > 0 ? colors : undefined , // Use custom colors if provided
+    legend: {
+      labels: {
+        colors: 'var(--label-color)', // Use CSS variable for dynamic color
+      },
+    },
+  
+    
     responsive: [
       {
         breakpoint: responsiveBreakpoint,
@@ -43,6 +53,9 @@ const BasicPieChart: React.FC<BasicPieChartProps> = ({
           },
           legend: {
             position: "bottom", // Move legend to the bottom for smaller screens
+            labels: {
+              colors: '#FFFFFF', // Set legend label color to white in dark mode
+            },
           }, 
         },
       },

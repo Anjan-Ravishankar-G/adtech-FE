@@ -202,7 +202,7 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
               <TableRow key={campaign.SN} className="text-center">
                 <TableCell className="rounded-l-lg">{campaign.SN}</TableCell>
                 <TableCell className="border border-default-300 hover:bg-default-100 transition-colors cursor-pointer p-0">
-                  <Link href={`/ad_details/${campaign.campaignId}`} className="text-blue-600 hover:text-blue-800 hover:underline block w-full h-full p-4">
+                  <Link href={`/ad_details/${campaign.campaignId}`} className="text-black-600 hover:bg-gray-300 block w-full h-full p-4 dark:text-white">
                     {campaign.campaignName}
                   </Link>
                 </TableCell>

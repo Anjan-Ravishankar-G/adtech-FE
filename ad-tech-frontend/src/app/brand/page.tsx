@@ -160,15 +160,15 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
 // const brandNamesTop5Spends = topBrandsBySpends.map((brand) => brand.Brand);
 
   return (
-    // <Layout>
+    <Layout>
     <div className="p-5 ">
-       <Header />
+       {/* <Header /> */}
       <div className="w-full p-4 rounded-lg bg-color:[#f1f4f5]">
         <div className="flex flex-col  items-start">
           <div className="text-white text-4xl font-serif tracking-wider">
             <h2 className="text-4xl font-light p-2">IPG</h2>
           </div>
-          <div className="text-white p-2 ml-5">
+          <div className="text-white p-2">
             <h2 className="text-2xl font-light">
               Total Accounts: {uniqueBrandTargetData.length}
             </h2>
@@ -182,9 +182,9 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
 
       <div className="p-5">
         <h1 className="text-xl font-bold mb-7 text-center">Brands</h1>
-        <div className="flex flex-row items-center justify-center bg-[#f1f4f5] gap-5 dark:bg-[#1e1e1e] ">
+        <div className="flex flex-col md:flex-row flex-wrap justify-start gap-5 bg-[#f1f4f5] dark:bg-[#1e1e1e] rounded-2xl">
           {/* Combined Radial Chart */}
-          <div className="flex-0.6 w-[500px] h-[350px]  text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
+          <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
             <BasicRadialBar
               height={350}
               series={[combinedProgress]} // Combined progress for all brands
@@ -194,7 +194,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
           </div>
 
           {/* Individual Radial Chart with Multiple Brands */}
-          <div className="flex-0.6 w-[500px] h-[350px] text-center bg-white shadow-2xl rounded-lg p-4 border dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
+          <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
             <BasicRadialBar 
               height={350}
               series={brandProgressData} // Multiple progress for individual brands
@@ -203,7 +203,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
             /> 
           </div>
             {/* Individual Radial Chart with Multiple Brands */}
-              <div className="flex-0.6 w-[500px] h-[350px] text-center bg-white shadow-2xl rounded-lg p-4 border dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
+              <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
                 <BasicPieChart 
                 series={brandSalesData} 
                 height={350}
@@ -326,6 +326,6 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         <Footer/>
        </div>
        </div>
-  //  </Layout> 
+   </Layout> 
   );
 }
