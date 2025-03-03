@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 import DateRangePicker from "../components/ui/datePicker";
-import Header from "../components/ui/header";
+
 import BasicRadialBar from "../components/ui/RadialbarChart"; // Updated RadialBar
 import BasicPieChart from "../components/ui/bargraph";
 import Layout from "../components/ui/Layout";
@@ -162,7 +162,6 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
   return (
     <Layout>
     <div className="p-5 ">
-       {/* <Header /> */}
       <div className="w-full p-4 rounded-lg bg-color:[#f1f4f5]">
         <div className="flex flex-col  items-start">
           <div className="text-white text-4xl font-serif tracking-wider">
@@ -184,7 +183,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         <h1 className="text-xl font-bold mb-7 text-center">Brands</h1>
         <div className="flex flex-col md:flex-row flex-wrap justify-start gap-5 bg-[#f1f4f5] dark:bg-[#1e1e1e] rounded-2xl">
           {/* Combined Radial Chart */}
-          <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
+          <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
             <BasicRadialBar
               height={350}
               series={[combinedProgress]} // Combined progress for all brands
@@ -194,7 +193,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
           </div>
 
           {/* Individual Radial Chart with Multiple Brands */}
-          <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
+          <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
             <BasicRadialBar 
               height={350}
               series={brandProgressData} // Multiple progress for individual brands
@@ -203,7 +202,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
             /> 
           </div>
             {/* Individual Radial Chart with Multiple Brands */}
-              <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
+              <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
                 <BasicPieChart 
                 series={brandSalesData} 
                 height={350}
@@ -216,7 +215,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         {/* Button to open the Date Range Picker */}
       <button 
         onClick={handleButtonClick}
-        className="text-Black bg-white shadow-2xl hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700 dark:bg-black  dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]"
+        className="text-Black bg-white shadow-2xl hover:bg-gray-400 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700 dark:bg-black  dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]"
       >
         {isDatePickerOpen ? "Close Date Picker" : "Select Date Range"}
       </button>
@@ -227,11 +226,11 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         }} />
       )}
 
-        <div className="shadow-2xl p-4 bg-white rounded-2xl dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
+        <div className="shadow-2xl p-4 bg-white rounded-2xl dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
         
           {/* Brand Table */}
           <div className="flex-1 overflow-x-auto ">
-          <Table className="min-w-full border border-black-600 text-center">
+          <Table className="min-w-full border text-center">
               <TableHeader>
                 <TableRow className=" cursor-pointer hover:bg-gray-100">
                   <TableHead>Brand</TableHead>
@@ -261,12 +260,12 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         </div>
 
       <div className="mt-12 flex gap-4 rounded-2xl">
-        <div className="w-1/2 shadow-2xl p-4 bg-white rounded-lg dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
+        <div className="w-1/2 shadow-2xl p-4 bg-white rounded-lg dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
         {/* tablee for top 5 brands according to sales achived */}
         <h2 className="text-2xl font-bold mb-4 mt-8 text-center ">Top 5 Brands Based on Sales Achieved</h2>
         <div className="flex space-x-10 ">
           <div className="flex-1 overflow-x-auto">
-            <Table className="min-w-full border border-blue-600 text-center">
+            <Table className="min-w-full border text-center">
               <TableHeader className="bg-black text-white top-0 z-10">
                 <TableRow>
                   <TableHead>Brand</TableHead>
@@ -289,7 +288,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
           </div>
         </div>     
         </div>
-      <div className="w-1/2 shadow-2xl p-4 bg-white rounded-lg dark:bg-black dark:text-white dark:shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
+      <div className="w-1/2 shadow-2xl p-4 bg-white rounded-lg dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
         <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Brands Based on Spends</h2>
         <div className="flex space-x-10 ">
           <div className="flex-1 overflow-x-auto">

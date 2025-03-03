@@ -246,10 +246,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
               </div>
               </div>
 
-            </div>
-            <div className="mt-8">
-              <Footer />
-            </div>   
+            </div>  
           </div>
         )}
         {selectedTab === 'keywordPerformance' && (
@@ -344,9 +341,14 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
             )
           );
         })}
+           
+      </div> 
+    )} 
+      <div className="mt-32">
+      <Footer />  
       </div>
-    )}   
-      </div>
+      </div>   
     </div>
+    
   );
 }

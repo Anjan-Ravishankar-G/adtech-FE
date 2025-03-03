@@ -21,7 +21,7 @@ export default function Sidebar({ selectedTab, setSelectedTab }: SidebarProps) {
         onClick={() => setIsOpen(!isOpen)}
         className="fixed top-4 left-4 z-50 p-1  text-black rounded-md"
       >
-        {isOpen ? <X size={32} className="bg-[#D1D5DB] text-black rounded-2xl p-1" /> : <Menu size={32} />}
+        {isOpen ? <X size={32} className="bg-[#D1D5DB] text-black rounded-2xl p-1" /> : <Menu size={32} className="text-black rounded-2xl p-1 dark:bg-[#D1D5DB]" />}
       </button>
       {/* Sidebar and Content Wrapper */}
       <div className={`h-screen flex transition-all duration-300 ${isOpen ? "ml-64" : "ml-1"}`}>
