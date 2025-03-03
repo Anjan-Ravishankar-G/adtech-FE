@@ -11,6 +11,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar }) => {
   const { theme, toggleTheme } = useTheme();
   const [showTeams, setShowTeams] = useState(false);
+  const [showShastra, setShowShastra] = useState(false);
 
   return (
     <div
@@ -37,11 +38,30 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar }) => {
               </a>
             </li>
             <li>
-              <a href="/search" className={`flex items-center gap-3 text-gray-700 hover:text-black ${collapsed ? "justify-center" : ""}`}>
+              <button
+                className={`flex items-center gap-3 w-full text-gray-700 hover:text-black ${collapsed ? "justify-center" : ""}`}
+                onClick={() => setShowShastra(!showShastra)}
+              >
                 <Search size={20} className="text-gray-700 dark:text-white" />
-                {!collapsed && <span>Research</span>}
-              </a>
+                {!collapsed && <span>Shastra</span>}
+                {!collapsed && <ChevronDown size={16} className={`transition-transform ${showShastra ? 'rotate-180' : ''}`} />}
+              </button>
+              {!collapsed && showShastra && (
+                <ul className="ml-6 mt-2 space-y-2">
+                  <li>
+                    <a href="/googleTrends" className="text-gray-600 hover:text-black dark:text-white">
+                      Search Trends
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/research" className="text-gray-600 hover:text-black dark:text-white">
+                      Retail Insights
+                    </a>
+                  </li>
+                </ul>
+              )}
             </li>
+
           </ul>
         </div>
 

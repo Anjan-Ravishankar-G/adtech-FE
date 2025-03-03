@@ -2,6 +2,7 @@
 import "@/css/brand.css";
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useTheme } from "next-themes";
 import Footer from "../components/ui/footer";
 import {
@@ -242,7 +243,11 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
               <TableBody>
                 {uniqueBrandTargetData.map((brand) => (
                   <TableRow key={`${brand.Brand}-${brand.DateTime}`}>
-                    <TableCell className="hover:bg-gray-400 cursor-pointer ">{brand.Brand}</TableCell>
+                    <TableCell className="hover:bg-gray-400 cursor-pointer">
+                      <Link href="/components/ui/campaign" className="text-black hover:text-gray-900 dark:text-white">
+                        {brand.Brand}
+                      </Link>
+                    </TableCell>
                     <TableCell>{brand.Target?.toLocaleString() || '-'}</TableCell>
                     <TableCell>1000</TableCell>
                     <TableCell>{brand.TargetAchieved?.toLocaleString() || '-'}</TableCell>

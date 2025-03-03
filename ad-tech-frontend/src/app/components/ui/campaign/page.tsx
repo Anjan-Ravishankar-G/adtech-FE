@@ -9,11 +9,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";  // Importing Table components
-import DateRangePicker from "./datePicker";
-import SplineArea from "./SplineArea";
-import BasicPieChart from "./bargraph";
-import Footer from "./footer";
-import Layout from "./Layout";
+import DateRangePicker from "../datePicker";
+import SplineArea from "../SplineArea";
+import BasicPieChart from "../bargraph";
+import Footer from "../footer";
+import Layout from "../Layout";
 
 
 type CampaignData = {
