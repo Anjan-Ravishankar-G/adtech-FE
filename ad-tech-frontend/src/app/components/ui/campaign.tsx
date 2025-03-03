@@ -148,7 +148,7 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
       ) : chartError ? (
         <div className="text-red-500">{chartError}</div>
       ) : (
-        <SplineArea data={chartData} height={350} />
+        <SplineArea data={chartData} height={350} theme={document.documentElement.classList.contains("dark") ? "dark" : "light"} />
        
       )}
       </div>

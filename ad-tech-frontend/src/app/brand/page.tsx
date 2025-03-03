@@ -207,8 +207,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
                 series={brandSalesData} 
                 height={350}
                 labels={brandNames}
-                colors={["#F44336", "#2196F3", "#4CAF50", "#FFC107", "#9C27B0", "#2a40f1", "#2af1c7", "#79f728"]}/>
-                
+                colors={["#F44336", "#2196F3", "#4CAF50", "#FFC107", "#9C27B0", "#2a40f1", "#2af1c7", "#79f728"]}/>  
               </div> 
         </div>
         
