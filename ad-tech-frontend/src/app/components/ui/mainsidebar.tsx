@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useTheme } from '@/app/context/ThemeContext';
 import { FaMoon, FaSun } from 'react-icons/fa';
+import { GiOctopus } from "react-icons/gi";
 import { Handshake, CircleHelp, Home, LogOut, ChevronLeft, ChevronRight, ChevronDown, Search } from "lucide-react";
 
 interface SidebarProps {
@@ -32,7 +33,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar }) => {
         <div className="p-4">
           <ul className="space-y-6">
             <li>
-              <a href="/" className={`flex items-center gap-3 text-gray-700 hover:text-black ${collapsed ? "justify-center" : ""}`}>
+              <a href="/brand" className={`flex items-center gap-3 text-gray-700 hover:text-black ${collapsed ? "justify-center" : ""}`}>
                 <Home size={20} className="text-gray-700 dark:text-white" />
                 {!collapsed && <span>Home</span>}
               </a>
@@ -42,19 +43,19 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar }) => {
                 className={`flex items-center gap-3 w-full text-gray-700 hover:text-black ${collapsed ? "justify-center" : ""}`}
                 onClick={() => setShowShastra(!showShastra)}
               >
-                <Search size={20} className="text-gray-700 dark:text-white" />
+                <GiOctopus  size={20} className="text-gray-700 dark:text-white" />
                 {!collapsed && <span>Shastra</span>}
-                {!collapsed && <ChevronDown size={16} className={`transition-transform ${showShastra ? 'rotate-180' : ''}`} />}
+                {!collapsed && <ChevronDown size={16} className={`transition-transform ${showShastra ? 'rotate-180' : ''} dark:text-white`} />}
               </button>
               {!collapsed && showShastra && (
                 <ul className="ml-6 mt-2 space-y-2">
                   <li>
-                    <a href="/googleTrends" className="text-gray-600 hover:text-black dark:text-white">
+                    <a href="/googleTrends" className="text-gray-900 hover:text-black dark:text-white">
                       Search Trends
                     </a>
                   </li>
                   <li>
-                    <a href="/research" className="text-gray-600 hover:text-black dark:text-white">
+                    <a href="/research" className="text-gray-900 hover:text-black dark:text-white">
                       Retail Insights
                     </a>
                   </li>
@@ -75,7 +76,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar }) => {
               >
                 <Handshake size={20} className="text-gray-700 dark:text-white" />
                 {!collapsed && <span>Teams</span>}
-                {!collapsed && <ChevronDown size={16} className={`transition-transform ${showTeams ? 'rotate-180' : ''}`} />}
+                {!collapsed && <ChevronDown size={16} className={`transition-transform ${showTeams ? 'rotate-180' : ''}dark:text-white`} />}
               </button>
               {!collapsed && showTeams && (
                 <ul className="ml-6 mt-2 space-y-2">

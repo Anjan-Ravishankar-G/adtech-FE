@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+
 import {
   Table,
   TableBody,
@@ -25,6 +26,7 @@ import {
   Filter,
   ArrowUpRight,
 } from "lucide-react";
+import Layout from "../components/ui/Layout";
 
 // Types for Interest Over Time
 type TimeData = {
@@ -274,6 +276,7 @@ export default function GoogleTrendsDashboard() {
     const totalValue = keywords.reduce((sum, keyword) => sum + (values[keyword] || 0), 0);
     
     return (
+ 
       <div className="flex h-6 w-full">
         {keywords.map((keyword, idx) => {
           const value = values[keyword] || 0;
@@ -293,6 +296,7 @@ export default function GoogleTrendsDashboard() {
           );
         })}
       </div>
+    
     );
   };
 
@@ -399,6 +403,7 @@ export default function GoogleTrendsDashboard() {
   if (error) return <div className="p-5 text-red-500">Error: {error}</div>;
 
   return (
+    <Layout>
     <div className="p-6 max-w-6xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Google Trends Dashboard</h1>
 
@@ -406,14 +411,14 @@ export default function GoogleTrendsDashboard() {
       <div className="mb-6 flex items-center space-x-2">
         <input
           type="text"
-          className="p-4 text-lg border border-gray-300 rounded w-full max-w-xs"
+          className="p-4 text-lg border border-gray-300 rounded w-full max-w-xs dark:bg-black"
           placeholder="Enter keywords (comma-separated)"
           value={inputKeyword}
           onChange={(e) => setInputKeyword(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
         />
         <button
-          className="px-6 py-3 bg-blue-500 text-white rounded text-lg"
+          className="px-6 py-3 bg-blue-500 text-white rounded text-lg dark:bg-black"
           onClick={handleSearch}
         >
           Search
@@ -421,17 +426,17 @@ export default function GoogleTrendsDashboard() {
       </div>
 
       {keywords.length > 0 ? (
-        <div className="space-y-8">
+        <div className="space-y-8 ">
           {/* Interest Over Time Section */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="bg-white rounded-lg shadow-md overflow-hidden dark:bg-black">
             <div className="border-b p-4 flex justify-between items-center">
               <h2 className="text-xl font-medium">Interest Over Time: {keywords.join(", ")}</h2>
               <button 
-                className="px-3 py-1 flex items-center space-x-1 border rounded-md bg-white hover:bg-gray-50" 
+                className="px-3 py-1 flex items-center space-x-1 border rounded-md bg-white hover:bg-gray-50 dark:bg-black" 
                 onClick={() => downloadTimeCSV()}
                 disabled={interestData.length === 0}
               >
-                <Download size={16} />
+                <Download size={16}  />
                 <span>Export</span>
               </button>
             </div>
@@ -444,7 +449,7 @@ export default function GoogleTrendsDashboard() {
                 <ResponsiveContainer width="100%" height={400}>
                   <LineChart data={interestData}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
+                    <XAxis dataKey="date" className="dark:text-white"/>
                     <YAxis />
                     <Tooltip />
                     <Legend />
@@ -462,27 +467,27 @@ export default function GoogleTrendsDashboard() {
                   </LineChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="text-center py-10 text-gray-500">No interest data available for the selected keywords.</div>
+                <div className="text-center py-10 text-gray-500 dark:text-white">No interest data available for the selected keywords.</div>
               )}
             </div>
           </div>
 
           {/* Geographic Comparison Section */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="border-b p-4 flex justify-between items-center">
-              <h2 className="text-xl font-medium">
+          <div className="bg-white rounded-lg shadow-md overflow-hidden dark:bg-black">
+            <div className="border-b p-4 flex justify-between items-center ">
+              <h2 className="text-xl font-medium ">
                 Interest by location: {keywords.join(", ")}
               </h2>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 ">
                 <button 
-                  className="px-3 py-1 flex items-center space-x-1 border rounded-md bg-white hover:bg-gray-50" 
+                  className="px-3 py-1 flex items-center space-x-1 border rounded-md bg-white hover:bg-gray-50 dark:bg-black dark:hover:bg-gray-900" 
                   onClick={() => downloadGeoCSV()}
                   disabled={!geoData}
                 >
                   <Download size={16} />
                   <span>Export</span>
                 </button>
-                <button className="p-1 rounded hover:bg-gray-100">
+                <button className="p-1 rounded hover:bg-gray-100  dark:hover:bg-gray-900 ">
                   <Filter size={18} />
                 </button>
               </div>
@@ -490,18 +495,18 @@ export default function GoogleTrendsDashboard() {
 
             <div className="p-4">
               {isLoadingGeo ? (
-                <div className="text-center py-10">Loading geographic data...</div>
+                <div className="text-center py-10 dark:text-white">Loading geographic data...</div>
               ) : geoError ? (
                 <div className="text-red-500 p-5">{geoError}</div>
               ) : geoData ? (
                 <>
-                  <div className="mb-3 text-sm text-gray-500">
+                  <div className="mb-3 text-sm text-gray-500 dark:text-white">
                     Sort by:
                     <div className="flex space-x-2 mt-1">
                       {geoData.keywords.map(keyword => (
                         <button 
                           key={keyword}
-                          className={`px-3 py-1 border rounded-md ${sortConfig.key === keyword ? 'bg-blue-100 text-blue-800' : 'bg-white'}`}
+                          className={`px-3 py-1 border rounded-md ${sortConfig.key === keyword ? 'bg-blue-100 text-blue-800' : 'bg-white'} dark:bg-black`}
                           onClick={() => handleSort(keyword)}
                         >
                           Interest for {keyword}
@@ -584,30 +589,30 @@ export default function GoogleTrendsDashboard() {
             <h2 className="text-xl font-medium mb-4">Related Queries</h2>
             
             {isLoadingQuery ? (
-              <div className="text-center py-10 bg-white rounded-lg shadow-md">Loading related queries data...</div>
+              <div className="text-center py-10 bg-white rounded-lg shadow-md dark:text-white">Loading related queries data...</div>
             ) : queryError ? (
               <div className="text-red-500 p-5 bg-white rounded-lg shadow-md">{queryError}</div>
             ) : Object.keys(queryData).length > 0 ? (
               keywords.map((keyword) => (
-                <div key={keyword} className="mb-6 bg-white rounded-lg shadow-md overflow-hidden">
+                <div key={keyword} className="mb-6 bg-white rounded-lg shadow-md overflow-hidden dark:bg-black">
                   <div className="border-b p-4 flex justify-between items-center">
-                    <h3 className="text-lg font-medium">Related queries: {keyword}</h3>
+                    <h3 className="text-lg font-medium ">Related queries: {keyword}</h3>
                     <div className="flex items-center space-x-2">
                       <div className="border rounded-md overflow-hidden flex">
                         <button
-                          className={`px-3 py-1 ${queryType === "Rising" ? "bg-blue-100 text-blue-800" : "bg-white"}`}
+                          className={`px-3 py-1 ${queryType === "Rising" ? "bg-blue-100 text-blue-800" : "bg-white"} dark:bg-black dark:text-blue-400`}
                           onClick={() => handleQueryTypeChange("Rising")}
                         >
                           Rising
                         </button>
                         <button
-                          className={`px-3 py-1 ${queryType === "Top" ? "bg-blue-100 text-blue-800" : "bg-white"}`}
+                          className={`px-3 py-1 ${queryType === "Top" ? "bg-blue-100 text-blue-800" : "bg-white"} dark:bg-gray-500 dark:hover:bg-gray-900`}
                           onClick={() => handleQueryTypeChange("Top")}
                         >
                           Top
                         </button>
                       </div>
-                      <button className="p-1 rounded hover:bg-gray-100" onClick={() => downloadQueryCSV(keyword)}>
+                      <button className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-900" onClick={() => downloadQueryCSV(keyword)}>
                         <Download size={18} />
                       </button>
                     </div>
@@ -688,10 +693,11 @@ export default function GoogleTrendsDashboard() {
         </div>
       ) : (
         // Initial state - no search performed yet
-        <div className="bg-white p-6 rounded-lg shadow-md text-center">
-          <p className="text-gray-500">Enter keywords and click Search to view Google Trends data.</p>
+        <div className="bg-white p-6 rounded-lg shadow-md text-center dark:bg-black ">
+          <p className="text-gray-500 dark:text-white">Enter keywords and click Search to view Google Trends data.</p>
         </div>
       )}
     </div>
+    </Layout>
   );
 }

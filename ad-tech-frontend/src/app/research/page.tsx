@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Search, Loader2, AlertCircle } from "lucide-react";
+import Layout from "../components/ui/Layout";
 
 type AmazonProductData = {
   asin: string;
@@ -55,8 +56,9 @@ export default function AmazonProductSearch() {
   };
 
   return (
+    <Layout>
     <div className="max-w-3xl mx-auto px-4 py-6">
-      <div className="bg-white dark:bg-gray-800 p-4 rounded shadow-sm mb-4">
+      <div className="bg-white  p-4 rounded shadow-sm mb-4  dark:bg-black">
         <form onSubmit={handleSearch}>
           <label htmlFor="asin" className="block font-medium mb-2 text-gray-800 dark:text-gray-200">Enter Product ASIN:</label>
           <div className="flex">
@@ -65,12 +67,12 @@ export default function AmazonProductSearch() {
               id="asin"
               value={asin}
               onChange={(e) => setAsin(e.target.value)}
-              className="border p-2 rounded-l w-full dark:bg-gray-700 dark:text-white"
+              className="border p-2 rounded-l w-full dark:bg-gray-900 dark:text-white"
               placeholder="e.g., B07PXGQC1Q"
             />
             <button 
               type="submit" 
-              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-r flex items-center"
+              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-r flex items-center "
               disabled={isLoading}
             >
               {isLoading ? <Loader2 className="animate-spin mr-1" size={16} /> : <Search size={16} className="mr-1" />}
@@ -87,13 +89,13 @@ export default function AmazonProductSearch() {
       </div>
 
       {!isLoading && productData && (
-        <div className="bg-white dark:bg-gray-800 rounded shadow-sm p-4">
+        <div className="bg-white rounded shadow-sm p-4 dark:bg-black">
           <div className="border-b pb-2 mb-3">
-            <h2 className="text-xl font-bold mb-3 border p-2 rounded bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white">
+            <h2 className="text-xl font-bold mb-3 border p-2 rounded bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-white">
               {productData.title}
             </h2>
             <div className="grid grid-cols-2 gap-2 mb-2">
-              <div className="border p-2 rounded bg-gray-50 dark:bg-gray-700">
+              <div className="border p-2 rounded bg-gray-50 dark:bg-gray-900">
                 <span className="text-gray-600 dark:text-gray-300 text-sm">Price:</span>
                 <div className="font-semibold text-gray-800 dark:text-white">
                   {productData.selling_price}
@@ -102,18 +104,18 @@ export default function AmazonProductSearch() {
                   )}
                 </div>
               </div>
-              <div className="border p-2 rounded bg-gray-50 dark:bg-gray-700">
-                <span className="text-gray-600 dark:text-gray-300 text-sm">Rating:</span>
+              <div className="border p-2 rounded bg-gray-50 dark:bg-gray-900">
+                <span className="text-gray-600 dark:text-white text-sm">Rating:</span>
                 <div className="font-semibold text-gray-800 dark:text-white">
                   {productData.rating} ({productData.review_count} reviews)
                 </div>
               </div>
             </div>
           </div>
-          <div className="mb-3 border p-2 rounded bg-gray-50 dark:bg-gray-700">
+          <div className="mb-3 border p-2 rounded bg-gray-50 dark:bg-gray-900">
             <h3 className="font-medium mb-1 text-gray-800 dark:text-white">Description</h3>
             <p
-              className="text-gray-700 dark:text-gray-300 text-sm overflow-hidden line-clamp-5 cursor-pointer"
+              className="text-gray-700 dark:text-white text-sm overflow-hidden line-clamp-5 cursor-pointer"
               onClick={() => setShowFullDescription(!showFullDescription)}
             >
               {showFullDescription ? productData.description : `${productData.description.slice(0, 100)}... Read more`}
@@ -123,12 +125,13 @@ export default function AmazonProductSearch() {
             href={productData.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block mt-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm"
+            className="inline-block mt-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm "
           >
             View on Amazon
           </Link>
         </div>
       )}
     </div>
+    </Layout>
   );
 }

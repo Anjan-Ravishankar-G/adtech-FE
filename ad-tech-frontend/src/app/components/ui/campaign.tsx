@@ -9,11 +9,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";  // Importing Table components
-import DateRangePicker from "../datePicker";
-import SplineArea from "../SplineArea";
-import BasicPieChart from "../bargraph";
-import Footer from "../footer";
-import Layout from "../Layout";
+import DateRangePicker from "./datePicker";
+import SplineArea from "./SplineArea";
+import BasicPieChart from "./bargraph";
+import Footer from "./footer";
+import Layout from "./Layout";
+import Modal from "./Modal";
 
 
 type CampaignData = {
@@ -128,6 +129,11 @@ const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
   const handleButtonClick = () => {
     setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
   };
+  // New function to handle sales click
+  // const handleSalesClick = (campaign: CampaignData) => {
+  //   setSelectedCampaign(campaign);
+  //   setIsSalesModalOpen(true);
+  // };
 
   return (
     <Layout>

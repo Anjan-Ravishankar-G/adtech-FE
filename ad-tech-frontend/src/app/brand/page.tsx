@@ -244,7 +244,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
                 {uniqueBrandTargetData.map((brand) => (
                   <TableRow key={`${brand.Brand}-${brand.DateTime}`}>
                     <TableCell className="hover:bg-gray-400 cursor-pointer">
-                      <Link href="/components/ui/campaign" className="text-black hover:text-gray-900 dark:text-white">
+                      <Link href="../components/ui/campaign" className="text-black hover:text-gray-900 dark:text-white">
                         {brand.Brand}
                       </Link>
                     </TableCell>
