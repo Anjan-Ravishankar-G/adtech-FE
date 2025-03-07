@@ -199,64 +199,64 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
   
   
   return (
-    <div className="font-sans bg-gray-50 p-4 rounded-lg shadow-md w-full max-w-2xl">
+    <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-md w-full max-w-2xl">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-medium text-gray-700">Timespan</h3>
+        <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200">Timespan</h3>
         <div className="flex items-center gap-2">
-          <div className="flex items-center border border-gray-200 rounded p-1">
-            <span className="text-sm px-2">{formatDate(startDate)}</span>
-            <span className="mx-1 text-gray-400">to</span>
-            <span className="text-sm px-2">{formatDate(endDate)}</span>
+          <div className="flex items-center border border-gray-200 dark:border-gray-600 rounded p-1">
+            <span className="text-sm px-2 text-gray-900 dark:text-gray-100">{formatDate(startDate)}</span>
+            <span className="mx-1 text-gray-400 dark:text-gray-400">to</span>
+            <span className="text-sm px-2 text-gray-900 dark:text-gray-100">{formatDate(endDate)}</span>
           </div>
         </div>
       </div>
       
-      <div className="flex border-b border-gray-200 mb-2">
+      <div className="flex border-b border-gray-200 dark:border-gray-600 mb-2">
         <div className="grid grid-cols-1 w-32">
           <button 
-            className="p-2 text-left text-violet-600 font-medium hover:bg-gray-100 rounded-lg"
+            className="p-2 text-left text-violet-600 font-medium hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
             onClick={() => applyPreset('custom')}
           >
             Custom
           </button>
           <button 
-            className="p-2 text-left text-gray-600 hover:bg-gray-100 rounded-lg"
+            className="p-2 text-left text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg"
             onClick={() => applyPreset('today')}
           >
             Today
           </button>
           <button 
-            className="p-2 text-left text-gray-600 hover:bg-gray-100 rounded-lg"
+            className="p-2 text-left text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg"
             onClick={() => applyPreset('yesterday')}
           >
             Yesterday
           </button>
           <button 
-            className="p-2 text-left text-gray-600 hover:bg-gray-100 rounded-lg"
+            className="p-2 text-left text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg"
             onClick={() => applyPreset('thisWeek')}
           >
             This week
           </button>
           <button 
-            className="p-2 text-left text-gray-600 hover:bg-gray-100 rounded-lg"
+            className="p-2 text-left text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg"
             onClick={() => applyPreset('lastWeek')}
           >
             Last week
           </button>
           <button 
-            className="p-2 text-left text-gray-600 hover:bg-gray-100 rounded-lg"
+            className="p-2 text-left text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg"
             onClick={() => applyPreset('thisMonth')}
           >
             This month
           </button>
           <button 
-            className="p-2 text-left text-gray-600 hover:bg-gray-100 rounded-lg"
+            className="p-2 text-left text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg"
             onClick={() => applyPreset('lastMonth')}
           >
             Last month
           </button>
           <button 
-            className="p-2 text-left text-gray-600 hover:bg-gray-100 rounded-lg"
+            className="p-2 text-left text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg"
             onClick={() => applyPreset('thisYear')}
           >
             This year
@@ -336,12 +336,6 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
                 ))}
               </div>
             </div>
-          </div>
-        </div>
-        
-        <div className="flex items-start p-2">
-          <div className="flex items-center justify-center w-8 h-8 bg-orange-100 text-orange-600 rounded-full font-medium">
-            3
           </div>
         </div>
       </div>

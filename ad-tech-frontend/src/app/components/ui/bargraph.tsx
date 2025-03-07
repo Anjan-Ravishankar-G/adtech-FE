@@ -26,22 +26,38 @@ const BasicPieChart: React.FC<BasicPieChartProps> = ({ series, height, labels, c
       },
     },
     dataLabels: {
-      enabled: false, // Disable data labels on the pie chart
+      enabled: false, // This will remove the percentage labels
+      style: {
+        colors: ['#FFFFFF'], // Set data label colors to white
+      },
     },
-    colors: combined
-      ? ["#F44336"]
-      : ["#F44336", "#2196F3", "#4CAF50", "#FFC107", "#9C27B0", "#2a40f1", "#2af1c7", ],
-    series: combined
-      ? [Math.round(series.reduce((acc, val) => acc + val, 0) / series.length)]
-      : series,
-    labels: combined ? ["Overall Progress"] : labels,
+    series: series,
+    chart: {
+      width: width,
+      type: "pie",
+    },
+    labels: labels,
+    colors: colors.length > 0 ? colors : undefined , // Use custom colors if provided
+    legend: {
+      labels: {
+        colors: 'var(--label-color)', // Use CSS variable for dynamic color
+      },
+    },
+  
+    
     responsive: [
       {
         breakpoint: 480,
         options: {
           chart: {
-            height: 300,
+            width: 200, // Adjust width for smaller screens
           },
+          legend: {
+            position: "bottom", // Move legend to the bottom for smaller screens
+            labels: {
+              colors: '#FFFFFF', // Set legend label color to white in dark mode
+            },
+          }, 
         },
       },
     ],

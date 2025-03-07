@@ -11,6 +11,10 @@ import {
 } from "@/app/components/ui/table";  // Importing Table components
 import DateRangePicker from "./datePicker";
 import SplineArea from "./SplineArea";
+import BasicPieChart from "./bargraph";
+import Footer from "./footer";
+import Layout from "./Layout";
+import Modal from "./Modal";
 
 
 type CampaignData = {
@@ -120,8 +124,14 @@ export default function PerformanceTable() {
   const handleButtonClick = () => {
     setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
   };
+  // New function to handle sales click
+  // const handleSalesClick = (campaign: CampaignData) => {
+  //   setSelectedCampaign(campaign);
+  //   setIsSalesModalOpen(true);
+  // };
 
   return (
+    <Layout>
     <div className="p-5">
       <div className="w-full p-4 rounded-lg">
         <div className="flex justify-between items-center">
@@ -135,19 +145,21 @@ export default function PerformanceTable() {
       </div>
       <h1 className="text-3xl font-bold mb-4 text-center">List of Campaigns</h1>
 
+      <div className="shadow-2xl p-4 text-black bg-white rounded-2xl dark:bg-black ">
        {/* AREA CHART SECTION */}
        {chartLoading ? (
         <div>Loading chart...</div>
       ) : chartError ? (
         <div className="text-red-500">{chartError}</div>
       ) : (
-        <SplineArea data={chartData} height={350} />
+        <SplineArea data={chartData} height={350} theme={document.documentElement.classList.contains("dark") ? "dark" : "light"} />
+       
       )}
 
       {/* Button to open the Date Range Picker */}
       <button 
         onClick={handleButtonClick}
-        className="text-white bg-gray-800 hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-lg text-sm p-5 py-2 m-2 dark:hover:bg-gray-700 "
+        className="text-Black bg-white shadow-2xl hover:bg-gray-400 focus:ring-gray-300 font-medium rounded-2xl text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700 dark:bg-black "
       >
         {isDatePickerOpen ? "Close Date Picker" : "Select Date Range"}
       </button>
@@ -158,7 +170,14 @@ export default function PerformanceTable() {
         }} />
       )}
 
-      <div className="p-1">
+         <div className="text-Black bg-white shadow-2xl hover:bg-gray-400 focus:ring-gray-300 font-medium rounded-2xl text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700 dark:text-white dark:bg-black">
+            <h2>Brand: brand 1</h2>
+          </div>
+
+        </div>
+
+      
+      <div className="shadow-2xl p-4 ml-1 bg-white rounded-2xl dark:bg-black ">
         <Table className="w-full">
           <TableHeader >
             <TableRow>
@@ -176,7 +195,7 @@ export default function PerformanceTable() {
               <TableRow key={campaign.SN} className="text-center">
                 <TableCell className="rounded-l-lg">{campaign.SN}</TableCell>
                 <TableCell className="border border-default-300 hover:bg-default-100 transition-colors cursor-pointer p-0">
-                  <Link href={`/ad_details/${campaign.campaignId}`} className="text-blue-600 hover:text-blue-800 hover:underline block w-full h-full p-4">
+                  <Link href={`/ad_details/${campaign.campaignId}`} className="text-black hover:bg-gray-300 block w-full h-full p-4 dark:text-white dark:hover:bg-blue-900">
                     {campaign.campaignName}
                   </Link>
                 </TableCell>
@@ -189,29 +208,66 @@ export default function PerformanceTable() {
             ))}
           </TableBody>
         </Table>
-
-        <h2 className="text-lg p-3 mt-7 ">Top 5 Compaign Based on Sales</h2>
-        <div className="flex space-x-10 ">
-          <div className="flex-1 overflow-x-auto">
-            <Table className="min-w-full border border-blue-600 text-center">
-              <TableHeader className="bg-black text-white top-0 z-10">
-                <TableRow>
-                  <TableHead>Campaign</TableHead>
-                    <TableHead>Sales</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                <TableBody>
-                  {topCampaignBySales1d.slice(0, 5).map((campaign) => (
-                    <TableRow key={campaign.SN}>
-                      <TableCell className="w-1/2">{campaign.campaignName}</TableCell>
-                      <TableCell className="w-1/2">{campaign.sales1d}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
       </div>
-    </div>       
+        <div className="flex gap-4 p-1 mt-3">
+           <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl dark:bg-black dark:shadow-[-20px_-10px_30px_6px_rgba(0,0,0,0.1),_15px_10px_30px_6px_rgba(45,78,255,0.15)]">
+            <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Campaign Based on Sales</h2>
+            <div className="flex space-x-10 ">
+              <div className="flex-1 overflow-x-auto">
+                <Table className="min-w-full border border-blue-600 text-center">
+                  <TableHeader className="bg-black text-white top-0 z-10">
+                    <TableRow>
+                      <TableHead>Campaign</TableHead>
+                        <TableHead>Sales</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                    <TableBody>
+                      {topCampaignBySales1d.slice(0, 5).map((campaign) => (
+                        <TableRow key={campaign.SN}>
+                          <TableCell className="w-1/2">{campaign.campaignName}</TableCell>
+                          <TableCell className="w-1/2">10000</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div> 
+                 {/* for pie chart */}
+              <div>
+                  <BasicPieChart 
+                  series={brandSalesData} 
+                  height={350}
+                  labels={brandNames}/>
+               </div>
+            </div>
+             <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl dark:bg-black dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
+             <h2 className="text-2xl font-bold mb-4 mt-8 text-center ">Top 5 Campaign Based on Spends</h2>
+                <div className="flex space-x-10 ">
+                  <div className="flex-1 overflow-x-auto">
+                    <Table className="min-w-full border border-blue-600 text-center">
+                      <TableHeader className="bg-black text-white top-0 z-10">
+                       <TableRow>
+                          <TableHead>Campaign</TableHead>
+                          <TableHead>Spends</TableHead>
+                        </TableRow>
+                       </TableHeader>
+                    <TableBody>
+                      {topCampaignBySales1d.slice(0, 5).map((campaign) => (
+                        <TableRow key={campaign.SN}>
+                          <TableCell className="w-1/2">{campaign.campaignName}</TableCell>
+                          <TableCell className="w-1/2">200</TableCell>
+                        </TableRow>
+                      ))} 
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            </div>
+        </div> 
+        <div className="mt-8">
+        <Footer />
+       </div>   
+      </div>  
+      </Layout>    
   );
 }

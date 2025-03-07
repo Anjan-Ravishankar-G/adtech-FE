@@ -9,9 +9,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
-import Header from "@/app/components/ui/header";
 import DateRangePicker from "@/app/components/ui/datePicker";
-import Sidebar from "@/app/components/ui/sidebar";
+import BasicPieChart from "@/app/components/ui/bargraph";
+import Footer from "@/app/components/ui/footer";
+import Layout from "@/app/components/ui/Layout";
 
 type CampaignData = {
   SN: string;
@@ -86,9 +87,8 @@ export default function PerformanceTable() {
     };
 
   return (
+    <Layout>
     <div className="p-5">
-      
-      {/* <Header /> */}
       {/* <Sidebar campaignId="yourCampaignId" adGroupId="yourAdGroupId" /> */}
 
       <div className="w-full p-3 rounded-lg">
@@ -140,7 +140,7 @@ export default function PerformanceTable() {
             {campaignData.map((campaign) => (
               <TableRow key={campaign.SN} className="text-center">
               <TableCell className="border border-default-300 hover:bg-default-100 transition-colors cursor-pointer p-0">
-                <Link href={`/adGroupDetails/${campaign.campaignId}/${campaign.adGroupId}/`} className="text-blue-600 hover:text-blue-800 hover:underline block w-full h-full p-4">
+                <Link href={`/adGroupDetails/${campaign.campaignId}/${campaign.adGroupId}/`} className="text-black hover:bg-gray-300 block w-full h-full p-4 dark:text-white dark:hover:bg-blue-900">
                 {campaign.adGroupName}
                 </Link>
               </TableCell>
@@ -182,5 +182,6 @@ export default function PerformanceTable() {
         </Table>
       </div>
     </div>
+    </Layout>
   );
 }

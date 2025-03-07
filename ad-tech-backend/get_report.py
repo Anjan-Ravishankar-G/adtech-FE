@@ -1,11 +1,16 @@
 from fastapi import FastAPI, HTTPException
 import pymysql
 from typing import List, Dict
+import time 
 import os
+import requests
+import json
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 import keyword_recommendation
 import negative_keyword
+from urllib.parse import urlencode
+from pydantic import BaseModel
 load_dotenv()  # Load .env variables
 
 app = FastAPI()
@@ -136,3 +141,363 @@ def get_negative_keywords():
     if not list_of_keyowrd:
         raise HTTPException(status_code=404, detail="No keywords found")
     return list_of_keyowrd
+
+
+
+
+
+
+
+# Base URL for SerpAPI
+SERPAPI_URL = "https://serpapi.com/search.json"
+
+
+
+#interest over time 
+@app.get("/interestOverTime")
+async def get_serpapi_data(q: str, data_type: str = "TIMESERIES", api_key: str = "6910f5450ddf25d318ff7688a0b1224d8ca3bebb51054bea06929fc9bda311dd", hl: str = "en"):
+    params = {
+        "engine": "google_trends",
+        "hl": hl,
+        "q": q,
+        "data_type": data_type,
+        "api_key": api_key
+    }
+
+    endpoint = f"{SERPAPI_URL}?{urlencode(params)}"
+    response = requests.get(endpoint)
+
+    if response.status_code == 200:
+        data = response.json()
+        transformed_data = []
+        if "interest_over_time" in data and "timeline_data" in data["interest_over_time"]:
+            for time_point in data["interest_over_time"]["timeline_data"]:
+                entry = {
+                    "date": time_point["date"]
+                }
+                for value_data in time_point["values"]:
+                    entry[value_data["query"]] = value_data["extracted_value"]
+                transformed_data.append(entry)
+        return transformed_data
+    else:
+        return {"error": f"Error: {response.status_code}", "message": response.text}
+
+
+#compared by 
+@app.get("/comparedBy")
+def get_formatted_geographic_interest(
+    q: str,
+    data_type: str = "GEO_MAP",
+    api_key: str = "6910f5450ddf25d318ff7688a0b1224d8ca3bebb51054bea06929fc9bda311dd",
+    hl: str = "en",
+    geo: str = "IN",
+):
+    
+    params = {
+        "engine": "google_trends",
+        "q": q,
+        "data_type": data_type,
+        "api_key": api_key,
+        "hl": hl,
+        "geo": geo,
+        "geo_level": "city"
+    }
+    
+    try:
+        response = requests.get(SERPAPI_URL, params=params)
+        
+        if response.status_code != 200:
+            return {"error": f"Error: {response.status_code}", "message": response.text}
+        
+        data = response.json()
+        
+        keywords = [k.strip() for k in q.split(",")]
+        
+        result = {
+            "keywords": keywords,
+            "locations": []
+        }
+        
+        if "compared_breakdown_by_region" in data:
+            for region in data["compared_breakdown_by_region"]:
+                location_data = {
+                    "name": region.get("location", ""),
+                    "code": region.get("geo", ""),
+                    "values": {}
+                }
+                
+                if "values" in region:
+                    for value_item in region["values"]:
+                        if "query" in value_item and "extracted_value" in value_item:
+                            query = value_item["query"]
+                            value = value_item["extracted_value"]
+                            location_data["values"][query] = value
+                
+                result["locations"].append(location_data)
+        
+        return result
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching data from SerpAPI: {str(e)}")
+
+
+@app.get("/relatedQueries")
+async def get_related_queries(q: str, data_type: str = "RELATED_QUERIES",
+    api_key: str = "6910f5450ddf25d318ff7688a0b1224d8ca3bebb51054bea06929fc9bda311dd", hl: str = "en", geo: str= "GEO_MAP"):
+    
+    params = {
+        "engine": "google_trends",
+        "q": q,
+        "data_type": data_type,
+        "api_key": api_key,
+    }
+    try:
+        # Send the GET request
+        response = requests.get(SERPAPI_URL, params=params)
+        response.raise_for_status()  # Raise exception for non-200 status codes
+        
+        data = response.json()
+        
+        # Transform the data into a structured format
+        result = {}
+        
+        # Extract search terms from the query
+        search_terms = [term.strip() for term in q.split(",")]
+        
+        # Process the related queries data
+        if "related_queries" in data:
+            related_data = data["related_queries"]
+            
+            for term in search_terms:
+                term_data = {}
+                
+                # Check if this term has data in the response
+                if term in related_data:
+                    term_info = related_data[term]
+                    
+                    # Process top queries if available
+                    if "top" in term_info:
+                        term_data["top"] = [
+                            {
+                                "query": item.get("query", ""),
+                                "value": item.get("value", 0),
+                                "link": item.get("link", "")
+                            }
+                            for item in term_info["top"]
+                        ]
+                    
+                    # Process rising queries if available
+                    if "rising" in term_info:
+                        term_data["rising"] = [
+                            {
+                                "query": item.get("query", ""),
+                                "value": item.get("value", 0),
+                                "link": item.get("link", "")
+                            }
+                            for item in term_info["rising"]
+                        ]
+                
+                result[term] = term_data
+        
+        return result
+        
+    except requests.exceptions.RequestException as e:
+        return {"error": f"Error: {response.status_code}", "message": response.text}
+
+
+
+@app.get("/multiQueryRelatedQueries")
+async def get_multiple_related_queries(
+    keywords: str,  # Required parameter for comma-separated keywords
+    data_type: str = "RELATED_QUERIES",
+    api_key: str = "6910f5450ddf25d318ff7688a0b1224d8ca3bebb51054bea06929fc9bda311dd",
+    hl: str = "en",
+    geo: str = "IN"  # Default to India
+):
+    # Split the keywords
+    keyword_list = [k.strip() for k in keywords.split(",")]
+    
+    # Prepare simplified result dictionary
+    result = {}
+    
+    # Make a separate request for each keyword
+    for keyword in keyword_list:
+        params = {
+            "engine": "google_trends",
+            "q": keyword,
+            "data_type": data_type,
+            "api_key": api_key,
+            "hl": hl,
+            "geo": geo
+        }
+        
+        try:
+            # Send the GET request
+            response = requests.get(SERPAPI_URL, params=params)
+            
+            # Check for errors
+            if response.status_code != 200:
+                result[keyword] = {"error": f"Error: {response.status_code}"}
+                continue
+            
+            data = response.json()
+            
+            # Extract only the requested fields
+            if "related_queries" in data:
+                related_data = data["related_queries"]
+                filtered_data = {}
+                
+                # Process rising queries
+                if "rising" in related_data:
+                    filtered_data["rising"] = []
+                    for item in related_data["rising"]:
+                        if "query" in item and "value" in item:
+                            filtered_data["rising"].append({
+                                "query": item["query"],
+                                "value": item["value"]
+                            })
+                
+                # Process top queries
+                if "top" in related_data:
+                    filtered_data["top"] = []
+                    for item in related_data["top"]:
+                        if "query" in item and "value" in item:
+                            filtered_data["top"].append({
+                                "query": item["query"],
+                                "value": item["value"]
+                            })
+                
+                result[keyword] = filtered_data
+            else:
+                result[keyword] = {"error": "No related queries data found"}
+                
+        except requests.exceptions.RequestException as e:
+            result[keyword] = {"error": f"Request error: {str(e)}"}
+    
+    return result
+
+
+
+
+
+def extract_product_details(data):
+    # Extract best sellers rank (if available in product details)
+    best_sellers_rank = next(
+        (item['value'] for item in data.get('product_details', []) 
+         if item.get('type') == 'Best Sellers Rank'), 
+        'N/A'
+    )
+
+    # Extract price from variations (finding the correct variation)
+    current_variation = next(
+        (var for var in data.get('variations', []) 
+         if var['asin'] == data.get('asin')), 
+        {}
+    )
+
+    # Prepare the output dictionary
+    product_details = {
+        'title': data.get('title', 'N/A'),
+        'reviews_count': data.get('reviews_count', 'N/A'),
+        'top_review': None,  # No top review in this JSON
+        'seller_name': data.get('seller_name', 'N/A'),
+        'initial_price': data.get('initial_price', 'N/A'),
+        'currency': data.get('currency', 'N/A'),
+        'categories': data.get('categories', []),
+        'asin': data.get('asin', 'N/A'),
+        'buybox_seller': data.get('buybox_seller', 'N/A'),
+        'root_bs_rank': data.get('root_bs_rank', 'N/A'),
+        'discount': data.get('discount', 'N/A'),
+        'buybox_prices': data.get('buybox_prices', {}),
+        'description': data.get('description', 'N/A'),
+        'number_of_sellers': data.get('number_of_sellers', 'N/A'),
+        'best_sellers_rank': best_sellers_rank,
+        'variation_details': {
+            'name': current_variation.get('name', 'N/A'),
+            'price': current_variation.get('price', 'N/A')
+        },
+        'rating': current_variation.get("rating",'N/A')
+    }
+    
+    return product_details
+
+
+
+class UrlRequest(BaseModel):
+    url: str
+
+@app.post("/amazon/url")
+def get_snapshot_id(request: UrlRequest):
+    api_url = "https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7q7dkf244hwjntr0&include_errors=true"
+    headers = {
+        "Authorization": "Bearer d2edcf5e3f0749d8a7c6d39f4df331946c5a353104358818a6a651bf4157b9c8",
+        "Content-Type": "application/json"
+    }
+
+    body = {
+        "url": request.url,
+        "asin": "",  
+        "zipcode": ""  
+    }
+
+    try:
+        response = requests.post(api_url, headers=headers, json=body)
+        snapshot_id =  response.json().get("snapshot_id")
+        result = True
+        while result:
+            api_url = f"https://api.brightdata.com/datasets/v3/snapshot/{snapshot_id}?format=jsonl"
+            headers = {
+                "Authorization": "Bearer d2edcf5e3f0749d8a7c6d39f4df331946c5a353104358818a6a651bf4157b9c8"
+            }
+            response = requests.get(api_url, headers=headers)
+            
+            if response.status_code != 200:
+                # raise HTTPException(
+                #     status_code=response.status_code,
+                #     detail=f"Brightdata API error: {response.text}"
+                # )
+                print(response.text)
+                result = True
+            else:
+                result = False
+            if result == False:
+                product_data = json.loads(response.text.strip().split('\n')[0])
+                result = False
+                
+                product_details = extract_product_details(product_data)
+                
+                return product_details
+    
+    
+    except requests.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Request failed: {str(e)}")
+    
+
+@app.get("/amazon/product/{snapshot}")
+def get_product_data(snapshot: str):
+    api_url = f"https://api.brightdata.com/datasets/v3/snapshot/{snapshot}?format=jsonl"
+    headers = {
+        "Authorization": "Bearer d2edcf5e3f0749d8a7c6d39f4df331946c5a353104358818a6a651bf4157b9c8"
+    }
+    
+    try:
+        response = requests.get(api_url, headers=headers)
+        
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=f"Brightdata API error: {response.text}"
+            )
+        
+     
+        product_data = json.loads(response.text.strip().split('\n')[0])
+        
+        product_details = extract_product_details(product_data)
+        
+        return product_details
+        
+    except requests.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Request failed: {str(e)}")
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="Failed to parse the API response")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing data: {str(e)}")
