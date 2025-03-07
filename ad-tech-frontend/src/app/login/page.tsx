@@ -1,5 +1,9 @@
 "use client";
+<<<<<<< HEAD
 import React, { useActionState } from "react";
+=======
+import React from "react";
+>>>>>>> nabin
 import { z } from "zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -8,7 +12,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
+<<<<<<< HEAD
 import { login } from "./actions";
+=======
+>>>>>>> nabin
 
 const schema = z.object({
   email: z.string().email({ message: "Your email is invalid." }),
@@ -53,10 +60,15 @@ const LogInForm = () => {
       }
     });
   };
+<<<<<<< HEAD
   
   const [state, loginAction] = useActionState(login, undefined); 
   return (
     
+=======
+
+  return (
+>>>>>>> nabin
     <div className="flex min-h-screen">
       <div className="hidden md:block md:w-1/2 bg-blue-100 dark:bg-gray-800 relative">
         <div className="absolute inset-0 flex items-center justify-center p-6">
@@ -88,7 +100,11 @@ const LogInForm = () => {
           <div className="2xl:text-lg text-base text-gray-600 2xl:mt-2 leading-6 dark:text-white">
             Enter the information you entered while registering.
           </div>
+<<<<<<< HEAD
           <form action={loginAction} className="mt-5 2xl:mt-7">
+=======
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-5 2xl:mt-7">
+>>>>>>> nabin
             <div>
               <label htmlFor="email" className="mb-2 font-medium text-gray-600 dark:text-white">
                 Email
@@ -178,4 +194,8 @@ const LogInForm = () => {
     </div>
   );
 };
+<<<<<<< HEAD
+=======
+
+>>>>>>> nabin
 export default LogInForm;

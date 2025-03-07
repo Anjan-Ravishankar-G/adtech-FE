@@ -27,12 +27,10 @@ def get_recommended_keywords(campaign_id, ad_group_id):
         "recommendationType": "KEYWORDS_FOR_ADGROUP",
         "adGroupId": ad_group_id
     }
-    
     try:
         response = requests.post(api_url, json=body, headers=header)
         response.raise_for_status()
         data = response.json()
-        
         # Extract required fields
         keyword_data = []
         for item in data.get("keywordTargetList", []):
@@ -41,8 +39,7 @@ def get_recommended_keywords(campaign_id, ad_group_id):
                 theme = "Conversion" if bid_info.get("theme") == "CONVERSION_OPPORTUNITIES" else bid_info.get("theme")
                 match_type = bid_info.get("matchType", "")
                 rank = bid_info.get("rank", 0)
-                bid = round(bid_info.get("bid", 0))  
-
+                bid = round(bid_info.get("bid", 0))
                 keyword_data.append({
                     "keyword": keyword,
                     "theme": theme,
@@ -51,7 +48,6 @@ def get_recommended_keywords(campaign_id, ad_group_id):
                     "bid": bid
                 })
         return keyword_data
-
     except requests.exceptions.RequestException as e:
         print(f"Error fetching recommended keywords: {e}")
         return []

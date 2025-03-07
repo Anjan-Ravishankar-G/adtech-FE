@@ -82,6 +82,17 @@ export default function PerformanceTable() {
     .sort((a, b) => b.sales1d - a.sales1d)
     .slice(0, 5);
 
+    const salesSeries = topSales.map(campaign => campaign.sales1d);
+    const salesLabels = topSales.map(campaign => campaign.adGroupName);
+
+  // Extract top 5 ad groups by spend
+  const topSpend = [...campaignData]
+  .sort((a, b) => b.cost - a.cost)
+  .slice(0, 5);
+    // Prepare data for Pie Chart
+ const spendSeries = topSpend.map(campaign => campaign.cost);
+ const spendLabels = topSpend.map(campaign => campaign.adGroupName);
+
     const handleButtonClick = () => {
       setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
     };
@@ -107,7 +118,7 @@ export default function PerformanceTable() {
       {/* Button to open the Date Range Picker */}
       <button 
         onClick={handleButtonClick}
-        className="text-white bg-gray-800 hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-lg text-sm p-5 py-2 m-2 dark:hover:bg-gray-700 "
+        className="text-Black bg-white shadow-2xl hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700  dark:bg-black dark:text-white"
       >
         {isDatePickerOpen ? "Close Date Picker" : "Select Date Range"}
       </button>
@@ -118,7 +129,7 @@ export default function PerformanceTable() {
         }} />
       )}
       
-      <div className="overflow-x-auto max-h-96 p-1">
+      <div className="shadow-2xl p-4 bg-white rounded-2xl overflow-x-auto max-h-96  dark:bg-black">
         <Table className="border border-default-100 rounded-lg">
           <TableHeader className="bg-black text-white  top-0 z-10">
             <TableRow>
@@ -160,27 +171,69 @@ export default function PerformanceTable() {
           </TableBody>
         </Table>
       </div>
+      <div className=" p-1 mt-5 flex gap-4">
+        <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl  dark:bg-black">
         {/* Second Table: Top 5 Ad Groups by Sales (Showing Only 2 Rows) */}
-      <h1 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Ad Groups by Sales</h1>
-      <div className="overflow-x-auto max-h-96 p-1">
-        <Table className="border border-default-100 rounded-lg">
-          <TableHeader className="bg-black text-white top-0 z-10">
-            <TableRow>
-              <TableHead>Ad Group</TableHead>
-              <TableHead>Sales</TableHead>
-            </TableRow>
-          </TableHeader>
-        
-          <TableBody className="text-white">
-            {topSales.slice(0, 2).map((campaign) => (
-              <TableRow key={campaign.SN} className="text-center">
-                <TableCell className="w-1/2">{campaign.adGroupName}</TableCell>
-                <TableCell className="w-1/2">{campaign.sales1d}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+          <h1 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Ad Groups by Spend</h1>
+          <div className="overflow-x-auto max-h-96 p-1">
+            <Table className="border border-default-100 rounded-lg">
+              <TableHeader className="bg-black text-white top-0 z-10">
+                <TableRow>
+                  <TableHead>Ad Group</TableHead>
+                  <TableHead>Spends</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="text-white">
+                {topSpend.slice(0, 2).map((campaign) => (
+                  <TableRow key={campaign.SN} className="text-center">
+                    <TableCell className="w-1/2">{campaign.adGroupName}</TableCell>
+                    <TableCell className="w-1/2">{campaign.cost}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+              {/* for pie chart */}
+              <div>
+                  <BasicPieChart 
+                  series={spendSeries} 
+                  height={350}
+                  labels={spendLabels}/>
+               </div>
+        </div>
+        <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl  dark:bg-black">
+          <h1 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Ad Groups by Sales</h1>
+          <div className="overflow-x-auto max-h-96 p-1">
+            <Table className="border border-default-100 rounded-lg">
+              <TableHeader className="bg-black text-white top-0 z-10">
+                <TableRow>
+                  <TableHead>Ad Group</TableHead>
+                  <TableHead>Sales</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="text-white">
+                {topSales.slice(0, 2).map((campaign) => (
+                  <TableRow key={campaign.SN} className="text-center">
+                    <TableCell className="w-1/2">{campaign.adGroupName}</TableCell>
+                    <TableCell className="w-1/2">{campaign.sales1d}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+             {/* for pie chart */}
+             <div>
+                  <BasicPieChart 
+                  series={salesSeries} 
+                  height={350}
+                  labels={salesLabels}/>
+               </div>
+        </div>
+          
       </div>
+      <div className="mt-8">
+        <Footer />
+       </div>
     </div>
     </Layout>
   );

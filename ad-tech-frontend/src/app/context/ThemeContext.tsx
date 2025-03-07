@@ -34,15 +34,25 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     if (savedTheme) {
       setTheme(savedTheme);
     } else {
-      // Default to light theme
-      setTheme('light');
+      // Check user's system preference
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setTheme('dark');
+      } else {
+        setTheme('light');
+      }
     }
   }, []);
 
   useEffect(() => {
-    // Remove previous theme class from the body
+    // For Tailwind dark mode, we only add 'dark' class to html element when in dark mode
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    
+    // We'll keep this for backward compatibility with your custom CSS
     document.body.classList.remove('light', 'dark');
-    // Add the current theme class to the body
     document.body.classList.add(theme);
 
     // Save the selected theme to localStorage

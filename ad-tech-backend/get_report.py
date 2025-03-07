@@ -4,13 +4,12 @@ from typing import List, Dict
 import time 
 import os
 import requests
-import json
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 import keyword_recommendation
 import negative_keyword
 from urllib.parse import urlencode
-from pydantic import BaseModel
+import amazonScraping
 load_dotenv()  # Load .env variables
 
 app = FastAPI()
@@ -144,7 +143,16 @@ def get_negative_keywords():
 
 
 
+#for the research part 
+#amazon scraping 
 
+@app.get("/scrap/{asin}")
+def get_amazon_scrap(asin: str):
+    data = amazonScraping.scrape_amazon_product(asin)
+    if not data:
+        raise HTTPException(status_code=404, detail="No details found")
+    print(data)
+    return data
 
 
 
@@ -155,7 +163,7 @@ SERPAPI_URL = "https://serpapi.com/search.json"
 
 #interest over time 
 @app.get("/interestOverTime")
-async def get_serpapi_data(q: str, data_type: str = "TIMESERIES", api_key: str = "6910f5450ddf25d318ff7688a0b1224d8ca3bebb51054bea06929fc9bda311dd", hl: str = "en"):
+async def get_serpapi_data(q: str, data_type: str = "TIMESERIES", api_key: str = "ee9e5cc7b59c3c63dd11dc37c2e93618c8bd3c2a3fc0c670cd7ae50bc81f88ab", hl: str = "en"):
     params = {
         "engine": "google_trends",
         "hl": hl,
@@ -188,7 +196,7 @@ async def get_serpapi_data(q: str, data_type: str = "TIMESERIES", api_key: str =
 def get_formatted_geographic_interest(
     q: str,
     data_type: str = "GEO_MAP",
-    api_key: str = "6910f5450ddf25d318ff7688a0b1224d8ca3bebb51054bea06929fc9bda311dd",
+    api_key: str = "ee9e5cc7b59c3c63dd11dc37c2e93618c8bd3c2a3fc0c670cd7ae50bc81f88ab",
     hl: str = "en",
     geo: str = "IN",
 ):
@@ -241,8 +249,8 @@ def get_formatted_geographic_interest(
 
 
 @app.get("/relatedQueries")
-async def get_related_queries(q: str, data_type: str = "RELATED_QUERIES",
-    api_key: str = "6910f5450ddf25d318ff7688a0b1224d8ca3bebb51054bea06929fc9bda311dd", hl: str = "en", geo: str= "GEO_MAP"):
+async def get_related_queries(q: str="headphone, samsung", data_type: str = "RELATED_QUERIES",
+    api_key: str = "ee9e5cc7b59c3c63dd11dc37c2e93618c8bd3c2a3fc0c670cd7ae50bc81f88ab", hl: str = "en", geo: str= "GEO_MAP"):
     
     params = {
         "engine": "google_trends",
@@ -309,7 +317,7 @@ async def get_related_queries(q: str, data_type: str = "RELATED_QUERIES",
 async def get_multiple_related_queries(
     keywords: str,  # Required parameter for comma-separated keywords
     data_type: str = "RELATED_QUERIES",
-    api_key: str = "6910f5450ddf25d318ff7688a0b1224d8ca3bebb51054bea06929fc9bda311dd",
+    api_key: str = "ee9e5cc7b59c3c63dd11dc37c2e93618c8bd3c2a3fc0c670cd7ae50bc81f88ab",
     hl: str = "en",
     geo: str = "IN"  # Default to India
 ):
@@ -374,130 +382,3 @@ async def get_multiple_related_queries(
             result[keyword] = {"error": f"Request error: {str(e)}"}
     
     return result
-
-
-
-
-
-def extract_product_details(data):
-    # Extract best sellers rank (if available in product details)
-    best_sellers_rank = next(
-        (item['value'] for item in data.get('product_details', []) 
-         if item.get('type') == 'Best Sellers Rank'), 
-        'N/A'
-    )
-
-    # Extract price from variations (finding the correct variation)
-    current_variation = next(
-        (var for var in data.get('variations', []) 
-         if var['asin'] == data.get('asin')), 
-        {}
-    )
-
-    # Prepare the output dictionary
-    product_details = {
-        'title': data.get('title', 'N/A'),
-        'reviews_count': data.get('reviews_count', 'N/A'),
-        'top_review': None,  # No top review in this JSON
-        'seller_name': data.get('seller_name', 'N/A'),
-        'initial_price': data.get('initial_price', 'N/A'),
-        'currency': data.get('currency', 'N/A'),
-        'categories': data.get('categories', []),
-        'asin': data.get('asin', 'N/A'),
-        'buybox_seller': data.get('buybox_seller', 'N/A'),
-        'root_bs_rank': data.get('root_bs_rank', 'N/A'),
-        'discount': data.get('discount', 'N/A'),
-        'buybox_prices': data.get('buybox_prices', {}),
-        'description': data.get('description', 'N/A'),
-        'number_of_sellers': data.get('number_of_sellers', 'N/A'),
-        'best_sellers_rank': best_sellers_rank,
-        'variation_details': {
-            'name': current_variation.get('name', 'N/A'),
-            'price': current_variation.get('price', 'N/A')
-        },
-        'rating': current_variation.get("rating",'N/A')
-    }
-    
-    return product_details
-
-
-
-class UrlRequest(BaseModel):
-    url: str
-
-@app.post("/amazon/url")
-def get_snapshot_id(request: UrlRequest):
-    api_url = "https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7q7dkf244hwjntr0&include_errors=true"
-    headers = {
-        "Authorization": "Bearer d2edcf5e3f0749d8a7c6d39f4df331946c5a353104358818a6a651bf4157b9c8",
-        "Content-Type": "application/json"
-    }
-
-    body = {
-        "url": request.url,
-        "asin": "",  
-        "zipcode": ""  
-    }
-
-    try:
-        response = requests.post(api_url, headers=headers, json=body)
-        snapshot_id =  response.json().get("snapshot_id")
-        result = True
-        while result:
-            api_url = f"https://api.brightdata.com/datasets/v3/snapshot/{snapshot_id}?format=jsonl"
-            headers = {
-                "Authorization": "Bearer d2edcf5e3f0749d8a7c6d39f4df331946c5a353104358818a6a651bf4157b9c8"
-            }
-            response = requests.get(api_url, headers=headers)
-            
-            if response.status_code != 200:
-                # raise HTTPException(
-                #     status_code=response.status_code,
-                #     detail=f"Brightdata API error: {response.text}"
-                # )
-                print(response.text)
-                result = True
-            else:
-                result = False
-            if result == False:
-                product_data = json.loads(response.text.strip().split('\n')[0])
-                result = False
-                
-                product_details = extract_product_details(product_data)
-                
-                return product_details
-    
-    
-    except requests.RequestException as e:
-        raise HTTPException(status_code=500, detail=f"Request failed: {str(e)}")
-    
-
-@app.get("/amazon/product/{snapshot}")
-def get_product_data(snapshot: str):
-    api_url = f"https://api.brightdata.com/datasets/v3/snapshot/{snapshot}?format=jsonl"
-    headers = {
-        "Authorization": "Bearer d2edcf5e3f0749d8a7c6d39f4df331946c5a353104358818a6a651bf4157b9c8"
-    }
-    
-    try:
-        response = requests.get(api_url, headers=headers)
-        
-        if response.status_code != 200:
-            raise HTTPException(
-                status_code=response.status_code,
-                detail=f"Brightdata API error: {response.text}"
-            )
-        
-     
-        product_data = json.loads(response.text.strip().split('\n')[0])
-        
-        product_details = extract_product_details(product_data)
-        
-        return product_details
-        
-    except requests.RequestException as e:
-        raise HTTPException(status_code=500, detail=f"Request failed: {str(e)}")
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=500, detail="Failed to parse the API response")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error processing data: {str(e)}")

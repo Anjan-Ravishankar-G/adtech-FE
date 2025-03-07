@@ -48,8 +48,8 @@ const BasicRadialBar: React.FC<BasicRadialBarProps> = ({ series, height, labels,
       },
     },
     colors: combined
-      ? ["#F44336"]
-      : ["#F44336", "#2196F3", "#4CAF50", "#FFC107", "#9C27B0", "#2a40f1", "#2af1c7", "#cb060f"],
+      ? ["#2196F3"]
+      : ["#F44336", "#2196F3", "#4CAF50", "#FFC107", "#9C27B0", "#2a40f1", "#2af1c7", "#79f728"],
     series: combined
       ? [Math.round(series.reduce((acc, val) => acc + val, 0) / series.length)]
       : series,
@@ -93,7 +93,7 @@ const BasicRadialBar: React.FC<BasicRadialBarProps> = ({ series, height, labels,
                 marginRight: "5px",
               }}
             ></span>
-            <span style={{ fontSize: "16px", color: "black" }}>{label}</span>
+             <span className="text-black dark:text-white" style={{ fontSize: "16px" }}>{label}</span>
           </div>
         ))}
     </div>

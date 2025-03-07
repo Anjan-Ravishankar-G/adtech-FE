@@ -121,6 +121,11 @@ export default function PerformanceTable() {
   .sort((a, b) => b.sales1d - a.sales1d)  // Use sales1d for sorting
   .slice(0, 5);  // Get top 5 campaigns
 
+
+// Extract campaign names and sales figures for the pie chart
+const brandNames = topCampaignBySales1d.map(campaign => campaign.campaignName);
+const brandSalesData = topCampaignBySales1d.map(campaign => campaign.sales1d);
+
   const handleButtonClick = () => {
     setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
   };
@@ -138,9 +143,6 @@ export default function PerformanceTable() {
           <div className="text-white text-4xl">
             <h2 className="text-4xl font-light">IPG</h2>
           </div>
-          <div className="text-white">
-            <h2 className="text-2xl font-light">Brand: brand 1</h2>
-          </div>
         </div>
       </div>
       <h1 className="text-3xl font-bold mb-4 text-center">List of Campaigns</h1>
@@ -155,6 +157,9 @@ export default function PerformanceTable() {
         <SplineArea data={chartData} height={350} theme={document.documentElement.classList.contains("dark") ? "dark" : "light"} />
        
       )}
+      </div>
+
+      <div className="flex -1 gap-4">
 
       {/* Button to open the Date Range Picker */}
       <button 
@@ -183,7 +188,16 @@ export default function PerformanceTable() {
             <TableRow>
               <TableHead className="text-center">SN</TableHead>
               <TableHead className="text-center">Campaign</TableHead>
-              <TableHead className="text-center">Campaign Type</TableHead>
+              <TableHead className="text-center">
+                Campaign Type
+                 <select 
+                     className="ml-3 bg-black text-white  rounded">
+                       <option className="py-3" value="SP">SP</option>
+                       <option value="SB">SB</option>
+                       <option value="SD">SD</option>
+                       <option value="SD">SBV</option>
+                 </select>
+                </TableHead>
               <TableHead className="text-center">Sales</TableHead>
               <TableHead className="text-center">Spend</TableHead>
               <TableHead className="text-center">Goal</TableHead>

@@ -195,9 +195,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
   const currentMonthCalendar = generateCalendar(0);
   const nextMonthCalendar = generateCalendar(1);
 
- 
-  
-  
+   
   return (
     <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-md w-full max-w-2xl">
       <div className="flex items-center justify-between mb-4">

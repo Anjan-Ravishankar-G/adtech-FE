@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useTheme } from "next-themes";
+import Footer from "../components/ui/footer";
 import {
   Table,
   TableBody,
@@ -15,7 +16,9 @@ import {
 import DateRangePicker from "../components/ui/datePicker";
 
 import BasicRadialBar from "../components/ui/RadialbarChart"; // Updated RadialBar
-import BasicPieChat from "../components/ui/bargraph";
+import BasicPieChart from "../components/ui/bargraph";
+import Layout from "../components/ui/Layout";
+
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -57,6 +60,7 @@ async function fetchUniqueBrandTargetData() {
 }
 
 export default function BrandTargetTables() {
+  
   const [brandTargetData, setBrandTargetData] = useState<BrandTargetData[] | null>(null);
   const [uniqueBrandTargetData, setUniqueBrandTargetData] = useState<BrandTargetData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -133,16 +137,28 @@ export default function BrandTargetTables() {
 
   const brandNames = uniqueBrandTargetData.map((brand) => brand.Brand);
 
+  const brandSalesData = uniqueBrandTargetData.map((brand) => brand.TargetAchieved);
+
    // Sort brands by sales achieved in descending order and get top 5
-   const topBrandsBySales = [...uniqueBrandTargetData]
+  const topBrandsBySales = [...uniqueBrandTargetData]
    .sort((a, b) => b.TargetAchieved - a.TargetAchieved)
    .slice(0, 5);
 
-   const handleButtonClick = () => {
+  const handleButtonClick = () => {
     setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
     };
 
-    
+const brandProgressDataTop5 = topBrandsBySales.map((brand) => brand.TargetAchieved);
+const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
+
+//   // Sorting brands by Spends (assuming actual spend data is available)
+// const topBrandsBySpends = [...uniqueBrandTargetData]
+// .sort((a, b) => b.Spends - a.Spends) // Sort by Spends
+// .slice(0, 5); // Get top 5 brands
+
+// // Extract spends data and names for Pie Chart
+// const brandSpendsDataTop5 = topBrandsBySpends.map((brand) => brand.Spends);
+// const brandNamesTop5Spends = topBrandsBySpends.map((brand) => brand.Brand);
 
   return (
     <Layout>
@@ -184,8 +200,7 @@ export default function BrandTargetTables() {
               series={brandProgressData} // Multiple progress for individual brands
               labels={brandNames} // Add brand names as labels
               hollowSize="30%"
-            />
-            
+            /> 
           </div>
             {/* Individual Radial Chart with Multiple Brands */}
               <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
@@ -196,8 +211,6 @@ export default function BrandTargetTables() {
                 colors={["#F44336", "#2196F3", "#4CAF50", "#FFC107", "#9C27B0", "#2a40f1", "#2af1c7", "#79f728"]}/>  
               </div> 
         </div>
-
-        
         
         {/* Button to open the Date Range Picker */}
       <button 
@@ -215,8 +228,6 @@ export default function BrandTargetTables() {
 
         <div className="shadow-2xl p-4 bg-white rounded-2xl dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
         
-        {/* Layout for tables and pie chart */}
-        <div className="flex space-x-10 p-1">
           {/* Brand Table */}
           <div className="flex-1 overflow-x-auto ">
           <Table className="min-w-full border text-center">
@@ -255,7 +266,7 @@ export default function BrandTargetTables() {
       <div className="mt-12 flex gap-4 rounded-2xl">
         <div className="w-1/2 shadow-2xl p-4 bg-white rounded-lg dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
         {/* tablee for top 5 brands according to sales achived */}
-        <h2 className="text-lg p-4 mt-3 ">Top 5 Brands Based on Sales Achieved</h2>
+        <h2 className="text-2xl font-bold mb-4 mt-8 text-center ">Top 5 Brands Based on Sales Achieved</h2>
         <div className="flex space-x-10 ">
           <div className="flex-1 overflow-x-auto">
             <Table className="min-w-full border text-center">
@@ -274,8 +285,12 @@ export default function BrandTargetTables() {
                 ))}
               </TableBody>
             </Table>
+            <BasicPieChart 
+                  series={brandProgressDataTop5} 
+                  height={350}
+                  labels={brandNamesTop5}/>
           </div>
-        </div>
+        </div>     
         </div>
       <div className="w-1/2 shadow-2xl p-4 bg-white rounded-lg dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
         <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Brands Based on Spends</h2>
@@ -297,8 +312,16 @@ export default function BrandTargetTables() {
                 ))}
               </TableBody>
             </Table>
+             {/* for pie chart */}
+           
+                  <BasicPieChart 
+                  series={brandProgressDataTop5} 
+                  height={350}
+                  labels={brandNamesTop5}/>
+              
           </div>
         </div>
+           
       </div>
       </div>
       </div>

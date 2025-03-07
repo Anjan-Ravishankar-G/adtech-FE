@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,7 +9,7 @@
 }
 
 body.light {
-  --background: #ffffff;
+  --background: #f1f4f5;
   --foreground: #171717;
   --text-color: #000000;
   --border-color: #333; /* Darker border in light mode */
@@ -16,7 +17,7 @@ body.light {
 }
 
 body.dark {
-  --background: #000000;
+  --background: #1e1e1e;
   --foreground: #1c1c1c;
   --text-color: #ffffff;
   --border-color: #888; /* Lighter border in dark mode */
@@ -27,7 +28,7 @@ body {
   transition: background-color 0.3s, color 0.3s;
   background-color: var(--background);
   color: var(--text-color);
-  font-family: sans-serif;
+  font-family: 'Lato';
   margin: 0;
   padding: 0;
 }
@@ -42,28 +43,14 @@ table {
   border: var(--border-thickness) solid var(--border-color);
 }
 
-/* Light mode border */
-body.light table {
-  border-collapse: collapse; /* Use a 2px black border for light mode */
-}
-
-/* Dark mode border */
-body.dark table {
-  border-collapse: collapse; /* Use a 2px white border for dark mode */
-}
-
 /* Table header styles */
 table th {
-  background-color: var(--foreground);
-  color: var(--background);
   padding: 12px;
   border: var(--border-thickness) solid var(--border-color);
 }
 
 /* Table data styles */
 table td {
-  background-color: var(--background);
-  color: var(--text-color);
   padding: 12px;
   border: var(--border-thickness) solid var(--border-color);
 }
@@ -98,7 +85,7 @@ body.dark table th {
 }
 
 body.dark table td {
-  background-color: #36454F;
+  background-color: #1e1e1e;
   color: #ffffff;
 }
 
@@ -111,28 +98,15 @@ body.dark table tr:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-table th,
-table td {
-  border-radius: 0;
+/* Alternate row styles */
+body.light table tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
-table tr:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-table tr:nth-child(even) {
+body.dark table tr:nth-child(even) {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-span,
-div {
+h1, h2, h3, h4, h5, h6, p, span, div {
   color: var(--text-color);
 }
-

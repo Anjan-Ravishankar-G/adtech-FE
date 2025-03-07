@@ -2,6 +2,7 @@
 import dynamic from "next/dynamic";
 const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
 
+<<<<<<< HEAD
 import { ApexOptions } from 'apexcharts';
 
 type BasicPieChartProps = {
@@ -25,6 +26,30 @@ const BasicPieChart: React.FC<BasicPieChartProps> = ({ series, height, labels, c
         },
       },
     },
+=======
+// Import types from 'react-apexcharts' for type safety
+import { ApexOptions } from "apexcharts";
+import { useState } from "react";
+
+type BasicPieChartProps = {
+  series: number[]; // Array of data values for each slice
+  height: number; // Height of the chart
+  labels?: string[]; // Labels for each slice (optional)
+  width?: number; // Width of the chart (optional)
+  responsiveBreakpoint?: number; // Breakpoint for responsive design (optional)
+  colors?: string[]; // Custom colors for each slice (optional)
+};
+
+const BasicPieChart: React.FC<BasicPieChartProps> = ({
+  series,
+  height,
+  labels = [], // Default labels
+  width = 380, // Default width
+  responsiveBreakpoint = 480, // Default breakpoint
+  colors = [], // Default empty array for colors
+}) => {
+  const chartOptions: ApexOptions = {
+>>>>>>> nabin
     dataLabels: {
       enabled: false, // This will remove the percentage labels
       style: {
@@ -47,7 +72,11 @@ const BasicPieChart: React.FC<BasicPieChartProps> = ({ series, height, labels, c
     
     responsive: [
       {
+<<<<<<< HEAD
         breakpoint: 480,
+=======
+        breakpoint: responsiveBreakpoint,
+>>>>>>> nabin
         options: {
           chart: {
             width: 200, // Adjust width for smaller screens
@@ -63,6 +92,7 @@ const BasicPieChart: React.FC<BasicPieChartProps> = ({ series, height, labels, c
     ],
   };
 
+<<<<<<< HEAD
   const colors = chartOptions.colors || [];
 
   return (
@@ -97,6 +127,16 @@ const BasicPieChart: React.FC<BasicPieChartProps> = ({ series, height, labels, c
           ))}
         </div>
       )}
+=======
+  return (
+    <div className="text-black dark:text-white">
+      <ApexCharts 
+        options={chartOptions}
+        series={chartOptions.series}
+        type="pie"
+        height={height}
+      />
+>>>>>>> nabin
     </div>
   );
 };

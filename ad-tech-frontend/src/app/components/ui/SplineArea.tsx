@@ -24,7 +24,11 @@ const SplineArea: React.FC<SplineAreaProps> = ({
   const categories = data.map((item) => item.Date);
   const series = [
     { name: "Daily Sales", data: data.map((item) => item.DailySales) },
+<<<<<<< HEAD
     { name: "Spend", data: data.map((item) => item.Spend) },
+=======
+    { name: "Daily Spend", data: data.map((item) => item.Spend) },
+>>>>>>> nabin
   ];
 
   const isDarkMode = theme === "dark";
