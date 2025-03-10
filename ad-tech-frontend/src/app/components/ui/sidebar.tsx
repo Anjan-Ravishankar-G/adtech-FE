@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
-import Header from "./header";
+import { Menu, X, Home, LogOut, CircleHelp } from "lucide-react";
+import { useTheme } from '@/app/context/ThemeContext';
+import { FaMoon, FaSun, FaProductHunt, FaKey,  FaArrowRight } from 'react-icons/fa';
+import { GiTargeting } from "react-icons/gi";
 
 type SidebarProps = {
   selectedTab: string;
@@ -10,78 +12,107 @@ type SidebarProps = {
 };
 
 export default function Sidebar({ selectedTab, setSelectedTab }: SidebarProps) {
-  const [isOpen, setIsOpen] = useState(true); // Sidebar toggle state
+  const [isOpen, setIsOpen] = useState(true);
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    
     <div className="flex">
-    
-      {/* Sidebar Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 left-4 z-50 p-1  text-black rounded-md"
+        className="fixed top-8 left-4 z-50 bg-white p-1 rounded-full shadow-md border border-gray-200"
       >
-        {isOpen ? <X size={32} className="bg-[#D1D5DB] text-black rounded-2xl p-1" /> : <Menu size={32} className="text-black rounded-2xl p-1 dark:bg-[#D1D5DB]" />}
+        {isOpen ? <X size={20} className="text-black" /> : <Menu size={20} className="text-black" />}
       </button>
-      {/* Sidebar and Content Wrapper */}
-      <div className={`h-screen flex transition-all duration-300 ${isOpen ? "ml-64" : "ml-1"}`}>
-        {/* Sidebar */}
+
+      <div className={`h-screen flex transition-all duration-300 ${isOpen ? "ml-48" : "ml-16"}`}>
         <div
-          className={`h-screen bg-[#D1D5DB] text-white transition-all duration-300 dark:bg-black ${
-            isOpen ? "w-64 p-4" : "w-0 overflow-hidden"
-          } fixed top-0 left-0 shadow-lg`}
-          
+          className={`h-screen bg-white dark:bg-[#252525] shadow-lg transition-all duration-300 fixed top-0 left-0 z-10 ${
+            isOpen ? "w-48" : "w-16"
+          }`}
         >
           <div className="dark:bg-[#1e1e1e] rounded-2xl p-1">
-          <Header/>
           </div>
-          {isOpen && (
-            <ul className="space-y-4 mt-16">
-              <li>
-                <button
-                  onClick={() => setSelectedTab("asin")}
-                  className={`w-full text-left py-2 px-4 rounded text-black dark:text-white ${
-                    selectedTab === "asin" ? "bg-gray-600" : "hover:bg-[#1B3A57]"
-                  }`}
-                >
-                  Products
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setSelectedTab("keywordPerformance")}
-                  className={`w-full text-left py-2 px-4 rounded text-black dark:text-white  ${
-                    selectedTab === "keywordPerformance" ? "bg-gray-600" : "hover:bg-[#1B3A57]"
-                  }`}
-                >
-                  Targeting
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setSelectedTab("NegativeKeyword")}
-                  className={`w-full text-left py-2 px-4 rounded text-black dark:text-white  ${
-                    selectedTab === "NegativeKeyword" ? "bg-gray-600" : "hover:bg-[#1B3A57]"
-                  }`}
-                >
-                  Negative Keyword
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setSelectedTab("keywordRecommendation")}
-                  className={`w-full text-left py-2 px-4 rounded text-black dark:text-white  ${
-                    selectedTab === "keywordRecommendation" ? "bg-gray-600" : "hover:bg-[#1B3A57]"
-                  }`}
-                >
-                  Keyword Recommendations
-                </button>
-              </li>
-            </ul>
-            
-          )}
+
+          <ul className="space-y-6 p-4 mt-16">
+            <li>
+              <button
+                onClick={() => setSelectedTab("asin")}
+                className={`flex items-center gap-3 w-full text-gray-700 hover:text-black ${
+                  isOpen ? "" : "justify-center"
+                }`}
+              >
+                <FaProductHunt size={20} />
+                {isOpen && <span>Products</span>}
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setSelectedTab("keywordPerformance")}
+                className={`flex items-center gap-3 w-full text-gray-700 hover:text-black ${
+                  isOpen ? "" : "justify-center"
+                }`}
+              >
+                <GiTargeting size={20} />
+                {isOpen && <span>Targeting</span>}
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setSelectedTab("NegativeKeyword")}
+                className={`flex items-center  w-full text-gray-700 hover:text-black ${
+                  isOpen ? "" : "justify-center"
+                }`}
+              >
+                <FaKey size={20} />
+                {isOpen && <span>Negative Keywords</span>}
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setSelectedTab("keywordRecommendation")}
+                className={`flex items-center  w-full text-gray-700 hover:text-black ${
+                  isOpen ? "" : "justify-center"
+                }`}
+              >
+                <FaArrowRight size={20} />
+                {isOpen && <span>Keyword Recommendations</span>}
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={toggleTheme}
+                className={`flex items-center gap-3 w-full text-gray-700 hover:text-black dark:text-white ${
+                  isOpen ? "" : "justify-center"
+                }`}
+              >
+                {theme === 'light' ? <FaMoon size={20} /> : <FaSun size={20} className="text-yellow-400" />}
+                {isOpen && <span>{theme === 'light' ? 'Dark' : 'Light'} Mode</span>}
+              </button>
+            </li>
+            <li>
+              <button
+                className={`flex items-center gap-3 w-full text-gray-700 hover:text-black ${
+                  isOpen ? "" : "justify-center"
+                }`}
+              >
+                <CircleHelp size={20} />
+                {isOpen && <span>Help</span>}
+              </button>
+            </li>
+
+            <li>
+              <button
+                className={`flex items-center gap-3 w-full text-gray-700 hover:text-black ${
+                  isOpen ? "" : "justify-center"
+                }`}
+              >
+                <LogOut size={20} />
+                {isOpen && <span>Logout</span>}
+              </button>
+            </li>
+          </ul>
         </div>
-        {/* Main Content */}
+
         <div className="flex-1 p-4">
           {/* Content goes here */}
         </div>

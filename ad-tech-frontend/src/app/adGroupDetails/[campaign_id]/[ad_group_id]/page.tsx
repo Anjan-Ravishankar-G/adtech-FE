@@ -345,7 +345,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
       </div> 
     )} 
       <div className="mt-32">
-      <Footer />  
+       <Footer />  
       </div>
       </div>   
     </div>

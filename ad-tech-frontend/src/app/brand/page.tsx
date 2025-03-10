@@ -27,6 +27,7 @@ type BrandTargetData = {
   DailySales: number;
   Target: number;
   TargetAchieved: number;
+  Goal: number;
 };
 
 type OurBrandData ={
@@ -54,7 +55,7 @@ async function fetchFilteredBrandTargetData(startDate: string, endDate: string) 
 async function fetchUniqueBrandTargetData() {
   try {
     const res = await fetch(
-      "http://127.0.0.1:8000/get_unique/brand_level_table",
+      "http://127.0.0.1:8000/get_report/brand_level_table",
       { cache: "no-store" }
     );
     if (!res.ok) throw new Error("Failed to fetch unique brand target data");
@@ -184,6 +185,8 @@ export default function BrandTargetTables() {
 const brandProgressDataTop5 = topBrandsBySales.map((brand) => brand.TargetAchieved);
 const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
 
+
+
 //   // Sorting brands by Spends (assuming actual spend data is available)
 // const topBrandsBySpends = [...uniqueBrandTargetData]
 // .sort((a, b) => b.Spends - a.Spends) // Sort by Spends
@@ -262,10 +265,10 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         <div className="shadow-2xl p-4 bg-white rounded-2xl dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
         
           {/* Brand Table */}
-          <div className="flex-1 overflow-x-auto ">
+          <div className="overflow-y-auto max-h-[500px] relative">
           <Table className="min-w-full border text-center">
-              <TableHeader>
-                <TableRow className=" cursor-pointer hover:bg-gray-100">
+              <TableHeader className="bg-gray-200 dark:bg-gray-800 z-10">
+                <TableRow className="sticky top-0 ">
                   <TableHead>Brand</TableHead>
                   <TableHead>Goal</TableHead>
                   <TableHead>Spends</TableHead>
@@ -274,19 +277,15 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {uniqueBrandTargetData.map((brand) => (
-                  <TableRow key={brand.Brand}>
-                    <TableCell className="hover:bg-gray-400 cursor-pointer">
-                      <Link href="../components/ui/campaign" className="text-black hover:text-gray-900 dark:text-white">
-                        {brand.Brand}
-                      </Link>
-                    </TableCell>
+                {uniqueBrandTargetData.map((brand, index) => (
+                  <TableRow key={`${brand.Brand}-${brand.DateTime}-${index}`}>
+                    <TableCell>{brand.Brand}</TableCell>
+                    <TableCell>{brand.Goal?.toLocaleString() || '-'}</TableCell>
+                    <TableCell>{brand.DailySales}</TableCell>
                     <TableCell>{brand.Target?.toLocaleString() || '-'}</TableCell>
-                    <TableCell>1000</TableCell>
-                    <TableCell>{brand.TargetAchieved?.toLocaleString() || '-'}</TableCell>
                     <TableCell>
                       {brand.Target > 0
-                        ? ((brand.TargetAchieved / brand.Target) * 100).toFixed(2)
+                        ? ((brand.Target / brand.Goal) * 100).toFixed(2)
                         : "0.00"}%
                     </TableCell>
                   </TableRow>
@@ -295,6 +294,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
             </Table>
           </div>
         </div>
+        
 
       <div className="mt-12 flex gap-4 rounded-2xl">
         <div className="w-1/2 shadow-2xl p-4 bg-white rounded-lg dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
@@ -313,7 +313,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
                 {topBrandsBySales.map((brand) => (
                   <TableRow key={brand.Brand}>
                     <TableCell className="w-1/3">{brand.Brand}</TableCell>
-                    <TableCell className="w-1/3">{brand.TargetAchieved?.toLocaleString() || '-'}</TableCell>
+                    <TableCell className="w-1/3">{brand.Target?.toLocaleString() || '-'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -340,7 +340,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
                 {topBrandsBySales.map((brand) => (
                   <TableRow key={brand.Brand}>
                     <TableCell className="w-1/3">{brand.Brand}</TableCell>
-                    <TableCell className="w-1/3">1000</TableCell>
+                    <TableCell className="w-1/3">{brand.DailySales}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

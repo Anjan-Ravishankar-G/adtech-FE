@@ -146,7 +146,6 @@ export default function PerformanceTable() {
               <TableHead className="border border-default-300 text-center rounded-tr-lg">DRR</TableHead>
             </TableRow>
           </TableHeader>
-        
           <TableBody className="text-white">
             {campaignData.map((campaign) => (
               <TableRow key={campaign.SN} className="text-center">
