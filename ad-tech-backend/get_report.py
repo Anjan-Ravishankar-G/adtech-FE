@@ -10,7 +10,7 @@ import negative_keyword
 from urllib.parse import urlencode
 import amazonScraping
 load_dotenv()  # Load .env variables
-
+import brand
 app = FastAPI()
 
 # CORS Middleware
@@ -162,7 +162,7 @@ SERPAPI_URL = "https://serpapi.com/search.json"
 
 #interest over time 
 @app.get("/interestOverTime")
-async def get_serpapi_data(q: str, data_type: str = "TIMESERIES", api_key: str = "ee9e5cc7b59c3c63dd11dc37c2e93618c8bd3c2a3fc0c670cd7ae50bc81f88ab", hl: str = "en"):
+async def get_serpapi_data(q: str, data_type: str = "TIMESERIES", api_key: str = "866710dc7a031d75930ac58283731508e438a17c023c40e21eb3d3a8a3fa16bd", hl: str = "en"):
     params = {
         "engine": "google_trends",
         "hl": hl,
@@ -195,7 +195,7 @@ async def get_serpapi_data(q: str, data_type: str = "TIMESERIES", api_key: str =
 def get_formatted_geographic_interest(
     q: str,
     data_type: str = "GEO_MAP",
-    api_key: str = "ee9e5cc7b59c3c63dd11dc37c2e93618c8bd3c2a3fc0c670cd7ae50bc81f88ab",
+    api_key: str = "866710dc7a031d75930ac58283731508e438a17c023c40e21eb3d3a8a3fa16bd",
     hl: str = "en",
     geo: str = "IN",
 ):
@@ -249,7 +249,7 @@ def get_formatted_geographic_interest(
 
 @app.get("/relatedQueries")
 async def get_related_queries(q: str="headphone, samsung", data_type: str = "RELATED_QUERIES",
-    api_key: str = "ee9e5cc7b59c3c63dd11dc37c2e93618c8bd3c2a3fc0c670cd7ae50bc81f88ab", hl: str = "en", geo: str= "GEO_MAP"):
+    api_key: str = "866710dc7a031d75930ac58283731508e438a17c023c40e21eb3d3a8a3fa16bd", hl: str = "en", geo: str= "GEO_MAP"):
     
     params = {
         "engine": "google_trends",
@@ -316,7 +316,7 @@ async def get_related_queries(q: str="headphone, samsung", data_type: str = "REL
 async def get_multiple_related_queries(
     keywords: str,  # Required parameter for comma-separated keywords
     data_type: str = "RELATED_QUERIES",
-    api_key: str = "ee9e5cc7b59c3c63dd11dc37c2e93618c8bd3c2a3fc0c670cd7ae50bc81f88ab",
+    api_key: str = "866710dc7a031d75930ac58283731508e438a17c023c40e21eb3d3a8a3fa16bd",
     hl: str = "en",
     geo: str = "IN"  # Default to India
 ):
@@ -381,3 +381,8 @@ async def get_multiple_related_queries(
             result[keyword] = {"error": f"Request error: {str(e)}"}
     
     return result
+
+@app.get("/ourbrand")
+def get_brand() :
+    brands = brand.get_brand_details()
+    return(brands)

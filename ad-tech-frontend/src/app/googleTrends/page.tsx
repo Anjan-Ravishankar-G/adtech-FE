@@ -404,26 +404,30 @@ export default function GoogleTrendsDashboard() {
 
   return (
     <Layout>
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="p-6 max-w-6xl mx-auto bg-white">
       <h1 className="text-2xl font-bold mb-6">Google Trends Dashboard</h1>
 
-      {/* Search Bar */}
-      <div className="mb-6 flex items-center space-x-2">
-        <input
-          type="text"
-          className="p-4 text-lg border border-gray-300 rounded w-full max-w-xs dark:bg-black"
-          placeholder="Enter keywords (comma-separated)"
-          value={inputKeyword}
-          onChange={(e) => setInputKeyword(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-        />
-        <button
-          className="px-6 py-3 bg-blue-500 text-white rounded text-lg dark:bg-black"
-          onClick={handleSearch}
-        >
-          Search
-        </button>
-      </div>
+     
+      <div className="mb-6 flex flex-col space-y-4">
+        
+          <div className="flex space-x-4">
+            <input
+              type="text"
+              className="p-2 text-md border border-gray-300 rounded w-full max-w-xs dark:bg-black"
+              placeholder="Enter keywords (comma-separated)"
+              value={inputKeyword}
+              onChange={(e) => setInputKeyword(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+            />
+          </div>
+
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded text-md dark:bg-black"
+            onClick={handleSearch}
+          >
+            Search
+          </button>
+        </div>  
 
       {keywords.length > 0 ? (
         <div className="space-y-8 ">

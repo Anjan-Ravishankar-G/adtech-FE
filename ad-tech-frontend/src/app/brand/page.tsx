@@ -14,7 +14,6 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 import DateRangePicker from "../components/ui/datePicker";
-
 import BasicRadialBar from "../components/ui/RadialbarChart"; // Updated RadialBar
 import BasicPieChart from "../components/ui/bargraph";
 import Layout from "../components/ui/Layout";
@@ -29,6 +28,13 @@ type BrandTargetData = {
   Target: number;
   TargetAchieved: number;
 };
+
+type OurBrandData ={
+  profileId: number;
+  currencyCode: string;
+  name: string;
+};
+
 
 async function fetchFilteredBrandTargetData(startDate: string, endDate: string) {
   try {
@@ -59,6 +65,20 @@ async function fetchUniqueBrandTargetData() {
   }
 }
 
+async function fetchOurBrandData() {
+  try {
+    const res = await fetch(
+      "http://127.0.0.1:8000/ourbrand",
+      { cache: "no-store" }
+    );
+    if (!res.ok) throw new Error("Failed to fetch unique brand target data");
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching unique brand target data:", error);
+    return [];
+  }
+}
+
 export default function BrandTargetTables() {
   
   const [brandTargetData, setBrandTargetData] = useState<BrandTargetData[] | null>(null);
@@ -67,9 +87,22 @@ export default function BrandTargetTables() {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [isDataAvailable, setIsDataAvailable] = useState<boolean>(true);
-
+  const [brands, setBrands] = useState<OurBrandData[]>([]);
    // State to manage date range picker visibility
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/ourbrand')
+    .then(response => response.json())
+    .then(data => {
+      // The API response is already an array, so don't look for data.brands
+      setBrands(data); // Just use data directly
+    })
+    .catch(error => {
+      console.error("Error fetching brand data:", error);
+    });
+    }, []);
+
 
   useEffect(() => {
     async function loadData() {
@@ -242,7 +275,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
               </TableHeader>
               <TableBody>
                 {uniqueBrandTargetData.map((brand) => (
-                  <TableRow key={`${brand.Brand}-${brand.DateTime}`}>
+                  <TableRow key={brand.Brand}>
                     <TableCell className="hover:bg-gray-400 cursor-pointer">
                       <Link href="../components/ui/campaign" className="text-black hover:text-gray-900 dark:text-white">
                         {brand.Brand}
@@ -320,11 +353,34 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
                   labels={brandNamesTop5}/>
               
           </div>
-        </div>
-           
+        </div>  
       </div>
       </div>
       </div>
+          <Table className="min-w-full border text-center">
+            <TableHeader>
+              <TableRow>
+                <TableHead>Brand Name</TableHead>
+                <TableHead>Profile ID</TableHead>
+                <TableHead>Currency Code</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {brands && brands.length > 0 ? (
+                brands.map((brand) => (
+                  <TableRow key={brand.profileId}>
+                    <TableCell>{brand.name}</TableCell>
+                    <TableCell>{brand.profileId}</TableCell>
+                    <TableCell>{brand.currencyCode}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={3}>No brands data available</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
        <div >
         <Footer/>
        </div>
