@@ -60,7 +60,7 @@ export default function Sidebar({ selectedTab, setSelectedTab }: SidebarProps) {
               <button
                 onClick={() => setSelectedTab("NegativeKeyword")}
                 className={`flex items-center  w-full text-gray-700 hover:text-black ${
-                  isOpen ? "" : "justify-center"
+                  isOpen ? "" : "justify-"
                 }`}
               >
                 <FaKey size={20} />

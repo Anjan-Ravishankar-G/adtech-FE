@@ -171,17 +171,16 @@ export default function BrandTargetTables() {
 
   const brandNames = uniqueBrandTargetData.map((brand) => brand.Brand);
 
-   // Get only top 8 brands for the radial chart
+   // Get only top 5 brands for the radial chart
    const top8BrandsProgress = brandProgressData.slice(0, 8);
-   const top8BrandNames = brandNames.slice(0, 8);
+   const top8BrandNames = brandNames.slice(0, 5);
 
 
   const brandSalesData = uniqueBrandTargetData.map((brand) => brand.TargetAchieved);
-  // Get only first 8 brands for the pie chart
-  const first8BrandSalesData = brandSalesData.slice(0, 8);
+  // Get only first 5 brands for the pie chart
+  const first8BrandSalesData = brandSalesData.slice(0, 5);
 
-  // const brandSalesData = uniqueBrandTargetData.map((brand) => brand.TargetAchieved);
-
+  
    // Sort brands by sales achieved in descending order and get top 5
   const topBrandsBySales = [...uniqueBrandTargetData]
    .sort((a, b) => b.TargetAchieved - a.TargetAchieved)
@@ -288,9 +287,13 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
               <TableBody>
                 {uniqueBrandTargetData.map((brand, index) => (
                   <TableRow key={`${brand.Brand}-${brand.DateTime}-${index}`}>
-                    <TableCell>{brand.Brand}</TableCell>
+                    <TableCell className="border border-default-300 hover:bg-default-100 transition-colors cursor-pointer p-0">
+                      <Link href={`/campaign`} className="text-black hover:bg-gray-300 block w-full h-full p-4 dark:text-white dark:hover:bg-blue-900">
+                        {brand.Brand}
+                      </Link>
+                    </TableCell>
                     <TableCell>{brand.Goal?.toLocaleString() || '-'}</TableCell>
-                    <TableCell>{brand.DailySales}</TableCell>
+                    <TableCell>{brand.DailySales?.toLocaleString() || '-'}</TableCell>
                     <TableCell>{brand.Target?.toLocaleString() || '-'}</TableCell>
                     <TableCell>
                       {brand.Target > 0
@@ -348,7 +351,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
                 {topBrandsBySales.map((brand) => (
                   <TableRow key={brand.Brand}>
                     <TableCell className="w-1/3">{brand.Brand}</TableCell>
-                    <TableCell className="w-1/3">{brand.DailySales}</TableCell>
+                    <TableCell className="w-1/3">{brand.DailySales?.toLocaleString() || '-'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

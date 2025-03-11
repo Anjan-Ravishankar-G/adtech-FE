@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -12,6 +11,7 @@ import {
 
 import Sidebar from "@/app/components/ui/sidebar"; // Import the Sidebar component
 import Footer from "@/app/components/ui/footer";
+import BasicPieChart from "../components/ui/bargraph";
 
 type AsinData = {
   SN: number;
@@ -47,35 +47,32 @@ type KeywordData = {
 };
 
 type KeywordPerformanceData = {
-  id: string;
+  SN: number;
   keyword: string;
   matchType: string;
-  searchTerm: string;
-  cost: string;
+  revenue: number;
+  spend: number;
+  ACOS: number;
+  ROAS: number;
   clicks: number;
-  impressions: number;
-  sales30d: string;
-  purchases30d: number;
-  topOfSearchImpressionShare: string;
-  Source: string;
-  adGroupId: string;
+  impresssion: number; 
+  bid: number;
 };
 
 type NegativeKeyword = {
-  keywordId: string;
-  keywordText: string;
+  keywordID: string;
+  keyword: string;
   matchType: string;
   adGroupId: string;
 };
 
+
 async function fetchNegativeKeywords(adGroupId: string) {
   try {
-    const res = await fetch("http://127.0.0.1:8000/negative_keywords", { cache: "no-store" });
+    const res = await fetch("http://127.0.0.1:8000/get_report/negative_keyword", { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to fetch negative keywords");
     const data = await res.json();
-    return data.filter((keyword: NegativeKeyword) =>
-      String(keyword.adGroupId).trim().toLowerCase() === String(adGroupId).trim().toLowerCase()
-    );
+    return data
   } catch (error) {
     console.error("Error fetching negative keywords:", error);
     throw error;
@@ -87,9 +84,7 @@ async function fetchAsinData(adGroupId: string) {
     const res = await fetch("http://127.0.0.1:8000/get_report/asin_level_table", { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to fetch ASIN data");
     const data = await res.json();
-    return data.filter((asin: AsinData) =>
-      String(asin.adGroupId).trim().toLowerCase() === String(adGroupId).trim().toLowerCase()
-    );
+    return data
   } catch (error) {
     console.error("Error fetching ASIN data:", error);
     throw error;
@@ -98,7 +93,7 @@ async function fetchAsinData(adGroupId: string) {
 
 async function fetchKeywordData(campaignId: string, adGroupId: string) {
   try {
-    const res = await fetch(`http://127.0.0.1:8000/keyword/recommendation/${campaignId}/${adGroupId}`, { cache: "no-store" });
+    const res = await fetch(`http://127.0.0.1:8000/get_report/keyword_recommendation`, { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to fetch keyword recommendations");
     const data = await res.json();
     return data;
@@ -109,63 +104,80 @@ async function fetchKeywordData(campaignId: string, adGroupId: string) {
 }
 
 async function fetchKeywordPerformance() {
-  const res = await fetch("http://127.0.0.1:8000/get_report/keyword_report", { cache: "no-store" });
+  const res = await fetch("http://127.0.0.1:8000/get_report/targeting_level_table", { cache: "no-store" });
   if (!res.ok) throw new Error(`Failed to fetch data: ${res.status}`);
   return res.json();
 }
 
-export default function AdGroupPage({ params }: { params: Promise<{ campaign_id: string, ad_group_id: string }> }) {
-  const router = useRouter();
+export default function AdGroupPage() {
+  // Default values for adGroupId and campaignId
+  const DEFAULT_AD_GROUP_ID = "123456789"; // Replace with your actual default ad group ID
+  const DEFAULT_CAMPAIGN_ID = "987654321"; // Replace with your actual default campaign ID
+  
   const [asinData, setAsinData] = useState<AsinData[]>([]);
+
   const [keywordData, setKeywordData] = useState<KeywordData[]>([]);
   const [keywordPerformanceData, setKeywordPerformanceData] = useState<KeywordPerformanceData[]>([]);
   const [negativeKeywords, setNegativeKeywords] = useState<NegativeKeyword[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<string>('asin');
+  
   useEffect(() => {
     const loadData = async () => {
       try {
-        const unwrappedParams = await params;
-        const { ad_group_id } = unwrappedParams;
-        if (!ad_group_id) {
-          setError("Ad Group ID is missing");
-          setIsLoading(false);
-          return;
-        }
+        const adGroupId = DEFAULT_AD_GROUP_ID;
+        
         const [asinResults, keywordPerformance, negativeKeywordResults] = await Promise.all([
-          fetchAsinData(ad_group_id),
+          fetchAsinData(adGroupId),
           fetchKeywordPerformance(),
-          fetchNegativeKeywords(ad_group_id),
+          fetchNegativeKeywords(adGroupId),
         ]);
+        
         setAsinData(asinResults);
-        const filteredKeywordPerformance = Array.isArray(keywordPerformance)
-          ? keywordPerformance.filter(item => item.Source === "spKeyword")
-          : [];
-        setKeywordPerformanceData(filteredKeywordPerformance);
+        
+        
+        
+        setKeywordPerformanceData(keywordPerformance);
         setNegativeKeywords(negativeKeywordResults);
-        if (asinResults.length > 0) {
-          const campaignId = asinResults[0].campaignId;
-          const keywordResults = await fetchKeywordData(campaignId, ad_group_id);
-          setKeywordData(keywordResults);
-        }
+        
+        // Use the campaign ID from asin data if available, otherwise use default
+        const campaignId = asinResults.length > 0 ? asinResults[0].campaignId : DEFAULT_CAMPAIGN_ID;
+        const keywordResults = await fetchKeywordData(campaignId, adGroupId);
+        setKeywordData(keywordResults);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setIsLoading(false);
       }
     };
+    
     loadData();
-  }, [params]);
+  }, []);
+  
   if (isLoading) return <div className="p-5">Loading...</div>;
   if (error) return <div className="p-5 text-red-500">Error: {error}</div>;
   if (!asinData.length) return <div className="p-5 text-red-500">No ASIN data available for this ad group</div>;
 
-  // Sort by sales1d to get top ASINs by sales
-  const topAsinBySales = [...asinData]
-    .sort((a, b) => b.dailySales - a.dailySales)  // Sort in descending order by sales
-    .slice(0, 5);  // Get top 5
+  // Sort and Extract Top 5
+const top5BySales = [...asinData]
+.sort((a, b) => b.dailySales - a.dailySales)
+.slice(0, 5);
 
+const top5BySpends = [...asinData]
+.sort((a, b) => b.dailySpends - a.dailySpends)
+.slice(0, 5);
+
+// Prepare Chart Data
+const salesChartData = {
+series: top5BySales.map((asin) => asin.dailySales),
+labels: top5BySales.map((asin) => asin.asin),
+};
+
+const spendsChartData = {
+series: top5BySpends.map((asin) => asin.dailySpends),
+labels: top5BySpends.map((asin) => asin.asin),
+};
 
   return (
     <div className="flex h-screen">
@@ -197,8 +209,8 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                     <TableCell className="border border-default-300">{asin.sku}</TableCell>
                     <TableCell className="border border-default-300">{asin.adFormat}</TableCell>
                     <TableCell className="border border-default-300">{asin.campaignStatus}</TableCell>
-                    <TableCell className="border border-default-300">{asin.dailySpends}</TableCell>
-                    <TableCell className="border border-default-300">{asin.dailySales}</TableCell>
+                    <TableCell className="border border-default-300">{asin.dailySpends?.toLocaleString() || '-'}</TableCell>
+                    <TableCell className="border border-default-300">{asin.dailySales?.toLocaleString() || '-'}</TableCell>
                     <TableCell className="border border-default-300">{asin.ACOS}</TableCell>
                     <TableCell className="border border-default-300">{asin.ROAS}</TableCell>
                   </TableRow>
@@ -209,7 +221,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
             <div className="flex gap-4">
               <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl mt-5 dark:bg-black">
               <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Asin Based on Spends</h2>
-              <div className="flex space-x-10 ">
+              <div className="flex flex-col space-y-6 ">
                 <div className="flex-1 overflow-x-auto">
                   <Table className="min-w-full border border-blue-600 text-center">
                     <TableHeader className="bg-black text-white top-0 z-10">
@@ -219,21 +231,27 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {topAsinBySales.map((asin) => (
+                      {top5BySpends.map((asin) => (
                         <TableRow key={asin.advertisedAsin}>
-                          <TableCell className="w-1/3">{asin.advertisedAsin}</TableCell>
-                          <TableCell className="w-1/3">{asin.clickThroughRate}</TableCell>
+                          <TableCell className="w-1/3">{asin.asin}</TableCell>
+                          <TableCell className="w-1/3">{asin.dailySpends?.toLocaleString() || '-'}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                   </Table>
                 </div>
+                <div>
+                  <BasicPieChart 
+                  series={spendsChartData.series} 
+                  height={350}
+                  labels={spendsChartData.labels}/>
+               </div>
               </div>
               </div>
 
               <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl mt-5 dark:bg-black">
               <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Asin Based on Sales</h2>
-              <div className="flex space-x-10 ">
+              <div className="flex flex-col space-y-6">
                 <div className="flex-1 overflow-x-auto">
                   <Table className="min-w-full border border-blue-600 text-center">
                     <TableHeader className="bg-black text-white top-0 z-10">
@@ -243,15 +261,21 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {topAsinBySales.map((asin) => (
+                      {top5BySales.map((asin) => (
                         <TableRow key={asin.advertisedAsin}>
-                          <TableCell className="w-1/3">{asin.advertisedAsin}</TableCell>
-                          <TableCell className="w-1/3">{asin.clicks}</TableCell>
+                          <TableCell className="w-1/3">{asin.asin}</TableCell>
+                          <TableCell className="w-1/3">{asin.dailySales?.toLocaleString() || '-'}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                   </Table>
                 </div>
+                <div>
+                  <BasicPieChart 
+                  series={salesChartData.series} 
+                  height={350}
+                  labels={salesChartData.labels}/>
+               </div>
               </div>
               </div>
 
@@ -276,17 +300,18 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {keywordPerformanceData.map((item) => (
-                  <TableRow key={item.id} className="text-center">
-                    <TableCell className="border border-default-300">{item.keyword}</TableCell>
-                    <TableCell className="border border-default-300">{item.matchType}</TableCell>
-                    <TableCell className="border border-default-300">{item.clicks}</TableCell>
-                    <TableCell className="border border-default-300">100</TableCell>
-                    <TableCell className="border border-default-300">--</TableCell>
-                    <TableCell className="border border-default-300">--</TableCell>
-                    <TableCell className="border border-default-300">{item.impressions}</TableCell>
-                    <TableCell className="border border-default-300">{item.impressions}</TableCell>
-                    <TableCell className="border border-default-300">{item.impressions}</TableCell>
+              {keywordPerformanceData.map((keyword) => (
+                  <TableRow key={keyword.SN} className="text-center">
+                
+                    <TableCell className="border border-default-300">{keyword.keyword}</TableCell>
+                    <TableCell className="border border-default-300">{keyword.matchType}</TableCell>
+                    <TableCell className="border border-default-300">${keyword.revenue?.toLocaleString() || '-'}</TableCell>
+                    <TableCell className="border border-default-300">${keyword.spend?.toLocaleString() || '-'}</TableCell>
+                    <TableCell className="border border-default-300">{keyword.ACOS}%</TableCell>
+                    <TableCell className="border border-default-300">{keyword.ROAS}</TableCell>
+                    <TableCell className="border border-default-300">{keyword.clicks}</TableCell>
+                    <TableCell className="border border-default-300">{keyword.impresssion?.toLocaleString() || '-'}</TableCell>
+                    <TableCell className="border border-default-300">${keyword.bid.toFixed(2)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -307,9 +332,9 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
               </TableHeader>
               <TableBody>
                 {negativeKeywords.map((keyword) => (
-                  <TableRow key={keyword.keywordId} className="text-center">
-                    <TableCell className="border border-default-300">{keyword.keywordId}</TableCell>
-                    <TableCell className="border border-default-300">{keyword.keywordText}</TableCell>
+                  <TableRow key={keyword.keywordID} className="text-center">
+                    <TableCell className="border border-default-300">{keyword.keywordID}</TableCell>
+                    <TableCell className="border border-default-300">{keyword.keyword}</TableCell>
                     <TableCell className="border border-default-300">{keyword.matchType}</TableCell>
                   </TableRow>
                 ))}
@@ -339,9 +364,9 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                     {filteredKeywords.map((keyword, index) => (
                       <TableRow key={index} className="text-center">
                         <TableCell className="border border-default-300">{keyword.keyword}</TableCell>
-                        <TableCell className="border border-default-300">{keyword.rank}</TableCell>
-                        <TableCell className="border border-default-300">{keyword.theme}</TableCell>
-                        <TableCell className="border border-default-300">{keyword.bid}</TableCell>
+                        <TableCell className="border border-default-300">{keyword.keyword_rank}</TableCell>
+                        <TableCell className="border border-default-300">{keyword.keyword_for}</TableCell>
+                        <TableCell className="border border-default-300">{keyword.bids}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

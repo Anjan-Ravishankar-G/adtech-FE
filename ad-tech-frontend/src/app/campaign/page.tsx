@@ -9,11 +9,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
-import DateRangePicker from "./datePicker";
-import SplineArea from "./SplineArea";
-import BasicPieChart from "./bargraph";
-import Footer from "./footer";
-import Layout from "./Layout";
+import SplineArea from "../components/ui/SplineArea";
+import DateRangePicker from "../components/ui/datePicker";
+import Footer from "../components/ui/footer";
+import BasicPieChart from "../components/ui/bargraph";
+import Layout from "../components/ui/Layout";
 
 
 type CampaignData = {
@@ -200,7 +200,7 @@ const top5SpendBrandData = top5CampaignsBySpend.map(campaign => campaign.Spend);
                 <TableRow key={campaign.SN} className="text-center">
                   <TableCell className="rounded-l-lg">{campaign.SN}</TableCell>
                   <TableCell className="border border-default-300 hover:bg-default-100 transition-colors cursor-pointer p-0">
-                    <Link href={`/ad_details}`} className="text-black hover:bg-gray-300 block w-full h-full p-4 dark:text-white dark:hover:bg-blue-900">
+                    <Link href={`/ad_details`} className="text-black hover:bg-gray-300 block w-full h-full p-4 dark:text-white dark:hover:bg-blue-900">
                       {campaign.campaignName}
                     </Link>
                   </TableCell>
