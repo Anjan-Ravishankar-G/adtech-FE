@@ -59,10 +59,14 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar }) => {
                       Retail Insights
                     </a>
                   </li>
+                  <li>
+                    <a href="#" className="text-gray-900 hover:text-black dark:text-white">
+                      You-tube Trends
+                    </a>
+                  </li>
                 </ul>
               )}
             </li>
-
           </ul>
         </div>
 

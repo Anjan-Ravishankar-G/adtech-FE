@@ -41,6 +41,7 @@ def get_negative_keywords():
                     'keywordText': keyword.get('keywordText'),
                     'matchType': keyword.get('matchType')
                 })
+        print(negative_keywords)
         return negative_keywords
         
     except requests.exceptions.RequestException as e:

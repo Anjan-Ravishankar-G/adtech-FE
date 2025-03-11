@@ -25,12 +25,6 @@ import {
   Download,
   Filter,
   ArrowUpRight,
-<<<<<<< HEAD
-  Plus,
-  Minus,
-  Search,
-=======
->>>>>>> nabin
 } from "lucide-react";
 import Layout from "../components/ui/Layout";
 
@@ -127,36 +121,9 @@ async function fetchRelatedQueries(keywords: string[]) {
 }
 
 export default function GoogleTrendsDashboard() {
-<<<<<<< HEAD
-  // Add this to suppress hydration warnings from browser extensions like Grammarly
-  useEffect(() => {
-    // This suppresses the hydration warning about Grammarly attributes
-    const originalError = console.error;
-    console.error = (...args) => {
-      if (args[0]?.includes('Hydration failed because')) {
-        if (
-          args[0]?.includes('data-new-gr-c-s-check-loaded') ||
-          args[0]?.includes('data-gr-ext-installed')
-        ) {
-          return;
-        }
-      }
-      originalError.apply(console, args);
-    };
-    
-    return () => {
-      console.error = originalError;
-    };
-  }, []);
-
-  // Common state
-  const [keywords, setKeywords] = useState<string[]>([]);
-  const [keywordInputs, setKeywordInputs] = useState<string[]>(["", "", "", "", ""]);
-=======
   // Common state
   const [keywords, setKeywords] = useState<string[]>([]);
   const [inputKeyword, setInputKeyword] = useState<string>("");
->>>>>>> nabin
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -185,26 +152,10 @@ export default function GoogleTrendsDashboard() {
   // Common settings
   const itemsPerPage = 5;
 
-<<<<<<< HEAD
-  // Handle keyword input change
-  const handleKeywordChange = (index: number, value: string) => {
-    const newKeywordInputs = [...keywordInputs];
-    newKeywordInputs[index] = value;
-    setKeywordInputs(newKeywordInputs);
-  };
-
-  // Handle search
-  const handleSearch = () => {
-    // Filter out empty keyword inputs
-    const newKeywords = keywordInputs.filter(keyword => keyword.trim() !== "");
-    
-    if (newKeywords.length > 0) {
-=======
   // Handle search
   const handleSearch = () => {
     if (inputKeyword.trim()) {
       const newKeywords = inputKeyword.split(",").map((keyword) => keyword.trim());
->>>>>>> nabin
       setKeywords(newKeywords);
       
       // Reset pagination
@@ -228,49 +179,6 @@ export default function GoogleTrendsDashboard() {
     setIsLoading(true);
     setError(null);
     
-<<<<<<< HEAD
-    try {
-      // Load Interest Over Time data
-      setIsLoadingInterest(true);
-      setInterestError(null);
-      try {
-        const timeData = await fetchInterestOverTime(keys);
-        setInterestData(timeData);
-      } catch (err) {
-        setInterestError(err instanceof Error ? err.message : "An error occurred fetching interest data");
-      } finally {
-        setIsLoadingInterest(false);
-      }
-      
-      // Load Geographic Comparison data
-      setIsLoadingGeo(true);
-      setGeoError(null);
-      try {
-        const geoData = await fetchGeographicData(keys);
-        setGeoData(geoData);
-      } catch (err) {
-        setGeoError(err instanceof Error ? err.message : "An error occurred fetching geographic data");
-      } finally {
-        setIsLoadingGeo(false);
-      }
-      
-      // Load Related Queries data
-      setIsLoadingQuery(true);
-      setQueryError(null);
-      try {
-        const queryData = await fetchRelatedQueries(keys);
-        setQueryData(queryData);
-      } catch (err) {
-        setQueryError(err instanceof Error ? err.message : "An error occurred fetching query data");
-      } finally {
-        setIsLoadingQuery(false);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An unexpected error occurred");
-    } finally {
-      setIsLoading(false);
-    }
-=======
     // Load Interest Over Time data
     setIsLoadingInterest(true);
     setInterestError(null);
@@ -308,7 +216,6 @@ export default function GoogleTrendsDashboard() {
     }
     
     setIsLoading(false);
->>>>>>> nabin
   };
 
   // ---- Interest Over Time Functions ----
@@ -369,10 +276,7 @@ export default function GoogleTrendsDashboard() {
     const totalValue = keywords.reduce((sum, keyword) => sum + (values[keyword] || 0), 0);
     
     return (
-<<<<<<< HEAD
-=======
  
->>>>>>> nabin
       <div className="flex h-6 w-full">
         {keywords.map((keyword, idx) => {
           const value = values[keyword] || 0;
@@ -392,20 +296,13 @@ export default function GoogleTrendsDashboard() {
           );
         })}
       </div>
-<<<<<<< HEAD
-=======
     
->>>>>>> nabin
     );
   };
 
   // ---- Related Queries Functions ----
   const handleQueryTypeChange = (type: "Rising" | "Top") => {
     setQueryType(type);
-<<<<<<< HEAD
-    setQueryCurrentPage(1); // Reset to first page when changing query type
-=======
->>>>>>> nabin
   };
 
   const paginatedQueryData = (keyword: string) => {
@@ -460,11 +357,7 @@ export default function GoogleTrendsDashboard() {
     const rows = keywordData.map((item, index) => [
       index + 1,
       item.query,
-<<<<<<< HEAD
-      item.value,
-=======
       queryType === "Rising" ? item.value : item.value,
->>>>>>> nabin
     ]);
 
     const csvContent = [
@@ -476,11 +369,7 @@ export default function GoogleTrendsDashboard() {
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-<<<<<<< HEAD
-    link.download = `${keyword}_related_queries_${queryType.toLowerCase()}.csv`;
-=======
     link.download = `${keyword}_related_queries.csv`;
->>>>>>> nabin
     link.click();
   };
 
@@ -515,79 +404,30 @@ export default function GoogleTrendsDashboard() {
 
   return (
     <Layout>
-<<<<<<< HEAD
-      <div className="p-6 max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Google Trends Dashboard</h1>
-
-        {/* Multiple Search Bars */}
-        <div className="mb-6 p-4 bg-white rounded-lg shadow-md dark:bg-black">
-          <h2 className="text-lg font-medium mb-3">Search Keywords</h2>
-          <div className="space-y-3">
-            {keywordInputs.map((keyword, index) => (
-              <div key={index} className="flex items-center">
-                <div className="w-10 flex-shrink-0 text-center text-gray-500">{index + 1}</div>
-                <div className="flex-grow">
-                  <input
-                    type="text"
-                    className="p-3 border border-gray-300 rounded w-full dark:bg-black"
-                    placeholder={`Enter keyword ${index + 1}`}
-                    value={keyword}
-                    onChange={(e) => handleKeywordChange(index, e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                  />
-                </div>
-                <div className="w-6 ml-2">
-                  {index === 0 && (
-                    <div className="h-6 w-6 flex items-center justify-center bg-blue-500 text-white rounded-full">
-                      <Plus size={14} />
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 flex justify-end">
-            <button
-              className="px-6 py-3 flex items-center space-x-2 bg-blue-500 text-white rounded dark:bg-blue-700"
-              onClick={handleSearch}
-            >
-              <Search size={18} />
-              <span>Search</span>
-            </button>
-          </div>
-        </div>
-
-        {keywords.length > 0 ? (
-          <div className="space-y-8">
-            {/* Interest Over Time Section */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden dark:bg-black">
-              <div className="border-b p-4 flex justify-between items-center">
-                <h2 className="text-xl font-medium">Interest Over Time: {keywords.join(", ")}</h2>
-                <button 
-                  className="px-3 py-1 flex items-center space-x-1 border rounded-md bg-white hover:bg-gray-50 dark:bg-black" 
-                  onClick={() => downloadTimeCSV()}
-                  disabled={interestData.length === 0}
-=======
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="p-6 max-w-6xl mx-auto bg-white">
       <h1 className="text-2xl font-bold mb-6">Google Trends Dashboard</h1>
 
-      {/* Search Bar */}
-      <div className="mb-6 flex items-center space-x-2">
-        <input
-          type="text"
-          className="p-4 text-lg border border-gray-300 rounded w-full max-w-xs dark:bg-black"
-          placeholder="Enter keywords (comma-separated)"
-          value={inputKeyword}
-          onChange={(e) => setInputKeyword(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-        />
-        <button
-          className="px-6 py-3 bg-blue-500 text-white rounded text-lg dark:bg-black"
-          onClick={handleSearch}
-        >
-          Search
-        </button>
-      </div>
+     
+      <div className="mb-6 flex flex-col space-y-4">
+        
+          <div className="flex space-x-4">
+            <input
+              type="text"
+              className="p-2 text-md border border-gray-300 rounded w-full max-w-xs dark:bg-black"
+              placeholder="Enter keywords (comma-separated)"
+              value={inputKeyword}
+              onChange={(e) => setInputKeyword(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+            />
+          </div>
+
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded text-md dark:bg-black"
+            onClick={handleSearch}
+          >
+            Search
+          </button>
+        </div>  
 
       {keywords.length > 0 ? (
         <div className="space-y-8 ">
@@ -647,282 +487,10 @@ export default function GoogleTrendsDashboard() {
                   className="px-3 py-1 flex items-center space-x-1 border rounded-md bg-white hover:bg-gray-50 dark:bg-black dark:hover:bg-gray-900" 
                   onClick={() => downloadGeoCSV()}
                   disabled={!geoData}
->>>>>>> nabin
                 >
                   <Download size={16} />
                   <span>Export</span>
                 </button>
-<<<<<<< HEAD
-              </div>
-              <div className="p-6">
-                {isLoadingInterest ? (
-                  <div className="text-center py-10">Loading interest data...</div>
-                ) : interestError ? (
-                  <div className="text-red-500 p-5">{interestError}</div>
-                ) : interestData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={400}>
-                    <LineChart data={interestData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" className="dark:text-white" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      
-                      {/* Dynamically generate lines for each keyword */}
-                      {keywords.map((keyword, index) => (
-                        <Line
-                          key={keyword}
-                          type="monotone"
-                          dataKey={keyword}
-                          stroke={colors[index % colors.length]} 
-                          strokeWidth={2}
-                        />
-                      ))}
-                    </LineChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="text-center py-10 text-gray-500 dark:text-white">No interest data available for the selected keywords.</div>
-                )}
-              </div>
-            </div>
-
-            {/* Geographic Comparison Section */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden dark:bg-black">
-              <div className="border-b p-4 flex justify-between items-center">
-                <h2 className="text-xl font-medium">
-                  Interest by location: {keywords.join(", ")}
-                </h2>
-                <div className="flex items-center space-x-2">
-                  <button 
-                    className="px-3 py-1 flex items-center space-x-1 border rounded-md bg-white hover:bg-gray-50 dark:bg-black dark:hover:bg-gray-900" 
-                    onClick={() => downloadGeoCSV()}
-                    disabled={!geoData}
-                  >
-                    <Download size={16} />
-                    <span>Export</span>
-                  </button>
-                  <button className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-900">
-                    <Filter size={18} />
-                  </button>
-                </div>
-              </div>
-
-              <div className="p-4">
-                {isLoadingGeo ? (
-                  <div className="text-center py-10 dark:text-white">Loading geographic data...</div>
-                ) : geoError ? (
-                  <div className="text-red-500 p-5">{geoError}</div>
-                ) : geoData ? (
-                  <>
-                    <div className="mb-3 text-sm text-gray-500 dark:text-white">
-                      Sort by:
-                      <div className="flex space-x-2 mt-1">
-                        {geoData.keywords.map(keyword => (
-                          <button 
-                            key={keyword}
-                            className={`px-3 py-1 border rounded-md ${sortConfig.key === keyword ? 'bg-blue-100 text-blue-800' : 'bg-white'} dark:bg-black`}
-                            onClick={() => handleSort(keyword)}
-                          >
-                            Interest for {keyword}
-                            {sortConfig.key === keyword && (
-                              <span className="ml-1">
-                                {sortConfig.direction === 'ascending' ? '↑' : '↓'}
-                              </span>
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="bg-gray-50">
-                          <TableHead className="w-12 text-center">#</TableHead>
-                          <TableHead>Location</TableHead>
-                          {geoData.keywords.map(keyword => (
-                            <TableHead key={keyword} className="w-24 text-right">
-                              {keyword}
-                            </TableHead>
-                          ))}
-                          <TableHead className="w-1/3">Comparison</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {paginatedGeoData().map((location, index) => (
-                          <TableRow key={location.code} className="border-t">
-                            <TableCell className="text-center text-gray-500">
-                              {(geoCurrentPage - 1) * itemsPerPage + index + 1}
-                            </TableCell>
-                            <TableCell className="font-medium">{location.name}</TableCell>
-                            {geoData.keywords.map(keyword => (
-                              <TableCell key={keyword} className="text-right">
-                                {location.values[keyword] || 0}
-                              </TableCell>
-                            ))}
-                            <TableCell>
-                              {renderBarChart(location.values, geoData.keywords)}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-
-                    {/* Pagination Controls */}
-                    <div className="flex justify-between items-center p-3 text-sm text-gray-500">
-                      <button
-                        onClick={() => handleGeoPageChange(geoCurrentPage - 1)}
-                        disabled={geoCurrentPage === 1}
-                        className="flex items-center space-x-2 disabled:opacity-50"
-                      >
-                        <ChevronLeft size={18} />
-                        <span>Previous</span>
-                      </button>
-
-                      <span>
-                        Showing {(geoCurrentPage - 1) * itemsPerPage + 1}-{Math.min(geoCurrentPage * itemsPerPage, sortedLocations.length)} of {sortedLocations.length} locations
-                      </span>
-
-                      <button
-                        onClick={() => handleGeoPageChange(geoCurrentPage + 1)}
-                        disabled={geoCurrentPage === geoTotalPages()}
-                        className="flex items-center space-x-2 disabled:opacity-50"
-                      >
-                        <span>Next</span>
-                        <ChevronRight size={18} />
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-center py-10 text-gray-500">No geographic data available for the selected keywords.</div>
-                )}
-              </div>
-            </div>
-
-            {/* Related Queries Section */}
-            <div>
-              <h2 className="text-xl font-medium mb-4">Related Queries</h2>
-              
-              {isLoadingQuery ? (
-                <div className="text-center py-10 bg-white rounded-lg shadow-md dark:text-white">Loading related queries data...</div>
-              ) : queryError ? (
-                <div className="text-red-500 p-5 bg-white rounded-lg shadow-md">{queryError}</div>
-              ) : Object.keys(queryData).length > 0 ? (
-                keywords.map((keyword) => (
-                  <div key={keyword} className="mb-6 bg-white rounded-lg shadow-md overflow-hidden dark:bg-black">
-                    <div className="border-b p-4 flex justify-between items-center">
-                      <h3 className="text-lg font-medium">Related queries: {keyword}</h3>
-                      <div className="flex items-center space-x-2">
-                        <div className="border rounded-md overflow-hidden flex">
-                          <button
-                            className={`px-3 py-1 ${queryType === "Rising" ? "bg-blue-100 text-blue-800" : "bg-white"} dark:bg-black dark:text-blue-400`}
-                            onClick={() => handleQueryTypeChange("Rising")}
-                          >
-                            Rising
-                          </button>
-                          <button
-                            className={`px-3 py-1 ${queryType === "Top" ? "bg-blue-100 text-blue-800" : "bg-white"} dark:bg-gray-500 dark:hover:bg-gray-900`}
-                            onClick={() => handleQueryTypeChange("Top")}
-                          >
-                            Top
-                          </button>
-                        </div>
-                        <button 
-                          className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-900" 
-                          onClick={() => downloadQueryCSV(keyword)}
-                          disabled={!queryData[keyword] || !queryData[keyword][queryType.toLowerCase() as "rising" | "top"]?.length}
-                        >
-                          <Download size={18} />
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="p-4">
-                      {!queryData[keyword] ? (
-                        <div className="text-gray-500">No data available for this keyword</div>
-                      ) : (
-                        <div>
-                          {paginatedQueryData(keyword).length === 0 ? (
-                            <div className="text-gray-500">No {queryType.toLowerCase()} queries available</div>
-                          ) : (
-                            <Table>
-                              <TableHeader>
-                                <TableRow className="bg-gray-50">
-                                  <TableHead className="w-12 text-center">SN</TableHead>
-                                  <TableHead>Query</TableHead>
-                                  <TableHead className="w-32 text-right">
-                                    {queryType === "Rising" ? "Change" : "Value"}
-                                  </TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {paginatedQueryData(keyword).map((item, index) => (
-                                  <TableRow key={item.query} className="border-t">
-                                    <TableCell className="text-center text-gray-500">{(queryCurrentPage - 1) * itemsPerPage + index + 1}</TableCell>
-                                    <TableCell className="font-medium">{item.query}</TableCell>
-                                    <TableCell className="text-right">
-                                      {queryType === "Rising" ? (
-                                        <div className="flex items-center justify-end space-x-1">
-                                          <span className="text-green-600">{item.value}</span>
-                                          <ArrowUpRight size={16} className="text-green-600" />
-                                        </div>
-                                      ) : (
-                                        <span>{item.value}</span>
-                                      )}
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          )}
-
-                          {/* Pagination Controls */}
-                          {paginatedQueryData(keyword).length > 0 && (
-                            <div className="flex justify-between items-center p-3 text-sm text-gray-500">
-                              <button
-                                onClick={() => handleQueryPageChange(queryCurrentPage - 1)}
-                                disabled={queryCurrentPage === 1}
-                                className="flex items-center space-x-2 disabled:opacity-50"
-                              >
-                                <ChevronLeft size={18} />
-                                <span>Previous</span>
-                              </button>
-
-                              <span>
-                                Showing {(queryCurrentPage - 1) * itemsPerPage + 1}-
-                                {Math.min(
-                                  queryCurrentPage * itemsPerPage,
-                                  queryData[keyword][queryType.toLowerCase() as "rising" | "top"]?.length || 0
-                                )} of {queryData[keyword][queryType.toLowerCase() as "rising" | "top"]?.length || 0} queries
-                              </span>
-
-                              <button
-                                onClick={() => handleQueryPageChange(queryCurrentPage + 1)}
-                                disabled={queryCurrentPage === queryTotalPages(keyword)}
-                                className="flex items-center space-x-2 disabled:opacity-50"
-                              >
-                                <span>Next</span>
-                                <ChevronRight size={18} />
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-10 text-gray-500 bg-white rounded-lg shadow-md">No related queries data available for the selected keywords.</div>
-              )}
-            </div>
-          </div>
-        ) : (
-          // Initial state - no search performed yet
-          <div className="bg-white p-6 rounded-lg shadow-md text-center dark:bg-black">
-            <p className="text-gray-500 dark:text-white">Enter keywords and click Search to view Google Trends data.</p>
-          </div>
-        )}
-      </div>
-=======
                 <button className="p-1 rounded hover:bg-gray-100  dark:hover:bg-gray-900 ">
                   <Filter size={18} />
                 </button>
@@ -1134,7 +702,6 @@ export default function GoogleTrendsDashboard() {
         </div>
       )}
     </div>
->>>>>>> nabin
     </Layout>
   );
 }

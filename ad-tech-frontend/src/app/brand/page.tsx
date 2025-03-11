@@ -14,7 +14,6 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 import DateRangePicker from "../components/ui/datePicker";
-
 import BasicRadialBar from "../components/ui/RadialbarChart"; // Updated RadialBar
 import BasicPieChart from "../components/ui/bargraph";
 import Layout from "../components/ui/Layout";
@@ -28,7 +27,15 @@ type BrandTargetData = {
   DailySales: number;
   Target: number;
   TargetAchieved: number;
+  Goal: number;
 };
+
+type OurBrandData ={
+  profileId: number;
+  currencyCode: string;
+  name: string;
+};
+
 
 async function fetchFilteredBrandTargetData(startDate: string, endDate: string) {
   try {
@@ -48,7 +55,21 @@ async function fetchFilteredBrandTargetData(startDate: string, endDate: string) 
 async function fetchUniqueBrandTargetData() {
   try {
     const res = await fetch(
-      "http://127.0.0.1:8000/get_unique/brand_level_table",
+      "http://127.0.0.1:8000/get_report/brand_level_table",
+      { cache: "no-store" }
+    );
+    if (!res.ok) throw new Error("Failed to fetch unique brand target data");
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching unique brand target data:", error);
+    return [];
+  }
+}
+
+async function fetchOurBrandData() {
+  try {
+    const res = await fetch(
+      "http://127.0.0.1:8000/ourbrand",
       { cache: "no-store" }
     );
     if (!res.ok) throw new Error("Failed to fetch unique brand target data");
@@ -67,9 +88,22 @@ export default function BrandTargetTables() {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [isDataAvailable, setIsDataAvailable] = useState<boolean>(true);
-
+  const [brands, setBrands] = useState<OurBrandData[]>([]);
    // State to manage date range picker visibility
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/ourbrand')
+    .then(response => response.json())
+    .then(data => {
+      // The API response is already an array, so don't look for data.brands
+      setBrands(data); // Just use data directly
+    })
+    .catch(error => {
+      console.error("Error fetching brand data:", error);
+    });
+    }, []);
+
 
   useEffect(() => {
     async function loadData() {
@@ -137,7 +171,16 @@ export default function BrandTargetTables() {
 
   const brandNames = uniqueBrandTargetData.map((brand) => brand.Brand);
 
+   // Get only top 8 brands for the radial chart
+   const top8BrandsProgress = brandProgressData.slice(0, 8);
+   const top8BrandNames = brandNames.slice(0, 8);
+
+
   const brandSalesData = uniqueBrandTargetData.map((brand) => brand.TargetAchieved);
+  // Get only first 8 brands for the pie chart
+  const first8BrandSalesData = brandSalesData.slice(0, 8);
+
+  // const brandSalesData = uniqueBrandTargetData.map((brand) => brand.TargetAchieved);
 
    // Sort brands by sales achieved in descending order and get top 5
   const topBrandsBySales = [...uniqueBrandTargetData]
@@ -150,6 +193,8 @@ export default function BrandTargetTables() {
 
 const brandProgressDataTop5 = topBrandsBySales.map((brand) => brand.TargetAchieved);
 const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
+
+
 
 //   // Sorting brands by Spends (assuming actual spend data is available)
 // const topBrandsBySpends = [...uniqueBrandTargetData]
@@ -197,17 +242,17 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
           <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
             <BasicRadialBar 
               height={350}
-              series={brandProgressData} // Multiple progress for individual brands
-              labels={brandNames} // Add brand names as labels
+              series={top8BrandsProgress} // Multiple progress for individual brands
+              labels={top8BrandNames} // Add brand names as labels
               hollowSize="30%"
             /> 
           </div>
             {/* Individual Radial Chart with Multiple Brands */}
               <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
                 <BasicPieChart 
-                series={brandSalesData} 
+                series={first8BrandSalesData} 
                 height={350}
-                labels={brandNames}
+                labels={top8BrandNames}
                 colors={["#F44336", "#2196F3", "#4CAF50", "#FFC107", "#9C27B0", "#2a40f1", "#2af1c7", "#79f728"]}/>  
               </div> 
         </div>
@@ -229,10 +274,10 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         <div className="shadow-2xl p-4 bg-white rounded-2xl dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
         
           {/* Brand Table */}
-          <div className="flex-1 overflow-x-auto ">
+          <div className="overflow-auto max-h-[500px]">
           <Table className="min-w-full border text-center">
-              <TableHeader>
-                <TableRow className=" cursor-pointer hover:bg-gray-100">
+              <TableHeader className="bg-gray-200 dark:bg-gray-800">
+                <TableRow>
                   <TableHead>Brand</TableHead>
                   <TableHead>Goal</TableHead>
                   <TableHead>Spends</TableHead>
@@ -241,19 +286,19 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {uniqueBrandTargetData.map((brand) => (
-                  <TableRow key={`${brand.Brand}-${brand.DateTime}`}>
-                    <TableCell className="hover:bg-gray-400 cursor-pointer">
-                      <Link href="../components/ui/campaign" className="text-black hover:text-gray-900 dark:text-white">
+                {uniqueBrandTargetData.map((brand, index) => (
+                  <TableRow key={`${brand.Brand}-${brand.DateTime}-${index}`}>
+                    <TableCell className="border border-default-300 hover:bg-default-100 transition-colors cursor-pointer p-0">
+                      <Link href={`/campaign`} className="text-black hover:bg-gray-300 block w-full h-full p-4 dark:text-white dark:hover:bg-blue-900">
                         {brand.Brand}
                       </Link>
                     </TableCell>
+                    <TableCell>{brand.Goal?.toLocaleString() || '-'}</TableCell>
+                    <TableCell>{brand.DailySales}</TableCell>
                     <TableCell>{brand.Target?.toLocaleString() || '-'}</TableCell>
-                    <TableCell>1000</TableCell>
-                    <TableCell>{brand.TargetAchieved?.toLocaleString() || '-'}</TableCell>
                     <TableCell>
                       {brand.Target > 0
-                        ? ((brand.TargetAchieved / brand.Target) * 100).toFixed(2)
+                        ? ((brand.Target / brand.Goal) * 100).toFixed(2)
                         : "0.00"}%
                     </TableCell>
                   </TableRow>
@@ -262,7 +307,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
             </Table>
           </div>
         </div>
-
+        
       <div className="mt-12 flex gap-4 rounded-2xl">
         <div className="w-1/2 shadow-2xl p-4 bg-white rounded-lg dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
         {/* tablee for top 5 brands according to sales achived */}
@@ -270,7 +315,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         <div className="flex space-x-10 ">
           <div className="flex-1 overflow-x-auto">
             <Table className="min-w-full border text-center">
-              <TableHeader className="bg-black text-white top-0 z-10">
+              <TableHeader className="bg-black text-white top-0 z-10 ">
                 <TableRow>
                   <TableHead>Brand</TableHead>
                   <TableHead>Sales Achieved</TableHead>
@@ -280,7 +325,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
                 {topBrandsBySales.map((brand) => (
                   <TableRow key={brand.Brand}>
                     <TableCell className="w-1/3">{brand.Brand}</TableCell>
-                    <TableCell className="w-1/3">{brand.TargetAchieved?.toLocaleString() || '-'}</TableCell>
+                    <TableCell className="w-1/3">{brand.Target?.toLocaleString() || '-'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -307,7 +352,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
                 {topBrandsBySales.map((brand) => (
                   <TableRow key={brand.Brand}>
                     <TableCell className="w-1/3">{brand.Brand}</TableCell>
-                    <TableCell className="w-1/3">1000</TableCell>
+                    <TableCell className="w-1/3">{brand.DailySales}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -320,11 +365,34 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
                   labels={brandNamesTop5}/>
               
           </div>
-        </div>
-           
+        </div>  
       </div>
       </div>
       </div>
+          <Table className="min-w-full border text-center">
+            <TableHeader>
+              <TableRow>
+                <TableHead>Brand Name</TableHead>
+                <TableHead>Profile ID</TableHead>
+                <TableHead>Currency Code</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {brands && brands.length > 0 ? (
+                brands.map((brand) => (
+                  <TableRow key={brand.profileId}>
+                    <TableCell>{brand.name}</TableCell>
+                    <TableCell>{brand.profileId}</TableCell>
+                    <TableCell>{brand.currencyCode}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={3}>No brands data available</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
        <div >
         <Footer/>
        </div>

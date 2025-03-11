@@ -1,24 +1,41 @@
 import requests
+import os
+from dotenv import load_dotenv
+import refresh_token 
 
-def get_snapshot_id():
-    api_url = "https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7q7dkf244hwjntr0&include_errors=true"
+def get_brand_details():
+    
+    load_dotenv()  
+    
+    api_url = os.getenv("API_URL") + "/v2/profiles" 
+    access_token = refresh_token.refresh_access_token()
+    client_id = os.getenv("CLIENT_ID")
+    
     headers = {
-        "Authorization": "Bearer d2edcf5e3f0749d8a7c6d39f4df331946c5a353104358818a6a651bf4157b9c8",
-        "Content-Type": "application/json"
+        "Authorization": f"Bearer {access_token}",
+        "Amazon-Advertising-API-ClientId": client_id
     }
-
-    # Correct the body structure to match the expected format
-    body = {
-        "url": "https://www.amazon.in/SM-M166P/dp/B0DX798LW2?ref=dlx_deals_dg_dcl_B0DX798LW2_dt_sl10_56_pi&pf_rd_r=0TTT795KJQJZTQM3FBFK&pf_rd_p=065cd315-6c3e-4e79-8380-82c4417b9956",
-        "asin": "",  
-        "zipcode": ""  
-    }
-
+     
     try:
-        # Send the request with the corrected body
-        response = requests.post(api_url, headers=headers, json=body)
-        print(response.json())
-    except requests.RequestException as e:
-        print(f"Request failed: {e}")
-
-get_snapshot_id()
+        response = requests.get(api_url, headers=headers)
+        response.raise_for_status()  # Raise an HTTPError for bad responses (4xx or 5xx)
+        profiles = response.json()
+        
+        # Extracting the required data into a list of dictionaries
+        profile_data = [
+            {
+                "profileId": profile.get("profileId"),
+                "currencyCode": profile.get("currencyCode"),
+                "name": profile.get("accountInfo", {}).get("name")
+            }
+            for profile in profiles
+        ]
+        
+        return profile_data
+    
+    except requests.exceptions.RequestException as e:
+        if hasattr(e, 'response') and e.response is not None:
+            print("Error details:", e.response.text)
+        else:
+            print(f"An error occurred: {e}")
+        return []

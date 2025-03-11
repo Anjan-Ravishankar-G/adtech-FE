@@ -18,6 +18,7 @@ header = {
     "Content-Type": "application/vnd.spkeywordsrecommendation.v5+json"
 }
 
+
 def get_recommended_keywords(campaign_id, ad_group_id):
     body = {
         "sortDimension": "CLICKS",

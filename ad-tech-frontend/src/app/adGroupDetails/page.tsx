@@ -9,30 +9,39 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
-import Header from "@/app/components/ui/header";
+
 import Sidebar from "@/app/components/ui/sidebar"; // Import the Sidebar component
 import Footer from "@/app/components/ui/footer";
 
 type AsinData = {
-  SN: string;
+  SN: number;
+  asin: string;
+  sku: string;
+  adFormat: string;
+  campaignStatus: string;
+  dailySpends: number;
+  dailySales:number;
+  ACOS: string;
+  ROAS: string;
+
   advertisedAsin: string;
   advertisedSku: string;
-  campaignStatus: string;
   impressions: number;
   clicks: number;
   clickThroughRate: string;
   cost: number;
-  sales1d: number;
-  ACoS: string;
-  ROAS: string;
+ 
   adGroupId: string;
   campaignId: string;
 };
 
 type KeywordData = {
+  SN: number;
   keyword: string;
+  keyword_rank: number;
+  keyword_for: string;
+  bids: number;
   match_type: string;
-  bid: number[];
   rank: number;
   theme: string;
 };
@@ -105,20 +114,6 @@ async function fetchKeywordPerformance() {
   return res.json();
 }
 
-async function fetchNegativeKeywords(adGroupId: string) {
-  try {
-    const res = await fetch("http://127.0.0.1:8000/negative_keywords", { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to fetch negative keywords");
-    const data = await res.json();
-    return data.filter((keyword: NegativeKeyword) =>
-      String(keyword.adGroupId).trim().toLowerCase() === String(adGroupId).trim().toLowerCase()
-    );
-  } catch (error) {
-    console.error("Error fetching negative keywords:", error);
-    throw error;
-  }
-}
-
 export default function AdGroupPage({ params }: { params: Promise<{ campaign_id: string, ad_group_id: string }> }) {
   const router = useRouter();
   const [asinData, setAsinData] = useState<AsinData[]>([]);
@@ -168,7 +163,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
 
   // Sort by sales1d to get top ASINs by sales
   const topAsinBySales = [...asinData]
-    .sort((a, b) => b.sales1d - a.sales1d)  // Sort in descending order by sales
+    .sort((a, b) => b.dailySales - a.dailySales)  // Sort in descending order by sales
     .slice(0, 5);  // Get top 5
 
 
@@ -198,13 +193,13 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
               <TableBody>
                 {asinData.map((asin) => (
                   <TableRow key={asin.SN} className="text-center">
-                    <TableCell className="border border-default-300">{asin.advertisedAsin}</TableCell>
-                    <TableCell className="border border-default-300">{asin.advertisedSku}</TableCell>
-                    <TableCell className="border border-default-300">Sp</TableCell>
+                    <TableCell className="border border-default-300">{asin.asin}</TableCell>
+                    <TableCell className="border border-default-300">{asin.sku}</TableCell>
+                    <TableCell className="border border-default-300">{asin.adFormat}</TableCell>
                     <TableCell className="border border-default-300">{asin.campaignStatus}</TableCell>
-                    <TableCell className="border border-default-300">{asin.clickThroughRate}</TableCell>
-                    <TableCell className="border border-default-300">{asin.clicks}</TableCell>
-                    <TableCell className="border border-default-300">{asin.cost}</TableCell>
+                    <TableCell className="border border-default-300">{asin.dailySpends}</TableCell>
+                    <TableCell className="border border-default-300">{asin.dailySales}</TableCell>
+                    <TableCell className="border border-default-300">{asin.ACOS}</TableCell>
                     <TableCell className="border border-default-300">{asin.ROAS}</TableCell>
                   </TableRow>
                 ))}
@@ -346,7 +341,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
                         <TableCell className="border border-default-300">{keyword.keyword}</TableCell>
                         <TableCell className="border border-default-300">{keyword.rank}</TableCell>
                         <TableCell className="border border-default-300">{keyword.theme}</TableCell>
-                        <TableCell className="border border-default-300">{keyword.bid}</TableCell>
+                        <TableCell className="border border-default-300">{keyword.bids}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -359,7 +354,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
       </div> 
     )} 
       <div className="mt-32">
-      <Footer />  
+       <Footer />  
       </div>
       </div>   
     </div>
