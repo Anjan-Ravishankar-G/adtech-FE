@@ -36,9 +36,12 @@ type AsinData = {
 };
 
 type KeywordData = {
+  SN: number;
   keyword: string;
+  keyword_rank: number;
+  keyword_for: string;
+  bids: number;
   match_type: string;
-  bid: number[];
   rank: number;
   theme: string;
 };
