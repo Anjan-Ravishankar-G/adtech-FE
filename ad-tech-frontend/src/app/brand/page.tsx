@@ -171,7 +171,16 @@ export default function BrandTargetTables() {
 
   const brandNames = uniqueBrandTargetData.map((brand) => brand.Brand);
 
+   // Get only top 8 brands for the radial chart
+   const top8BrandsProgress = brandProgressData.slice(0, 8);
+   const top8BrandNames = brandNames.slice(0, 8);
+
+
   const brandSalesData = uniqueBrandTargetData.map((brand) => brand.TargetAchieved);
+  // Get only first 8 brands for the pie chart
+  const first8BrandSalesData = brandSalesData.slice(0, 8);
+
+  // const brandSalesData = uniqueBrandTargetData.map((brand) => brand.TargetAchieved);
 
    // Sort brands by sales achieved in descending order and get top 5
   const topBrandsBySales = [...uniqueBrandTargetData]
@@ -233,17 +242,17 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
           <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
             <BasicRadialBar 
               height={350}
-              series={brandProgressData} // Multiple progress for individual brands
-              labels={brandNames} // Add brand names as labels
+              series={top8BrandsProgress} // Multiple progress for individual brands
+              labels={top8BrandNames} // Add brand names as labels
               hollowSize="30%"
             /> 
           </div>
             {/* Individual Radial Chart with Multiple Brands */}
               <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
                 <BasicPieChart 
-                series={brandSalesData} 
+                series={first8BrandSalesData} 
                 height={350}
-                labels={brandNames}
+                labels={top8BrandNames}
                 colors={["#F44336", "#2196F3", "#4CAF50", "#FFC107", "#9C27B0", "#2a40f1", "#2af1c7", "#79f728"]}/>  
               </div> 
         </div>
@@ -265,10 +274,10 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         <div className="shadow-2xl p-4 bg-white rounded-2xl dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
         
           {/* Brand Table */}
-          <div className="overflow-y-auto max-h-[500px] relative">
+          <div className="overflow-auto max-h-[500px]">
           <Table className="min-w-full border text-center">
-              <TableHeader className="bg-gray-200 dark:bg-gray-800 z-10">
-                <TableRow className="sticky top-0 ">
+              <TableHeader className="bg-gray-200 dark:bg-gray-800">
+                <TableRow>
                   <TableHead>Brand</TableHead>
                   <TableHead>Goal</TableHead>
                   <TableHead>Spends</TableHead>
@@ -295,7 +304,6 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
           </div>
         </div>
         
-
       <div className="mt-12 flex gap-4 rounded-2xl">
         <div className="w-1/2 shadow-2xl p-4 bg-white rounded-lg dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
         {/* tablee for top 5 brands according to sales achived */}
@@ -303,7 +311,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
         <div className="flex space-x-10 ">
           <div className="flex-1 overflow-x-auto">
             <Table className="min-w-full border text-center">
-              <TableHeader className="bg-black text-white top-0 z-10">
+              <TableHeader className="bg-black text-white top-0 z-10 ">
                 <TableRow>
                   <TableHead>Brand</TableHead>
                   <TableHead>Sales Achieved</TableHead>

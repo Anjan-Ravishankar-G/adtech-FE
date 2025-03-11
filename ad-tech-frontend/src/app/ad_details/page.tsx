@@ -15,25 +15,34 @@ import Footer from "@/app/components/ui/footer";
 import Layout from "@/app/components/ui/Layout";
 
 type CampaignData = {
-  SN: string;
+  SN: number;
+  adGroup: string;
+  adFormat: string;
+  SKU: string;
+  Spend: number;
+  Sales: number;
+  ACOS: number;
+  ROAS: number;
+  Impressions: number;
+  CTR: number;
+  Clicks: number;
+  DRR: number;
   campaignId: string;
   campaignName: string;
   adGroupId: string;
-  adGroupName: string;
   cost: number;
   costPerClick: number;
   clickThroughRate: string;
-  clicks: number;
-  sales1d: number;
-  ACoS: string;
-  ROAS: string;
+  
+
+  
   campaign_type: string;
-  impression: number;
+  
 };
 
 async function fetchCampaignData(startDate: string | null, endDate: string | null) {
   try {
-    const res = await fetch("http://127.0.0.1:8000/get_report/campaign_level_table", { cache: "no-store" });
+    const res = await fetch("http://127.0.0.1:8000/get_report/ad_group_table", { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to fetch campaign data");
     const data = await res.json();
     return data;
@@ -79,19 +88,19 @@ export default function PerformanceTable() {
 
   // Sort by sales and pick top 5
   const topSales = [...campaignData]
-    .sort((a, b) => b.sales1d - a.sales1d)
+    .sort((a, b) => b.Sales - a.Sales)
     .slice(0, 5);
 
-    const salesSeries = topSales.map(campaign => campaign.sales1d);
-    const salesLabels = topSales.map(campaign => campaign.adGroupName);
+    const salesSeries = topSales.map(campaign => campaign.Sales);
+    const salesLabels = topSales.map(campaign => campaign.adGroup);
 
   // Extract top 5 ad groups by spend
   const topSpend = [...campaignData]
-  .sort((a, b) => b.cost - a.cost)
+  .sort((a, b) => b.Spend - a.Spend)
   .slice(0, 5);
     // Prepare data for Pie Chart
- const spendSeries = topSpend.map(campaign => campaign.cost);
- const spendLabels = topSpend.map(campaign => campaign.adGroupName);
+ const spendSeries = topSpend.map(campaign => campaign.Spend);
+ const spendLabels = topSpend.map(campaign => campaign.adGroup);
 
     const handleButtonClick = () => {
       setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
@@ -150,21 +159,21 @@ export default function PerformanceTable() {
             {campaignData.map((campaign) => (
               <TableRow key={campaign.SN} className="text-center">
               <TableCell className="border border-default-300 hover:bg-default-100 transition-colors cursor-pointer p-0">
-                <Link href={`/adGroupDetails/${campaign.campaignId}/${campaign.adGroupId}/`} className="text-black hover:bg-gray-300 block w-full h-full p-4 dark:text-white dark:hover:bg-blue-900">
-                {campaign.adGroupName}
+                <Link href={`/adGroupDetails`} className="text-black hover:bg-gray-300 block w-full h-full p-4 dark:text-white dark:hover:bg-blue-900">
+                {campaign.adGroup}
                 </Link>
               </TableCell>
 
-              <TableCell className="border border-default-300">SP</TableCell>
-              <TableCell className="border border-default-300">list sku for the ad group</TableCell>
-              <TableCell className="border border-default-300">{campaign.cost}</TableCell>
-              <TableCell className="border border-default-300">{campaign.sales1d}</TableCell>
-              <TableCell className="border border-default-300">{campaign.ACoS}</TableCell>
+              <TableCell className="border border-default-300">{campaign.adFormat}</TableCell>
+              <TableCell className="border border-default-300">{campaign.SKU}</TableCell>
+              <TableCell className="border border-default-300">{campaign.Spend}</TableCell>
+              <TableCell className="border border-default-300">{campaign.Sales}</TableCell>
+              <TableCell className="border border-default-300">{campaign.ACOS}</TableCell>
               <TableCell className="border border-default-300">{campaign.ROAS}</TableCell>
-              <TableCell className="border border-default-300">{campaign.clickThroughRate}</TableCell>
-              <TableCell className="border border-default-300">{campaign.clicks}</TableCell>
-              <TableCell className="border border-default-300">{campaign.impression}</TableCell>
-              <TableCell className="border border-default-300">{campaign.costPerClick}</TableCell>
+              <TableCell className="border border-default-300">{campaign.Impressions}</TableCell>
+              <TableCell className="border border-default-300">{campaign.CTR}</TableCell>
+              <TableCell className="border border-default-300">{campaign.Clicks}</TableCell>
+              <TableCell className="border border-default-300">{campaign.DRR}</TableCell>
             </TableRow>
             ))}
           </TableBody>
@@ -183,22 +192,24 @@ export default function PerformanceTable() {
                 </TableRow>
               </TableHeader>
               <TableBody className="text-white">
-                {topSpend.slice(0, 2).map((campaign) => (
+                {topSpend.slice(0, 5).map((campaign) => (
                   <TableRow key={campaign.SN} className="text-center">
-                    <TableCell className="w-1/2">{campaign.adGroupName}</TableCell>
-                    <TableCell className="w-1/2">{campaign.cost}</TableCell>
+                    <TableCell className="w-1/2">{campaign.adGroup}</TableCell>
+                    <TableCell className="w-1/2">{campaign.Spend}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+          
           </div>
               {/* for pie chart */}
               <div>
-                  <BasicPieChart 
+              <BasicPieChart 
                   series={spendSeries} 
                   height={350}
                   labels={spendLabels}/>
-               </div>
+              </div>
+    
         </div>
         <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl  dark:bg-black">
           <h1 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Ad Groups by Sales</h1>
@@ -211,10 +222,10 @@ export default function PerformanceTable() {
                 </TableRow>
               </TableHeader>
               <TableBody className="text-white">
-                {topSales.slice(0, 2).map((campaign) => (
+                {topSales.slice(0, 5).map((campaign) => (
                   <TableRow key={campaign.SN} className="text-center">
-                    <TableCell className="w-1/2">{campaign.adGroupName}</TableCell>
-                    <TableCell className="w-1/2">{campaign.sales1d}</TableCell>
+                    <TableCell className="w-1/2">{campaign.adGroup}</TableCell>
+                    <TableCell className="w-1/2">{campaign.Sales}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
