@@ -30,8 +30,7 @@ export default function Sidebar({ selectedTab, setSelectedTab }: SidebarProps) {
             isOpen ? "w-48" : "w-16"
           }`}
         >
-          <div className="dark:bg-[#1e1e1e] rounded-2xl p-1">
-          </div>
+          <div className="dark:bg-[#1e1e1e] rounded-2xl p-1"></div>
 
           <ul className="space-y-6 p-4 mt-16">
             <li>
@@ -59,25 +58,29 @@ export default function Sidebar({ selectedTab, setSelectedTab }: SidebarProps) {
             <li>
               <button
                 onClick={() => setSelectedTab("NegativeKeyword")}
-                className={`flex items-center  w-full text-gray-700 hover:text-black ${
-                  isOpen ? "" : "justify-"
+                className={`flex text-start gap-3 w-full text-gray-700 hover:text-black ${
+                  isOpen ? "" : "justify-center"
                 }`}
               >
-                <FaKey size={20} />
-                {isOpen && <span>Negative Keywords</span>}
+                <FaKey size={20}  />
+                {isOpen && <span>Negative<br/>Keywords</span>}
               </button>
             </li>
             <li>
               <button
                 onClick={() => setSelectedTab("keywordRecommendation")}
-                className={`flex items-center  w-full text-gray-700 hover:text-black ${
+                className={`flex items-start gap-3 w-full text-gray-700 hover:text-black ${
                   isOpen ? "" : "justify-center"
                 }`}
               >
                 <FaArrowRight size={20} />
-                {isOpen && <span>Keyword Recommendations</span>}
+                {isOpen && <span>Recomended<br/>Keywords</span>}
               </button>
             </li>
+            </ul>
+
+            <div className="mt-36 p-4">
+            <ul className="space-y-6">
             <li>
               <button
                 onClick={toggleTheme}
@@ -111,6 +114,7 @@ export default function Sidebar({ selectedTab, setSelectedTab }: SidebarProps) {
               </button>
             </li>
           </ul>
+          </div>
         </div>
 
         <div className="flex-1 p-4">

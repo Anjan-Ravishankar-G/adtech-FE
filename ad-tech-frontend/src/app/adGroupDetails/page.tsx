@@ -188,7 +188,8 @@ labels: top5BySpends.map((asin) => asin.asin),
         {selectedTab === 'asin' && (
           <div>
           <div className="shadow-2xl p-4 bg-white rounded-2xl  dark:bg-black">
-            <h2 className="text-lg font-bold mt-6">ASIN Performance</h2>
+            <h2 className="text-lg font-bold mt-5">ASIN Performance</h2>
+            <div className=" mt-5 overflow-x-auto overflow-y-auto h-96 border border-default-300 rounded-lg">
             <Table className="border border-default-300">
               <TableHeader className="bg-black text-white sticky top-0 z-10">
                 <TableRow>
@@ -196,8 +197,8 @@ labels: top5BySpends.map((asin) => asin.asin),
                   <TableHead className="border border-default-300">SKU</TableHead>
                   <TableHead className="border border-default-300 relative ">Ad format</TableHead>
                   <TableHead className="border border-default-300">Campaign Status</TableHead>
-                  <TableHead className="border border-default-300">Daily Spend</TableHead>
-                  <TableHead className="border border-default-300">Daily sales</TableHead>
+                  <TableHead className="border border-default-300">Daily Spend (₹)</TableHead>
+                  <TableHead className="border border-default-300">Daily sales (₹)</TableHead>
                   <TableHead className="border border-default-300">ACOS</TableHead>
                   <TableHead className="border border-default-300">ROAS</TableHead>
                 </TableRow>
@@ -218,6 +219,7 @@ labels: top5BySpends.map((asin) => asin.asin),
               </TableBody>
             </Table>
             </div>
+            </div>
             <div className="flex gap-4">
               <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl mt-5 dark:bg-black">
               <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Asin Based on Spends</h2>
@@ -227,7 +229,7 @@ labels: top5BySpends.map((asin) => asin.asin),
                     <TableHeader className="bg-black text-white top-0 z-10">
                       <TableRow>
                         <TableHead>ASIN</TableHead>
-                        <TableHead>Daily Spends</TableHead>
+                        <TableHead>Daily Spends (₹)</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -257,7 +259,7 @@ labels: top5BySpends.map((asin) => asin.asin),
                     <TableHeader className="bg-black text-white top-0 z-10">
                       <TableRow>
                         <TableHead>ASIN</TableHead>
-                        <TableHead>Daily Sales</TableHead>
+                        <TableHead>Daily Sales (₹)</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -285,18 +287,19 @@ labels: top5BySpends.map((asin) => asin.asin),
         {selectedTab === 'keywordPerformance' && (
           <div className="shadow-2xl p-4 bg-white rounded-2xl dark:bg-black">
             <h2 className="text-lg font-bold mt-6">Keyword Performance</h2>
+            <div className=" mt-5 overflow-x-auto overflow-y-auto h-[500px] border border-default-300 rounded-lg">
             <Table className="border border-default-300">
               <TableHeader className="bg-black text-white sticky top-0 z-10">
                 <TableRow>
                   <TableHead className="border border-default-300">Keyword</TableHead>
                   <TableHead className="border border-default-300">Match Type</TableHead>
-                  <TableHead className="border border-default-300">Revenue</TableHead>
-                  <TableHead className="border border-default-300">Spend</TableHead>
-                  <TableHead className="border border-default-300">ACOS</TableHead>
-                  <TableHead className="border border-default-300">ROAS</TableHead>
-                  <TableHead className="border border-default-300">Clicks</TableHead>
+                  <TableHead className="border border-default-300">Revenue (₹)</TableHead>
+                  <TableHead className="border border-default-300">Spend (₹)</TableHead>
+                  <TableHead className="border border-default-300">ACOS (₹)</TableHead>
+                  <TableHead className="border border-default-300">ROAS (₹)</TableHead>
+                  <TableHead className="border border-default-300">Clicks (₹)</TableHead>
                   <TableHead className="border border-default-300">Impressions</TableHead>
-                  <TableHead className="border border-default-300">Bid</TableHead>
+                  <TableHead className="border border-default-300">Bid (₹)</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -316,12 +319,14 @@ labels: top5BySpends.map((asin) => asin.asin),
                 ))}
               </TableBody>
             </Table>
+            </div>
           </div>
           
         )}
         {selectedTab === 'NegativeKeyword' && (
           <div className="shadow-2xl p-4 bg-white rounded-lg dark:bg-black">
             <h2 className="text-lg font-bold">Negative Keywords</h2>
+            <div className=" mt-5 overflow-x-auto overflow-y-auto h-[500px] border border-default-300 rounded-lg">
             <Table className="border border-default-300">
               <TableHeader className="bg-black text-white sticky top-0 z-10">
                 <TableRow>
@@ -340,6 +345,7 @@ labels: top5BySpends.map((asin) => asin.asin),
                 ))}
               </TableBody>
             </Table>
+            </div>
           </div>
         )}
         {selectedTab === 'keywordRecommendation' && (
@@ -357,7 +363,7 @@ labels: top5BySpends.map((asin) => asin.asin),
                       <TableHead className="border border-default-300">Keyword</TableHead>
                       <TableHead className="border border-default-300">Rank</TableHead>
                       <TableHead className="border border-default-300">For</TableHead>
-                      <TableHead className="border border-default-300">Bids</TableHead>
+                      <TableHead className="border border-default-300">Bids (₹)</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

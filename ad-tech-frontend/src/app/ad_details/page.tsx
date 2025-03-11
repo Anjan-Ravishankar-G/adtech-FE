@@ -116,18 +116,19 @@ export default function PerformanceTable() {
           <div className="text-white text-4xl">
             <h2 className="text-2xl font-light">IPG</h2>
           </div>
-          <div className="text-white">
+          {/* <div className="text-white">
             <h2 className="text-2xl font-light">Brand: brand 1</h2>
             <h2 className="text-2xl font-light">Campaign: </h2>
-          </div>
+          </div> */}
         </div>
       </div>
       <h1 className="text-2xl font-bold mb-4 text-center ">Ad Groups</h1>
 
       {/* Button to open the Date Range Picker */}
+      <div className="flex -1 gap-4">
       <button 
         onClick={handleButtonClick}
-        className="text-Black bg-white shadow-2xl hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700  dark:bg-black dark:text-white"
+        className="text-Black bg-white shadow-2xl hover:bg-gray-900 focus:ring-gray-300 font-medium rounded-2xl text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700  dark:bg-black dark:text-white"
       >
         {isDatePickerOpen ? "Close Date Picker" : "Select Date Range"}
       </button>
@@ -137,7 +138,15 @@ export default function PerformanceTable() {
           console.log("Selected range:", startDate, endDate);
         }} />
       )}
-      
+
+        <div className="text-Black bg-white shadow-2xl hover:bg-gray-400 focus:ring-gray-300 font-medium rounded-2xl text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700 dark:text-white dark:bg-black">
+            <h2>Brand:  Estee Lauder</h2>
+        </div>
+
+        <div className="text-Black bg-white shadow-2xl hover:bg-gray-400 focus:ring-gray-300 font-medium rounded-2xl text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700 dark:text-white dark:bg-black">
+            <h2>Campaign: ART|Sp|AUTO|EC|Lauder</h2>
+        </div>
+      </div>
       <div className="shadow-2xl p-4 bg-white rounded-2xl overflow-x-auto max-h-96  dark:bg-black">
         <Table className="border border-default-100 rounded-lg">
           <TableHeader className="bg-black text-white  top-0 z-10">
@@ -145,14 +154,14 @@ export default function PerformanceTable() {
               <TableHead className="border border-default-300 text-center">Ad Group</TableHead>
               <TableHead className="border border-default-300 text-center">Ad format</TableHead>
               <TableHead className="border border-default-300 text-center">SKU</TableHead>
-              <TableHead className="border border-default-300 text-center">Spends</TableHead>
-              <TableHead className="border border-default-300 text-center">Sales</TableHead>
+              <TableHead className="border border-default-300 text-center">Spends(₹)</TableHead>
+              <TableHead className="border border-default-300 text-center">Sales (₹)</TableHead>
               <TableHead className="border border-default-300 text-center">ACOS</TableHead>
               <TableHead className="border border-default-300 text-center">ROAS</TableHead>
               <TableHead className="border border-default-300 text-center">Impression</TableHead>
               <TableHead className="border border-default-300 text-center">CTR</TableHead>
               <TableHead className="border border-default-300 text-center">Clicks</TableHead>
-              <TableHead className="border border-default-300 text-center rounded-tr-lg">DRR</TableHead>
+              <TableHead className="border border-default-300 text-center rounded-tr-lg">DRR (₹)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="text-white">
@@ -188,7 +197,7 @@ export default function PerformanceTable() {
               <TableHeader className="bg-black text-white top-0 z-10">
                 <TableRow>
                   <TableHead>Ad Group</TableHead>
-                  <TableHead>Spends</TableHead>
+                  <TableHead>Spends (₹)</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody className="text-white">
@@ -218,7 +227,7 @@ export default function PerformanceTable() {
               <TableHeader className="bg-black text-white top-0 z-10">
                 <TableRow>
                   <TableHead>Ad Group</TableHead>
-                  <TableHead>Sales</TableHead>
+                  <TableHead>Sales (₹)</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody className="text-white">

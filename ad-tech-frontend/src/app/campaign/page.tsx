@@ -168,8 +168,8 @@ const top5SpendBrandData = top5CampaignsBySpend.map(campaign => campaign.Spend);
             }} />
           )}
 
-          <div className="text-Black bg-white shadow-2xl hover:bg-gray-400 focus:ring-gray-300 font-medium rounded-2xl text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700 dark:text-white dark:bg-black">
-            <h2>Brand: brand 1</h2>
+          <div className="text-Black bg-white shadow-2xl hover:bg-gray-200 focus:ring-gray-300 font-medium rounded-2xl text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700 dark:text-white dark:bg-black">
+            <h2>Brand: Benetton</h2>
           </div>
         </div>
 
@@ -189,9 +189,9 @@ const top5SpendBrandData = top5CampaignsBySpend.map(campaign => campaign.Spend);
                       <option value="SD">SBV</option>
                   </select>
                 </TableHead>
-                <TableHead className="text-center">Sales</TableHead>
-                <TableHead className="text-center">Spend</TableHead>
-                <TableHead className="text-center">Goal</TableHead>
+                <TableHead className="text-center">Spend (₹)</TableHead>
+                <TableHead className="text-center">Sales (₹)</TableHead>
+                <TableHead className="text-center">Goal (₹)</TableHead>
                 <TableHead className="text-center">Progress</TableHead>
               </TableRow>
             </TableHeader>
@@ -205,8 +205,8 @@ const top5SpendBrandData = top5CampaignsBySpend.map(campaign => campaign.Spend);
                     </Link>
                   </TableCell>
                   <TableCell>{campaign.campaignType}</TableCell>
-                  <TableCell>{campaign.Sales?.toLocaleString() || '-'}</TableCell>
                   <TableCell>{campaign.Spend?.toLocaleString() || '-'}</TableCell>
+                  <TableCell>{campaign.Sales?.toLocaleString() || '-'}</TableCell>  
                   <TableCell>{campaign.Goal?.toLocaleString() || '-'}</TableCell>
                   <TableCell>{campaign.Progress}</TableCell>
                 </TableRow>
@@ -216,34 +216,7 @@ const top5SpendBrandData = top5CampaignsBySpend.map(campaign => campaign.Spend);
         </div>
 
         <div className="flex gap-4 p-1 mt-3">
-          <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl dark:bg-black dark:shadow-[-20px_-10px_30px_6px_rgba(0,0,0,0.1),_15px_10px_30px_6px_rgba(45,78,255,0.15)]">
-            <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Campaign Based on Sales</h2>
-            <div className="flex space-x-10 ">
-              <div className="flex-1 overflow-x-auto">
-                <Table className="min-w-full border border-blue-600 text-center">
-                  <TableHeader className="bg-black text-white top-0 z-10">
-                    <TableRow>
-                      <TableHead>Campaign</TableHead>
-                      <TableHead>Sales</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {top5Campaigns.map((campaign) => (
-                      <TableRow key={campaign.SN}>
-                        <TableCell className="w-1/2">{campaign.campaignName}</TableCell>
-                        <TableCell className="w-1/2">{campaign.Sales?.toLocaleString() || '-'}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-                <BasicPieChart 
-                  series={top5BrandSalesData}
-                  height={350}
-                  labels={top5BrandNames}
-                />
-              </div>
-            </div>
-          </div>
+          
 
           <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl dark:bg-black dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
             <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Campaign Based on Spends</h2>
@@ -253,7 +226,7 @@ const top5SpendBrandData = top5CampaignsBySpend.map(campaign => campaign.Spend);
                   <TableHeader className="bg-black text-white top-0 z-10">
                     <TableRow>
                       <TableHead>Campaign</TableHead>
-                      <TableHead>Spends</TableHead>
+                      <TableHead>Spends (₹)</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -269,6 +242,35 @@ const top5SpendBrandData = top5CampaignsBySpend.map(campaign => campaign.Spend);
                   series={top5SpendBrandData}
                   height={350}
                   labels={top5SpendBrandNames}
+                />
+              </div>
+            </div>
+          </div>
+          
+          <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl dark:bg-black dark:shadow-[-20px_-10px_30px_6px_rgba(0,0,0,0.1),_15px_10px_30px_6px_rgba(45,78,255,0.15)]">
+            <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Campaign Based on Sales</h2>
+            <div className="flex space-x-10 ">
+              <div className="flex-1 overflow-x-auto">
+                <Table className="min-w-full border border-blue-600 text-center">
+                  <TableHeader className="bg-black text-white top-0 z-10">
+                    <TableRow>
+                      <TableHead>Campaign</TableHead>
+                      <TableHead>Sales (₹)</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {top5Campaigns.map((campaign) => (
+                      <TableRow key={campaign.SN}>
+                        <TableCell className="w-1/2">{campaign.campaignName}</TableCell>
+                        <TableCell className="w-1/2">{campaign.Sales?.toLocaleString() || '-'}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                <BasicPieChart 
+                  series={top5BrandSalesData}
+                  height={350}
+                  labels={top5BrandNames}
                 />
               </div>
             </div>
