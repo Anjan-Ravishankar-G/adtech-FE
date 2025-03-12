@@ -3,6 +3,7 @@ import { useTheme } from '@/app/context/ThemeContext';
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { GiOctopus } from "react-icons/gi";
 import { Handshake, CircleHelp, Home, LogOut, ChevronLeft, ChevronRight, ChevronDown, Search } from "lucide-react";
+import Link from "next/link";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -84,9 +85,21 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar }) => {
               </button>
               {!collapsed && showTeams && (
                 <ul className="ml-6 mt-2 space-y-2">
-                  <li><a href="/teams/team1" className="text-gray-600 hover:text-black dark:text-white">Team 1</a></li>
-                  <li><a href="/teams/team2" className="text-gray-600 hover:text-black dark:text-white">Team 2</a></li>
-                  <li><a href="/teams/team3" className="text-gray-600 hover:text-black dark:text-white">Team 3</a></li>
+                  <li>
+                  <Link href="/brand" className="text-gray-600 hover:text-black dark:text-white">
+                    E-commerce Head
+                  </Link>
+                  </li>
+                  <li>
+                  <Link href="/group_head" className="text-gray-600 hover:text-black dark:text-white">
+                    Group Head
+                  </Link>
+                  </li>
+                  <li>
+                  <Link href="/support" className="text-gray-600 hover:text-black dark:text-white">
+                    Support Team
+                  </Link>
+                  </li>
                 </ul>
               )}
             </li>
