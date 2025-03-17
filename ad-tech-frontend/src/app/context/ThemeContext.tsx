@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 
 // Define types for the context value
 interface ThemeContextType {
-  theme: 'light' | 'dark'; // Theme can only be 'light' or 'dark'
+  theme: 'light' | 'dark';
   toggleTheme: () => void;
 }
 
@@ -22,11 +22,11 @@ export const useTheme = (): ThemeContextType => {
 
 // ThemeProvider component
 interface ThemeProviderProps {
-  children: ReactNode; // Type for children to accept any React component
+  children: ReactNode;
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light'); // Type the theme state
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
     // Get saved theme from localStorage (if any)

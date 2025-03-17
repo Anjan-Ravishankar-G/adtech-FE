@@ -166,11 +166,11 @@ export default function PerformanceTable() {
 
               <TableCell className="border border-default-300">{campaign.adFormat}</TableCell>
               <TableCell className="border border-default-300">{campaign.SKU}</TableCell>
-              <TableCell className="border border-default-300">{campaign.Spend}</TableCell>
-              <TableCell className="border border-default-300">{campaign.Sales}</TableCell>
+              <TableCell className="border border-default-300">{campaign.Spend?.toLocaleString() || '-'}</TableCell>
+              <TableCell className="border border-default-300">{campaign.Sales?.toLocaleString() || '-'}</TableCell>
               <TableCell className="border border-default-300">{campaign.ACOS}</TableCell>
               <TableCell className="border border-default-300">{campaign.ROAS}</TableCell>
-              <TableCell className="border border-default-300">{campaign.Impressions}</TableCell>
+              <TableCell className="border border-default-300">{campaign.Impressions?.toLocaleString() || '-'}</TableCell>
               <TableCell className="border border-default-300">{campaign.CTR}</TableCell>
               <TableCell className="border border-default-300">{campaign.Clicks}</TableCell>
               <TableCell className="border border-default-300">{campaign.DRR}</TableCell>
@@ -195,7 +195,7 @@ export default function PerformanceTable() {
                 {topSpend.slice(0, 5).map((campaign) => (
                   <TableRow key={campaign.SN} className="text-center">
                     <TableCell className="w-1/2">{campaign.adGroup}</TableCell>
-                    <TableCell className="w-1/2">{campaign.Spend}</TableCell>
+                    <TableCell className="w-1/2">{campaign.Spend?.toLocaleString() || '-'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -225,7 +225,7 @@ export default function PerformanceTable() {
                 {topSales.slice(0, 5).map((campaign) => (
                   <TableRow key={campaign.SN} className="text-center">
                     <TableCell className="w-1/2">{campaign.adGroup}</TableCell>
-                    <TableCell className="w-1/2">{campaign.Sales}</TableCell>
+                    <TableCell className="w-1/2">{campaign.Sales?.toLocaleString() || '-'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

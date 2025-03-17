@@ -145,12 +145,12 @@ export default function BrandTargetTables() {
 
   // Calculate total target and total target achieved
   const totalTarget = uniqueBrandTargetData.reduce(
-    (acc, brand) => acc + (brand.Target || 0),
+    (acc, brand) => acc + (brand.Goal || 0),
     0
   );
   
   const totalTargetAchieved = uniqueBrandTargetData.reduce(
-    (acc, brand) => acc + (brand.TargetAchieved || 0),
+    (acc, brand) => acc + (brand.Target || 0),
     0
   );
 
@@ -162,7 +162,7 @@ export default function BrandTargetTables() {
 
   // Generate the data for the radial charts
   const brandProgressData = uniqueBrandTargetData.map((brand) => {
-    const progress = brand.Target > 0 ? (brand.TargetAchieved / brand.Target) * 100 : 0;
+    const progress = brand.Target > 0 ? (brand.Target / brand.Goal) * 100 : 0;
     return Math.round(progress); // Round to the nearest integer for simplicity
   });
 
@@ -171,17 +171,16 @@ export default function BrandTargetTables() {
 
   const brandNames = uniqueBrandTargetData.map((brand) => brand.Brand);
 
-   // Get only top 8 brands for the radial chart
-   const top8BrandsProgress = brandProgressData.slice(0, 8);
-   const top8BrandNames = brandNames.slice(0, 8);
+   // Get only top 5 brands for the radial chart
+   const top8BrandsProgress = brandProgressData.slice(0, 5);
+   const top8BrandNames = brandNames.slice(0, 5);
 
 
   const brandSalesData = uniqueBrandTargetData.map((brand) => brand.TargetAchieved);
-  // Get only first 8 brands for the pie chart
-  const first8BrandSalesData = brandSalesData.slice(0, 8);
+  // Get only first 5 brands for the pie chart
+  const first8BrandSalesData = brandSalesData.slice(0, 5);
 
-  // const brandSalesData = uniqueBrandTargetData.map((brand) => brand.TargetAchieved);
-
+  
    // Sort brands by sales achieved in descending order and get top 5
   const topBrandsBySales = [...uniqueBrandTargetData]
    .sort((a, b) => b.TargetAchieved - a.TargetAchieved)
@@ -241,17 +240,17 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
           {/* Individual Radial Chart with Multiple Brands */}
           <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
             <BasicRadialBar 
-              height={350}
+              height={550}
               series={top8BrandsProgress} // Multiple progress for individual brands
               labels={top8BrandNames} // Add brand names as labels
               hollowSize="30%"
             /> 
           </div>
             {/* Individual Radial Chart with Multiple Brands */}
-              <div className="flex-1 md:w-1/3 lg:w-1/4 h-[350px] text-center bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
+              <div className="flex-1 h-[350px] text-center align-content: center; bg-white shadow-lg rounded-2xl p-4 border dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
                 <BasicPieChart 
                 series={first8BrandSalesData} 
-                height={350}
+                height={550}
                 labels={top8BrandNames}
                 colors={["#F44336", "#2196F3", "#4CAF50", "#FFC107", "#9C27B0", "#2a40f1", "#2af1c7", "#79f728"]}/>  
               </div> 
@@ -279,9 +278,9 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
               <TableHeader className="bg-gray-200 dark:bg-gray-800">
                 <TableRow>
                   <TableHead>Brand</TableHead>
-                  <TableHead>Goal</TableHead>
-                  <TableHead>Spends</TableHead>
-                  <TableHead>Sales Achieved</TableHead>
+                  <TableHead>Goal (₹)</TableHead>
+                  <TableHead>Spends (₹)</TableHead>
+                  <TableHead>Sales Achieved (₹)</TableHead>
                   <TableHead>Progress</TableHead>
                 </TableRow>
               </TableHeader>
@@ -294,7 +293,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
                       </Link>
                     </TableCell>
                     <TableCell>{brand.Goal?.toLocaleString() || '-'}</TableCell>
-                    <TableCell>{brand.DailySales}</TableCell>
+                    <TableCell>{brand.DailySales?.toLocaleString() || '-'}</TableCell>
                     <TableCell>{brand.Target?.toLocaleString() || '-'}</TableCell>
                     <TableCell>
                       {brand.Target > 0
@@ -318,7 +317,7 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
               <TableHeader className="bg-black text-white top-0 z-10 ">
                 <TableRow>
                   <TableHead>Brand</TableHead>
-                  <TableHead>Sales Achieved</TableHead>
+                  <TableHead>Sales Achieved (₹)</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -345,14 +344,14 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
               <TableHeader className="bg-black text-white top-0 z-10">
                 <TableRow>
                   <TableHead>Brand</TableHead>
-                  <TableHead>Spends</TableHead>
+                  <TableHead>Spends (₹)</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {topBrandsBySales.map((brand) => (
                   <TableRow key={brand.Brand}>
                     <TableCell className="w-1/3">{brand.Brand}</TableCell>
-                    <TableCell className="w-1/3">{brand.DailySales}</TableCell>
+                    <TableCell className="w-1/3">{brand.DailySales?.toLocaleString() || '-'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

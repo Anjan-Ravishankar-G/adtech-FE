@@ -1,4 +1,6 @@
+import json
 from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 import pymysql
 from typing import List, Dict
 import os
@@ -9,6 +11,16 @@ import keyword_recommendation
 import negative_keyword
 from urllib.parse import urlencode
 import amazonScraping
+
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from pydantic import BaseModel
+from datetime import datetime, timedelta
+from typing import Optional
+
 load_dotenv()  # Load .env variables
 import brand
 app = FastAPI()
@@ -58,6 +70,10 @@ def fetch_campaign_report(table_name: str):
         raise HTTPException(status_code=404, detail="No data found")
     return report_data
 
+@app.get("/ourbrand")
+def get_brand() :
+    brands = brand.get_brand_details()
+    return(brands)
 # Function to fetch latest brand data
 def get_latest_brand_report() -> List[Dict]:
     try:
@@ -153,8 +169,6 @@ def get_amazon_scrap(asin: str):
     print(data)
     return data
 
-
-
 # Base URL for SerpAPI
 SERPAPI_URL = "https://serpapi.com/search.json"
 
@@ -248,7 +262,7 @@ def get_formatted_geographic_interest(
 
 
 @app.get("/relatedQueries")
-async def get_related_queries(q: str="headphone, samsung", data_type: str = "RELATED_QUERIES",
+async def get_related_queries(q: str="headphone", data_type: str = "RELATED_QUERIES",
     api_key: str = "866710dc7a031d75930ac58283731508e438a17c023c40e21eb3d3a8a3fa16bd", hl: str = "en", geo: str= "GEO_MAP"):
     
     params = {
@@ -382,7 +396,231 @@ async def get_multiple_related_queries(
     
     return result
 
-@app.get("/ourbrand")
-def get_brand() :
-    brands = brand.get_brand_details()
-    return(brands)
+
+
+def extract_product_details(data):
+    # Extract best sellers rank (if available in product details)
+    best_sellers_rank = next(
+        (item['value'] for item in data.get('product_details', []) 
+         if item.get('type') == 'Best Sellers Rank'), 
+        'N/A'
+    )
+
+    # Extract price from variations (finding the correct variation)
+    current_variation = next(
+        (var for var in data.get('variations', []) 
+         if var['asin'] == data.get('asin')), 
+        {}
+    )
+
+    # Prepare the output dictionary
+    product_details = {
+        'title': data.get('title', 'N/A'),
+        'reviews_count': data.get('reviews_count', 'N/A'),
+        'top_review': None,  # No top review in this JSON
+        'seller_name': data.get('seller_name', 'N/A'),
+        'initial_price': data.get('initial_price', 'N/A'),
+        'currency': data.get('currency', 'N/A'),
+        'categories': data.get('categories', []),
+        'asin': data.get('asin', 'N/A'),
+        'buybox_seller': data.get('buybox_seller', 'N/A'),
+        'root_bs_rank': data.get('root_bs_rank', 'N/A'),
+        'discount': data.get('discount', 'N/A'),
+        'buybox_prices': data.get('buybox_prices', {}),
+        'description': data.get('description', 'N/A'),
+        'number_of_sellers': data.get('number_of_sellers', 'N/A'),
+        'best_sellers_rank': best_sellers_rank,
+        'variation_details': {
+            'name': current_variation.get('name', 'N/A'),
+            'price': current_variation.get('price', 'N/A')
+        },
+        'rating': current_variation.get("rating",'N/A')
+    }
+
+    return product_details
+
+
+
+class UrlRequest(BaseModel):
+    url: str
+
+@app.post("/amazon/url")
+def get_snapshot_id(request: UrlRequest):
+    api_url = "https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7q7dkf244hwjntr0&include_errors=true"
+    headers = {
+        "Authorization": "Bearer d2edcf5e3f0749d8a7c6d39f4df331946c5a353104358818a6a651bf4157b9c8",
+        "Content-Type": "application/json"
+    }
+
+    body = {
+        "url": request.url,
+        "asin": "",  
+        "zipcode": ""  
+    }
+
+    try:
+        response = requests.post(api_url, headers=headers, json=body)
+        snapshot_id =  response.json().get("snapshot_id")
+        result = True
+        while result:
+            api_url = f"https://api.brightdata.com/datasets/v3/snapshot/{snapshot_id}?format=jsonl"
+            headers = {
+                "Authorization": "Bearer d2edcf5e3f0749d8a7c6d39f4df331946c5a353104358818a6a651bf4157b9c8"
+            }
+            response = requests.get(api_url, headers=headers)
+
+            if response.status_code != 200:
+                # raise HTTPException(
+                #     status_code=response.status_code,
+                #     detail=f"Brightdata API error: {response.text}"
+                # )
+                print(response.text)
+                result = True
+            else:
+                result = False
+            if result == False:
+                product_data = json.loads(response.text.strip().split('\n')[0])
+                result = False
+
+                product_details = extract_product_details(product_data)
+
+                return product_details
+
+
+    except requests.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Request failed: {str(e)}")
+
+
+
+
+
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from pydantic import BaseModel
+from datetime import datetime, timedelta
+from typing import Optional
+
+# Configuration
+SECRET_KEY = "YOUR_SECRET_KEY"  # Change this to a secure random key in production
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+
+
+# CORS middleware to allow your React frontend to make requests
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Update with your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Password hashing
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# OAuth2 scheme
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+# Models
+class User(BaseModel):
+    email: str
+    disabled: Optional[bool] = None
+
+class UserInDB(User):
+    hashed_password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    email: Optional[str] = None
+
+# Mock database - Replace this with your actual database
+fake_users_db = {
+    "user@example.com": {
+        "email": "user@example.com",
+        "hashed_password": pwd_context.hash("password123"),
+        "disabled": False,
+    }
+}
+
+# Helper functions
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_user(db, email: str):
+    if email in db:
+        user_dict = db[email]
+        return UserInDB(**user_dict)
+
+def authenticate_user(db, email: str, password: str):
+    user = get_user(db, email)
+    if not user:
+        return False
+    if not verify_password(password, user.hashed_password):
+        return False
+    return user
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+        token_data = TokenData(email=email)
+    except JWTError:
+        raise credentials_exception
+    user = get_user(fake_users_db, email=token_data.email)
+    if user is None:
+        raise credentials_exception
+    return user
+
+async def get_current_active_user(current_user: User = Depends(get_current_user)):
+    if current_user.disabled:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
+
+# Routes
+@app.post("/token", response_model=Token)
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.get("/users/me", response_model=User)
+async def read_users_me(current_user: User = Depends(get_current_active_user)):
+    return current_user
+
+# Protected route example
+@app.get("/protected-resource")
+async def get_protected_resource(current_user: User = Depends(get_current_active_user)):
+    return {"message": "You have access to this protected resource", "user": current_user.email}

@@ -205,9 +205,9 @@ const top5SpendBrandData = top5CampaignsBySpend.map(campaign => campaign.Spend);
                     </Link>
                   </TableCell>
                   <TableCell>{campaign.campaignType}</TableCell>
-                  <TableCell>{campaign.Sales}</TableCell>
-                  <TableCell>{campaign.Spend}</TableCell>
-                  <TableCell>{campaign.Goal}</TableCell>
+                  <TableCell>{campaign.Sales?.toLocaleString() || '-'}</TableCell>
+                  <TableCell>{campaign.Spend?.toLocaleString() || '-'}</TableCell>
+                  <TableCell>{campaign.Goal?.toLocaleString() || '-'}</TableCell>
                   <TableCell>{campaign.Progress}</TableCell>
                 </TableRow>
               ))}
@@ -231,7 +231,7 @@ const top5SpendBrandData = top5CampaignsBySpend.map(campaign => campaign.Spend);
                     {top5Campaigns.map((campaign) => (
                       <TableRow key={campaign.SN}>
                         <TableCell className="w-1/2">{campaign.campaignName}</TableCell>
-                        <TableCell className="w-1/2">{campaign.Sales}</TableCell>
+                        <TableCell className="w-1/2">{campaign.Sales?.toLocaleString() || '-'}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -260,7 +260,7 @@ const top5SpendBrandData = top5CampaignsBySpend.map(campaign => campaign.Spend);
                     {top5Campaigns.map((campaign) => (
                       <TableRow key={campaign.SN}>
                         <TableCell className="w-1/2">{campaign.campaignName}</TableCell>
-                        <TableCell className="w-1/2">{campaign.Spend}</TableCell>
+                        <TableCell className="w-1/2">{campaign.Spend?.toLocaleString() || '-'}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

@@ -11,6 +11,7 @@ import {
 
 import Sidebar from "@/app/components/ui/sidebar"; // Import the Sidebar component
 import Footer from "@/app/components/ui/footer";
+import BasicPieChart from "../components/ui/bargraph";
 
 type AsinData = {
   SN: number;
@@ -158,10 +159,25 @@ export default function AdGroupPage() {
   if (error) return <div className="p-5 text-red-500">Error: {error}</div>;
   if (!asinData.length) return <div className="p-5 text-red-500">No ASIN data available for this ad group</div>;
 
-  // Sort by sales1d to get top ASINs by sales
-  const topAsinBySales = [...asinData]
-    .sort((a, b) => b.dailySales - a.dailySales)  // Sort in descending order by sales
-    .slice(0, 5);  // Get top 5
+  // Sort and Extract Top 5
+const top5BySales = [...asinData]
+.sort((a, b) => b.dailySales - a.dailySales)
+.slice(0, 5);
+
+const top5BySpends = [...asinData]
+.sort((a, b) => b.dailySpends - a.dailySpends)
+.slice(0, 5);
+
+// Prepare Chart Data
+const salesChartData = {
+series: top5BySales.map((asin) => asin.dailySales),
+labels: top5BySales.map((asin) => asin.asin),
+};
+
+const spendsChartData = {
+series: top5BySpends.map((asin) => asin.dailySpends),
+labels: top5BySpends.map((asin) => asin.asin),
+};
 
   return (
     <div className="flex h-screen">
@@ -193,8 +209,8 @@ export default function AdGroupPage() {
                     <TableCell className="border border-default-300">{asin.sku}</TableCell>
                     <TableCell className="border border-default-300">{asin.adFormat}</TableCell>
                     <TableCell className="border border-default-300">{asin.campaignStatus}</TableCell>
-                    <TableCell className="border border-default-300">{asin.dailySpends}</TableCell>
-                    <TableCell className="border border-default-300">{asin.dailySales}</TableCell>
+                    <TableCell className="border border-default-300">{asin.dailySpends?.toLocaleString() || '-'}</TableCell>
+                    <TableCell className="border border-default-300">{asin.dailySales?.toLocaleString() || '-'}</TableCell>
                     <TableCell className="border border-default-300">{asin.ACOS}</TableCell>
                     <TableCell className="border border-default-300">{asin.ROAS}</TableCell>
                   </TableRow>
@@ -205,7 +221,7 @@ export default function AdGroupPage() {
             <div className="flex gap-4">
               <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl mt-5 dark:bg-black">
               <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Asin Based on Spends</h2>
-              <div className="flex space-x-10 ">
+              <div className="flex flex-col space-y-6 ">
                 <div className="flex-1 overflow-x-auto">
                   <Table className="min-w-full border border-blue-600 text-center">
                     <TableHeader className="bg-black text-white top-0 z-10">
@@ -215,21 +231,27 @@ export default function AdGroupPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {topAsinBySales.map((asin) => (
+                      {top5BySpends.map((asin) => (
                         <TableRow key={asin.advertisedAsin}>
                           <TableCell className="w-1/3">{asin.asin}</TableCell>
-                          <TableCell className="w-1/3">{asin.dailySpends}</TableCell>
+                          <TableCell className="w-1/3">{asin.dailySpends?.toLocaleString() || '-'}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                   </Table>
                 </div>
+                <div>
+                  <BasicPieChart 
+                  series={spendsChartData.series} 
+                  height={350}
+                  labels={spendsChartData.labels}/>
+               </div>
               </div>
               </div>
 
               <div className="w-1/2 shadow-2xl p-4 bg-white rounded-2xl mt-5 dark:bg-black">
               <h2 className="text-2xl font-bold mb-4 mt-8 text-center">Top 5 Asin Based on Sales</h2>
-              <div className="flex space-x-10 ">
+              <div className="flex flex-col space-y-6">
                 <div className="flex-1 overflow-x-auto">
                   <Table className="min-w-full border border-blue-600 text-center">
                     <TableHeader className="bg-black text-white top-0 z-10">
@@ -239,15 +261,21 @@ export default function AdGroupPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {topAsinBySales.map((asin) => (
+                      {top5BySales.map((asin) => (
                         <TableRow key={asin.advertisedAsin}>
                           <TableCell className="w-1/3">{asin.asin}</TableCell>
-                          <TableCell className="w-1/3">{asin.dailySales}</TableCell>
+                          <TableCell className="w-1/3">{asin.dailySales?.toLocaleString() || '-'}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                   </Table>
                 </div>
+                <div>
+                  <BasicPieChart 
+                  series={salesChartData.series} 
+                  height={350}
+                  labels={salesChartData.labels}/>
+               </div>
               </div>
               </div>
 
@@ -277,12 +305,12 @@ export default function AdGroupPage() {
                 
                     <TableCell className="border border-default-300">{keyword.keyword}</TableCell>
                     <TableCell className="border border-default-300">{keyword.matchType}</TableCell>
-                    <TableCell className="border border-default-300">${keyword.revenue.toFixed(2)}</TableCell>
-                    <TableCell className="border border-default-300">${keyword.spend.toFixed(2)}</TableCell>
+                    <TableCell className="border border-default-300">${keyword.revenue?.toLocaleString() || '-'}</TableCell>
+                    <TableCell className="border border-default-300">${keyword.spend?.toLocaleString() || '-'}</TableCell>
                     <TableCell className="border border-default-300">{keyword.ACOS}%</TableCell>
                     <TableCell className="border border-default-300">{keyword.ROAS}</TableCell>
                     <TableCell className="border border-default-300">{keyword.clicks}</TableCell>
-                    <TableCell className="border border-default-300">{keyword.impresssion}</TableCell>
+                    <TableCell className="border border-default-300">{keyword.impresssion?.toLocaleString() || '-'}</TableCell>
                     <TableCell className="border border-default-300">${keyword.bid.toFixed(2)}</TableCell>
                   </TableRow>
                 ))}
