@@ -40,10 +40,25 @@ type ChartData = {
   DailySales: number;
   Spend: number;
 };
+const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const AUTH_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoiQXJ0aGEifQ.U2IcJiBaS-seXP7oEuxuDKGOr-1QJMSQPkGRArP8hq4";
 
-async function fetchCampaignData() {
+
+async function fetchCampaignData(startDate?: string, endDate?: string) {
   try {
-    const res = await fetch("http://127.0.0.1:8000/get_report/campaign_level_table", { cache: "no-store" });
+    const queryParams = new URLSearchParams();
+    if (startDate) queryParams.append('start_date', startDate);
+    if (endDate) queryParams.append('end_date', endDate);
+
+    const url = `${backendURL}/report/campaign_level_table${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    
+    const res = await fetch(url, {
+      cache: "no-store",
+      headers: {
+        'Authorization': AUTH_TOKEN,
+        'Content-Type': 'application/json'
+      }
+    });
     if (!res.ok) throw new Error("Failed to fetch campaign data");
     const data = await res.json();
     console.log("Fetched Campaign Data:", data);
@@ -56,7 +71,12 @@ async function fetchCampaignData() {
 
 async function fetchCampaignDataChart() {
   try {
-    const res = await fetch("http://127.0.0.1:8000/get_report/campaign_data", { cache: "no-store" });
+    const res = await fetch('${backendURL}/report/campaign_data', { cache: "no-store",
+      headers: {
+        'Authorization': AUTH_TOKEN,
+        'Content-Type': 'application/json'
+      }
+     });
     if (!res.ok) throw new Error("Failed to fetch chart data");
     return await res.json();
   } catch (error) {
@@ -81,7 +101,9 @@ export default function PerformanceTable() {
   useEffect(() => {
     async function loadData() {
       try {
-        const results = await fetchCampaignData();
+        const startStr = startDate ? startDate.toISOString().split('T')[0] : undefined;
+        const endStr = endDate ? endDate.toISOString().split('T')[0] : undefined;
+        const results = await fetchCampaignData(startStr, endStr);
         setCampaignData(results);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
@@ -90,7 +112,7 @@ export default function PerformanceTable() {
       }
     }
     loadData();
-  }, []);
+  }, [startDate, endDate]);
 
   useEffect(() => {
     async function loadChartData() {
@@ -162,11 +184,13 @@ const top5SpendBrandData = top5CampaignsBySpend.map(campaign => campaign.Spend);
             {isDatePickerOpen ? "Close Date Picker" : "Select Date Range"}
           </button>
 
-          {isDatePickerOpen && (
-            <DateRangePicker onDateRangeChange={(startDate, endDate) => {
-              console.log("Selected range:", startDate, endDate);
+            {isDatePickerOpen && (
+            <DateRangePicker onDateRangeChange={(start, end) => {
+              setStartDate(start);
+              setEndDate(end);
+              setIsDatePickerOpen(false);
             }} />
-          )}
+            )}
 
           <div className="text-Black bg-white shadow-2xl hover:bg-gray-400 focus:ring-gray-300 font-medium rounded-2xl text-sm px-4 py-2 mt-4 mb-3 dark:hover:bg-gray-700 dark:text-white dark:bg-black">
             <h2>Brand: brand 1</h2>

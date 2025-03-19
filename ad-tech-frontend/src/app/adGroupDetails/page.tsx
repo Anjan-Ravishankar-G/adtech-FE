@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 
-import Sidebar from "@/app/components/ui/sidebar"; // Import the Sidebar component
+import Sidebar from "@/app/components/ui/sidebar";
 import Footer from "@/app/components/ui/footer";
 import BasicPieChart from "../components/ui/bargraph";
 
@@ -66,34 +66,57 @@ type NegativeKeyword = {
   adGroupId: string;
 };
 
+const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const AUTH_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoiQXJ0aGEifQ.U2IcJiBaS-seXP7oEuxuDKGOr-1QJMSQPkGRArP8hq4";
 
-async function fetchNegativeKeywords(adGroupId: string) {
+// Fixed function - removed unused parameter
+async function fetchNegativeKeywords() {
   try {
-    const res = await fetch("http://127.0.0.1:8000/get_report/negative_keyword", { cache: "no-store" });
+    const res = await fetch(`${backendURL}/report/negative_keyword`, { 
+      cache: "no-store",
+      headers: {
+        'Authorization': AUTH_TOKEN,
+        'Content-Type': 'application/json'
+      }      
+     });
     if (!res.ok) throw new Error("Failed to fetch negative keywords");
     const data = await res.json();
-    return data
+    return data;
   } catch (error) {
     console.error("Error fetching negative keywords:", error);
     throw error;
   }
 }
 
-async function fetchAsinData(adGroupId: string) {
+// Fixed function - removed unused parameter
+async function fetchAsinData() {
   try {
-    const res = await fetch("http://127.0.0.1:8000/get_report/asin_level_table", { cache: "no-store" });
+    const res = await fetch(`${backendURL}/report/asin_level_table`, { 
+      cache: "no-store",
+      headers: {
+        'Authorization': AUTH_TOKEN,
+        'Content-Type': 'application/json'
+      }
+     });
     if (!res.ok) throw new Error("Failed to fetch ASIN data");
     const data = await res.json();
-    return data
+    return data;
   } catch (error) {
     console.error("Error fetching ASIN data:", error);
     throw error;
   }
 }
 
-async function fetchKeywordData(campaignId: string, adGroupId: string) {
+// Fixed function - removed unused parameters
+async function fetchKeywordData() {
   try {
-    const res = await fetch(`http://127.0.0.1:8000/get_report/keyword_recommendation`, { cache: "no-store" });
+    const res = await fetch(`${backendURL}/report/keyword_recommendation`, { 
+      cache: "no-store",
+      headers: {
+        'Authorization': AUTH_TOKEN,
+        'Content-Type': 'application/json'
+      }
+     });
     if (!res.ok) throw new Error("Failed to fetch keyword recommendations");
     const data = await res.json();
     return data;
@@ -104,18 +127,23 @@ async function fetchKeywordData(campaignId: string, adGroupId: string) {
 }
 
 async function fetchKeywordPerformance() {
-  const res = await fetch("http://127.0.0.1:8000/get_report/targeting_level_table", { cache: "no-store" });
+  const res = await fetch(`${backendURL}/report/targeting_level_table`, { 
+    cache: "no-store",
+    headers: {
+      'Authorization': AUTH_TOKEN,
+      'Content-Type': 'application/json'
+    }
+   });
   if (!res.ok) throw new Error(`Failed to fetch data: ${res.status}`);
   return res.json();
 }
 
 export default function AdGroupPage() {
   // Default values for adGroupId and campaignId
-  const DEFAULT_AD_GROUP_ID = "123456789"; // Replace with your actual default ad group ID
-  const DEFAULT_CAMPAIGN_ID = "987654321"; // Replace with your actual default campaign ID
+  // const DEFAULT_AD_GROUP_ID = "123456789"; 
+  // const DEFAULT_CAMPAIGN_ID = "987654321"; 
   
   const [asinData, setAsinData] = useState<AsinData[]>([]);
-
   const [keywordData, setKeywordData] = useState<KeywordData[]>([]);
   const [keywordPerformanceData, setKeywordPerformanceData] = useState<KeywordPerformanceData[]>([]);
   const [negativeKeywords, setNegativeKeywords] = useState<NegativeKeyword[]>([]);
@@ -126,24 +154,24 @@ export default function AdGroupPage() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const adGroupId = DEFAULT_AD_GROUP_ID;
+        // Note: We're not using adGroupId in the fetch calls anymore,
+        // but we'll keep it for potential future use
+        // const adGroupId = DEFAULT_AD_GROUP_ID;
         
         const [asinResults, keywordPerformance, negativeKeywordResults] = await Promise.all([
-          fetchAsinData(adGroupId),
+          fetchAsinData(),
           fetchKeywordPerformance(),
-          fetchNegativeKeywords(adGroupId),
+          fetchNegativeKeywords(),
         ]);
         
         setAsinData(asinResults);
-        
-        
-        
         setKeywordPerformanceData(keywordPerformance);
         setNegativeKeywords(negativeKeywordResults);
         
         // Use the campaign ID from asin data if available, otherwise use default
-        const campaignId = asinResults.length > 0 ? asinResults[0].campaignId : DEFAULT_CAMPAIGN_ID;
-        const keywordResults = await fetchKeywordData(campaignId, adGroupId);
+        // We're not using these IDs in the fetch call anymore, but keeping them for potential future use
+        // const campaignId = asinResults.length > 0 ? asinResults[0].campaignId : DEFAULT_CAMPAIGN_ID;
+        const keywordResults = await fetchKeywordData();
         setKeywordData(keywordResults);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
@@ -160,24 +188,24 @@ export default function AdGroupPage() {
   if (!asinData.length) return <div className="p-5 text-red-500">No ASIN data available for this ad group</div>;
 
   // Sort and Extract Top 5
-const top5BySales = [...asinData]
-.sort((a, b) => b.dailySales - a.dailySales)
-.slice(0, 5);
+  const top5BySales = [...asinData]
+    .sort((a, b) => b.dailySales - a.dailySales)
+    .slice(0, 5);
 
-const top5BySpends = [...asinData]
-.sort((a, b) => b.dailySpends - a.dailySpends)
-.slice(0, 5);
+  const top5BySpends = [...asinData]
+    .sort((a, b) => b.dailySpends - a.dailySpends)
+    .slice(0, 5);
 
-// Prepare Chart Data
-const salesChartData = {
-series: top5BySales.map((asin) => asin.dailySales),
-labels: top5BySales.map((asin) => asin.asin),
-};
+  // Prepare Chart Data
+  const salesChartData = {
+    series: top5BySales.map((asin) => asin.dailySales),
+    labels: top5BySales.map((asin) => asin.asin),
+  };
 
-const spendsChartData = {
-series: top5BySpends.map((asin) => asin.dailySpends),
-labels: top5BySpends.map((asin) => asin.asin),
-};
+  const spendsChartData = {
+    series: top5BySpends.map((asin) => asin.dailySpends),
+    labels: top5BySpends.map((asin) => asin.asin),
+  };
 
   return (
     <div className="flex h-screen">

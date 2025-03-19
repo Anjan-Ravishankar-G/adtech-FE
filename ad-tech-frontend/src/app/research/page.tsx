@@ -16,10 +16,17 @@ type AmazonProductData = {
   sellers: string[];
   description: string;
 };
+const AUTH_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoiQXJ0aGEifQ.U2IcJiBaS-seXP7oEuxuDKGOr-1QJMSQPkGRArP8hq4";
+const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 async function fetchProductData(asin: string) {
   try {
-    const res = await fetch(`http://127.0.0.1:8000/scrap/${asin}`, { cache: "no-store" });
+    const res = await fetch(`${backendURL}/amazon_scraping/${asin}`, { cache: "no-store",
+      headers: {
+        'Authorization': AUTH_TOKEN,
+        'Content-Type': 'application/json'
+      }
+     });
     if (!res.ok) throw new Error("Failed to fetch product data");
     return await res.json();
   } catch (error) {
@@ -48,8 +55,10 @@ export default function AmazonProductSearch() {
     try {
       const data = await fetchProductData(asin);
       setProductData(data);
-    } catch (err) {
-      setError("Product not found or error occurred");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Product not found or error occurred";
+      setError(errorMessage);
+      console.error("Search error:", err);
     } finally {
       setIsLoading(false);
     }

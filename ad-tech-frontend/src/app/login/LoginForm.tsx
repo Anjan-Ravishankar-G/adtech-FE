@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import Link from "next/link";
-import Image from "next/image";
+// import Image from "next/image";
 import { Loader2 } from "lucide-react";
 
 export default function LoginForm() {

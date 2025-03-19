@@ -25,12 +25,12 @@ import {
   Download,
   Filter,
   ArrowUpRight,
-  Plus,
-  Minus,
+  // Plus,
+  // Minus,
   Search,
 } from "lucide-react";
 import Layout from "../components/ui/Layout";
-import { time } from "console";
+// import { time } from "console";
 
 // Types for Interest Over Time
 type TimeData = {
@@ -69,13 +69,21 @@ type RelatedQueriesData = {
   [keyword: string]: QueryType;
 };
 
+const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const AUTH_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoiQXJ0aGEifQ.U2IcJiBaS-seXP7oEuxuDKGOr-1QJMSQPkGRArP8hq4";
+
 // API Functions
 async function fetchInterestOverTime(keywords: string[]) {
   try {
     const keywordsParam = keywords.join(",");
     const res = await fetch(
-      `http://127.0.0.1:8000/interestOverTime?q=${keywordsParam}`,
-      { cache: "no-store" }
+      `${backendURL}/interestOverTime?q=${keywordsParam}`,
+      { cache: "no-store",
+        headers: {
+          'Authorization': AUTH_TOKEN,
+          'Content-Type': 'application/json'
+        }
+       }
     );
 
     if (!res.ok) throw new Error(`Failed to fetch interest data: ${res.status}`);
@@ -92,8 +100,13 @@ async function fetchGeographicData(keywords: string[]) {
   try {
     const keywordsParam = keywords.join(",");
     const res = await fetch(
-      `http://127.0.0.1:8000/comparedBy?q=${keywordsParam}&geo=IN`,
-      { cache: "no-store" }
+      `${backendURL}/comparedBy?q=${keywordsParam}&geo=IN`,
+      { cache: "no-store",
+        headers: {
+          'Authorization': AUTH_TOKEN,
+          'Content-Type': 'application/json'
+        }
+       }
     );
 
     if (!res.ok) throw new Error(`Failed to fetch geographic data: ${res.status}`);
@@ -110,8 +123,13 @@ async function fetchRelatedQueries(keywords: string[]) {
   try {
     const keywordsParam = keywords.join(",");
     const res = await fetch(
-      `http://127.0.0.1:8000/multiQueryRelatedQueries?keywords=${keywordsParam}`,
-      { cache: "no-store" }
+      `${backendURL}/multiQueryRelatedQueries?keywords=${keywordsParam}`,
+      { cache: "no-store",
+        headers: {
+          'Authorization': AUTH_TOKEN,
+          'Content-Type': 'application/json'
+        }
+       }
     );
 
     if (!res.ok) throw new Error(`Failed to fetch related queries: ${res.status}`);

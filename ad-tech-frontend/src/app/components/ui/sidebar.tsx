@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, X, Home, LogOut, CircleHelp } from "lucide-react";
+import { Menu, X, LogOut, CircleHelp } from "lucide-react";
 import { useTheme } from '@/app/context/ThemeContext';
-import { FaMoon, FaSun, FaProductHunt, FaKey,  FaArrowRight } from 'react-icons/fa';
+import { FaMoon, FaSun, FaKey,  FaArrowRight } from 'react-icons/fa';
 import { GiTargeting } from "react-icons/gi";
 
 type SidebarProps = {
@@ -35,13 +35,14 @@ export default function Sidebar({ selectedTab, setSelectedTab }: SidebarProps) {
 
           <ul className="space-y-6 p-4 mt-16">
             <li>
-              <button
+                <button
                 onClick={() => setSelectedTab("asin")}
-                className={`flex items-center gap-3 w-full text-gray-700 hover:text-black ${
-                  isOpen ? "" : "justify-center"
-                }`}
-              >
-                <FaProductHunt size={20} />
+                className={`flex items-center gap-3 w-full ${
+                  selectedTab === "asin" 
+                  ? "text-blue-600 font-bold" 
+                  : "text-gray-700 hover:text-black"
+                } ${isOpen ? "" : "justify-center"}`}
+                >
                 {isOpen && <span>Products</span>}
               </button>
             </li>

@@ -1,9 +1,9 @@
 "use client";
 import "@/css/brand.css";
 import React, { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useTheme } from "next-themes";
+// import { useTheme } from "next-themes";
 import Footer from "../components/ui/footer";
 import {
   Table,
@@ -19,7 +19,7 @@ import BasicPieChart from "../components/ui/bargraph";
 import Layout from "../components/ui/Layout";
 
 
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+// const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 type BrandTargetData = {
   Brand: string;
@@ -35,13 +35,20 @@ type OurBrandData ={
   currencyCode: string;
   name: string;
 };
+const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const AUTH_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoiQXJ0aGEifQ.U2IcJiBaS-seXP7oEuxuDKGOr-1QJMSQPkGRArP8hq4";
 
 
 async function fetchFilteredBrandTargetData(startDate: string, endDate: string) {
   try {
     const res = await fetch(
-      "http://127.0.0.1:8000/get_filtered_brands?start_date=${startDate}&end_date=${endDate}",
-      { cache: "no-store" }
+      `${backendURL}/get_filtered_brands?start_date=${startDate}&end_date=${endDate}`,
+      { cache: "no-store",
+        headers: {
+          'Authorization': AUTH_TOKEN,
+          'Content-Type': 'application/json'
+        }
+       }
     );
     if (!res.ok) throw new Error("Failed to fetch filtered brand target data");
     const data = await res.json();
@@ -55,8 +62,13 @@ async function fetchFilteredBrandTargetData(startDate: string, endDate: string) 
 async function fetchUniqueBrandTargetData() {
   try {
     const res = await fetch(
-      "http://127.0.0.1:8000/get_report/brand_level_table",
-      { cache: "no-store" }
+      `${backendURL}/report/brand_level_table`,
+      { cache: "no-store",
+        headers: {
+          'Authorization': AUTH_TOKEN,
+          'Content-Type': 'application/json'
+        }
+       }
     );
     if (!res.ok) throw new Error("Failed to fetch unique brand target data");
     return await res.json();
@@ -66,19 +78,24 @@ async function fetchUniqueBrandTargetData() {
   }
 }
 
-async function fetchOurBrandData() {
-  try {
-    const res = await fetch(
-      "http://127.0.0.1:8000/ourbrand",
-      { cache: "no-store" }
-    );
-    if (!res.ok) throw new Error("Failed to fetch unique brand target data");
-    return await res.json();
-  } catch (error) {
-    console.error("Error fetching unique brand target data:", error);
-    return [];
-  }
-}
+// async function fetchOurBrandData() {
+//   try {
+//     const res = await fetch(
+//       `${backendURL}/our-brand`,
+//       { cache: "no-store",
+//         headers: {
+//           'Authorization': AUTH_TOKEN,
+//           'Content-Type': 'application/json'
+//         }
+//        }
+//     );
+//     if (!res.ok) throw new Error("Failed to fetch unique brand target data");
+//     return await res.json();
+//   } catch (error) {
+//     console.error("Error fetching unique brand target data:", error);
+//     return [];
+//   }
+// }
 
 export default function BrandTargetTables() {
   
@@ -93,7 +110,12 @@ export default function BrandTargetTables() {
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/ourbrand')
+    fetch(`${backendURL}/our-brand` ,{
+      headers: {
+        'Authorization': AUTH_TOKEN,
+        'Content-Type': 'application/json'
+      }
+    })
     .then(response => response.json())
     .then(data => {
       // The API response is already an array, so don't look for data.brands
@@ -265,43 +287,47 @@ const brandNamesTop5 = topBrandsBySales.map((brand) => brand.Brand);
       </button>
 
       {isDatePickerOpen && (
-        <DateRangePicker onDateRangeChange={(startDate, endDate) => {
-          console.log("Selected range:", startDate, endDate);
+       <DateRangePicker onDateRangeChange={(start, end) => {
+          setStartDate(start);
+          setEndDate(end);
+          setIsDatePickerOpen(false);
         }} />
       )}
 
         <div className="shadow-2xl p-4 bg-white rounded-2xl dark:bg-black dark:text-white dark:shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.15)]">
-        
+          {!isDataAvailable && (
+            <div className="text-red-500 text-center mb-4">
+              No data available for selected date range
+            </div>
+          )}
           {/* Brand Table */}
           <div className="overflow-auto max-h-[500px]">
-          <Table className="min-w-full border text-center">
+            <Table className="min-w-full border text-center">
               <TableHeader className="bg-gray-200 dark:bg-gray-800">
-                <TableRow>
-                  <TableHead>Brand</TableHead>
-                  <TableHead>Goal (₹)</TableHead>
-                  <TableHead>Spends (₹)</TableHead>
-                  <TableHead>Sales Achieved (₹)</TableHead>
-                  <TableHead>Progress</TableHead>
-                </TableRow>
+          <TableRow>
+            <TableHead>Brand</TableHead>
+            <TableHead>Goal (₹)</TableHead>
+            <TableHead>Spends (₹)</TableHead>
+            <TableHead>Sales Achieved (₹)</TableHead>
+            <TableHead>Progress</TableHead>
+          </TableRow>
               </TableHeader>
               <TableBody>
-                {uniqueBrandTargetData.map((brand, index) => (
-                  <TableRow key={`${brand.Brand}-${brand.DateTime}-${index}`}>
-                    <TableCell className="border border-default-300 hover:bg-default-100 transition-colors cursor-pointer p-0">
-                      <Link href={`/campaign`} className="text-black hover:bg-gray-300 block w-full h-full p-4 dark:text-white dark:hover:bg-blue-900">
-                        {brand.Brand}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{brand.Goal?.toLocaleString() || '-'}</TableCell>
-                    <TableCell>{brand.DailySales?.toLocaleString() || '-'}</TableCell>
-                    <TableCell>{brand.Target?.toLocaleString() || '-'}</TableCell>
-                    <TableCell>
-                      {brand.Target > 0
-                        ? ((brand.Target / brand.Goal) * 100).toFixed(2)
-                        : "0.00"}%
-                    </TableCell>
-                  </TableRow>
-                ))}
+          {displayData.map((brand, index) => (
+            <TableRow key={`${brand.Brand}-${brand.DateTime}-${index}`}>
+              <TableCell className="border border-default-300 hover:bg-default-100 transition-colors cursor-pointer p-0">
+                <Link href={`/campaign`} className="text-black hover:bg-gray-300 block w-full h-full p-4 dark:text-white dark:hover:bg-blue-900">
+            {brand.Brand}
+                </Link>
+              </TableCell>
+              <TableCell>{brand.Goal?.toLocaleString() || '-'}</TableCell>
+              <TableCell>{brand.DailySales?.toLocaleString() || '-'}</TableCell>
+              <TableCell>{brand.Target?.toLocaleString() || '-'}</TableCell>
+              <TableCell>
+                {brand.Target > 0 ? ((brand.Target / brand.Goal) * 100).toFixed(2) : "0.00"}%
+              </TableCell>
+            </TableRow>
+          ))}
               </TableBody>
             </Table>
           </div>

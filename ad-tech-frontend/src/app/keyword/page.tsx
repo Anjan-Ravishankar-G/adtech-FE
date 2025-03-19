@@ -1,5 +1,13 @@
+const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const AUTH_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoiQXJ0aGEifQ.U2IcJiBaS-seXP7oEuxuDKGOr-1QJMSQPkGRArP8hq4";
+
 async function fetchKeywords() {
-  const res = await fetch("http://127.0.0.1:8000/get_report/keyword_report", { cache: "no-store" });
+  const res = await fetch(`${backendURL}/report/keyword_report`, { cache: "no-store",
+    headers: {
+      'Authorization': AUTH_TOKEN,
+      'Content-Type': 'application/json'
+    }
+   });
 
   if (!res.ok) {
     throw new Error(`Failed to fetch data: ${res.status}`);

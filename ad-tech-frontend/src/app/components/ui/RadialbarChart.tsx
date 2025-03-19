@@ -4,7 +4,7 @@ const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 // Import types from 'react-apexcharts' for type safety
 import { ApexOptions } from 'apexcharts';
-import { useState } from "react";
+// import { useState } from "react";
 
 type BasicRadialBarProps = {
   series: number[]; // Array of progress values for each brand

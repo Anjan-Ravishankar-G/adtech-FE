@@ -4,10 +4,15 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
 
+interface ProtectedData {
+  message: string;
+  user: string;
+}
+
 export default function Home() {
   const { token, logout, user, loading } = useAuth();
   const router = useRouter();
-  const [protectedData, setProtectedData] = useState<any>(null);
+  const [protectedData, setProtectedData] = useState<ProtectedData | null>(null);
   const [error, setError] = useState<string | null>(null);
   
   useEffect(() => {
@@ -29,14 +34,17 @@ export default function Home() {
         });
         
         if (response.ok) {
-          const data = await response.json();
+          const data: ProtectedData = await response.json();
           setProtectedData(data);
         } else {
           const errorData = await response.json();
           setError(errorData.detail || 'Failed to fetch data');
+          console.error('Error fetching protected data:', errorData); // Use error
         }
-      } catch (error) {
-        setError('Network error occurred');
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Network error occurred';
+        setError(errorMessage);
+        console.error('Error:', errorMessage); // Use error
       }
     };
     

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useTheme } from '@/app/context/ThemeContext';
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { GiOctopus } from "react-icons/gi";
-import { Handshake, CircleHelp, Home, LogOut, ChevronLeft, ChevronRight, ChevronDown, Search } from "lucide-react";
+import { Handshake, CircleHelp, Home, LogOut, ChevronLeft, ChevronRight, ChevronDown} from "lucide-react";
 
 interface SidebarProps {
   collapsed: boolean;

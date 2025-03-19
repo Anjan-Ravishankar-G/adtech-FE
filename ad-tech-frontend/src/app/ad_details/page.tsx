@@ -40,9 +40,24 @@ type CampaignData = {
   
 };
 
+const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const AUTH_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoiQXJ0aGEifQ.U2IcJiBaS-seXP7oEuxuDKGOr-1QJMSQPkGRArP8hq4";
+
 async function fetchCampaignData(startDate: string | null, endDate: string | null) {
   try {
-    const res = await fetch("http://127.0.0.1:8000/get_report/ad_group_table", { cache: "no-store" });
+    const queryParams = new URLSearchParams();
+    if (startDate) queryParams.append('start_date', startDate);
+    if (endDate) queryParams.append('end_date', endDate);
+
+    const url = `${backendURL}/report/ad_group_table${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    
+    const res = await fetch(url, {
+      cache: "no-store",
+      headers: {
+        'Authorization': AUTH_TOKEN,
+        'Content-Type': 'application/json'
+      }
+    });
     if (!res.ok) throw new Error("Failed to fetch campaign data");
     const data = await res.json();
     return data;
@@ -133,8 +148,10 @@ export default function PerformanceTable() {
       </button>
 
       {isDatePickerOpen && (
-        <DateRangePicker onDateRangeChange={(startDate, endDate) => {
-          console.log("Selected range:", startDate, endDate);
+        <DateRangePicker onDateRangeChange={(start, end) => {
+          setStartDate(start);
+          setEndDate(end);
+          setIsDatePickerOpen(false);
         }} />
       )}
       
