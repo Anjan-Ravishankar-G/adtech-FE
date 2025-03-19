@@ -1,0 +1,5 @@
+# Backend files
+../ad-tech-backend/
+**/ad-tech-backend/
+**/__pycache__/
+*.pyc
